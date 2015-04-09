@@ -13,6 +13,7 @@ public abstract class User {
 	private String gender;
 	private String address;
 	private GregorianCalendar birthDate;
+	private boolean premium;
 
 	private ArrayList<Cache> caches = null;
 	private HashMap<String, User> friends = null;
@@ -81,4 +82,15 @@ public abstract class User {
 		this.friends = friends;
 	}
 
+	public boolean isPremium() {return premium;}
+
+	public void setPremium(boolean premium) {this.premium = premium;}
+
+	// Methods
+
+
+	@Override
+	public String toString() {
+		return "'" + name + " (" + caches.size()+")'";
+	}
 }

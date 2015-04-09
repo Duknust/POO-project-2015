@@ -3,6 +3,7 @@ package base;
 import java.util.HashMap;
 import java.util.TreeMap;
 
+import com.github.dvdme.ForecastIOLib.ForecastIO;
 import user.User;
 import activity.Activity;
 import caches.Cache;

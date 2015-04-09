@@ -7,10 +7,15 @@ import user.User;
 import base.Position;
 
 public abstract class Cache {
+
+	public enum Status {
+		UNPUBLISHED,PUBLISHED,ARCHIVED
+	}
+
 	private GregorianCalendar publishDate; // Date cache was placed
 	private String cacheID; // Cache ID number
 	private String description; // Cache description
-	private boolean cacheArchived; // Is cache archived
+	private Status cacheState; // Cache Status
 	private String cacheTitle; // Cache name
 	private User owner; // Who placed the cache
 	private int cacheSize; // Type of container
@@ -20,6 +25,24 @@ public abstract class Cache {
 	private Logs cache_Logs; // Cache logs
 	private ArrayList<String> travel_bugs; // Travel bugs in cache container
 
+	// Constructors
+	public Cache(GregorianCalendar publishDate, String cacheID, String description, Status cacheState, String cacheTitle, User owner, int cacheSize, float difficulty, Position position, String hints, Logs cache_Logs, ArrayList<String> travel_bugs) {
+		this.publishDate = publishDate;
+		this.cacheID = cacheID;
+		this.description = description;
+		this.cacheState = cacheState;
+		this.cacheTitle = cacheTitle;
+		this.owner = owner;
+		this.cacheSize = cacheSize;
+		this.difficulty = difficulty;
+		this.position = position;
+		this.hints = hints;
+		this.cache_Logs = cache_Logs;
+		this.travel_bugs = travel_bugs;
+	}
+
+
+	// Getters and Setters
 	public GregorianCalendar getPublishDate() {
 		return publishDate;
 	}
@@ -36,21 +59,17 @@ public abstract class Cache {
 		this.cacheID = cacheID;
 	}
 
-	public String getDescription() {
-		return description;
+	public Status getCacheState() {
+		return cacheState;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setCacheState(Status cacheState) {
+		this.cacheState = cacheState;
 	}
 
-	public boolean isCacheArchived() {
-		return cacheArchived;
-	}
+	public String getDescription() {return description;}
 
-	public void setCacheArchived(boolean cacheArchived) {
-		this.cacheArchived = cacheArchived;
-	}
+	public void setDescription(String description) {this.description = description;}
 
 	public String getCacheTitle() {
 		return cacheTitle;
