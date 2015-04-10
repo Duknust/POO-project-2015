@@ -18,6 +18,12 @@ public class Geocaching {
 	public static void main(String[] args) {
 		System.out.println("Welcome to Geocaching");
 
+
+		Position p1 = new Position(41.5503200,-8.4200500);
+		Position p2 = new Position(41.6503200,-8.4200500);
+	GeoTools gt = new GeoTools();
+		System.out.println(gt.calcDistance(p1,p2));
+
         MeteoOnline mo = new MeteoOnline();
         Meteo m = mo.getOnlineWeather(new Position(41.5503200,-8.4200500));
 
