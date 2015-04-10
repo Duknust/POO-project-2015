@@ -106,16 +106,16 @@ public class Meteo {
 
 	public Meteo autoMeteo(Position position, GregorianCalendar date) {
 		Meteo res = null;
-		int quadrant = position.getQuadrant();
-		boolean northHemisphere = quadrant % 2 != 0;
+		boolean northHemisphere = position.getContinent().equals("Europe")
+				|| position.getContinent().equals("North America")
+				|| position.getContinent().equals("Asia");
 		int season = position.getSeason(northHemisphere, date); // 0-winter;
 																// 1-spring;
 																// 2-summer;
 																// 3-autumn
-
 		Random randomno = new Random();
-		switch (quadrant) {
-		case 1:
+		switch (position.getContinent()) {
+		case "Europe":
 			switch (season) {
 			case 0:
 				res = new Meteo(randomno.nextFloat() * 10,
@@ -135,7 +135,7 @@ public class Meteo {
 				break;
 			}
 			break;
-		case 2:
+		case "Asia":
 			switch (season) {
 			case 0:
 				res = new Meteo(randomno.nextFloat() * 7,
@@ -155,7 +155,7 @@ public class Meteo {
 				break;
 			}
 			break;
-		case 3:
+		case "South America":
 			switch (season) {
 			case 0:
 				res = new Meteo(randomno.nextFloat() * 30,
@@ -175,7 +175,7 @@ public class Meteo {
 				break;
 			}
 			break;
-		case 4:
+		case "Africa":
 			switch (season) {
 			case 0:
 				res = new Meteo(randomno.nextFloat() * 40,
@@ -192,6 +192,46 @@ public class Meteo {
 			case 3:
 				res = new Meteo(randomno.nextFloat() * 40,
 						randomno.nextFloat() * 12);
+				break;
+			}
+			break;
+		case "North America":
+			switch (season) {
+			case 0:
+				res = new Meteo(randomno.nextFloat() * 10,
+						randomno.nextFloat() * 85);
+				break;
+			case 1:
+				res = new Meteo(randomno.nextFloat() * 25,
+						randomno.nextFloat() * 55);
+				break;
+			case 2:
+				res = new Meteo(randomno.nextFloat() * 40,
+						randomno.nextFloat() * 5);
+				break;
+			case 3:
+				res = new Meteo(randomno.nextFloat() * 25,
+						randomno.nextFloat() * 50);
+				break;
+			}
+			break;
+		case "Oceanie":
+			switch (season) {
+			case 0: // ISTO NAO ESTA PRONTO PARA A OCEANIA
+				res = new Meteo(randomno.nextFloat() * 0,
+						randomno.nextFloat() * 85);
+				break;
+			case 1:
+				res = new Meteo(randomno.nextFloat() * 25,
+						randomno.nextFloat() * 55);
+				break;
+			case 2:
+				res = new Meteo(randomno.nextFloat() * 40,
+						randomno.nextFloat() * 5);
+				break;
+			case 3:
+				res = new Meteo(randomno.nextFloat() * 25,
+						randomno.nextFloat() * 50);
 				break;
 			}
 			break;
