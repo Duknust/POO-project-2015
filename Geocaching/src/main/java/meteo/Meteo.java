@@ -217,20 +217,20 @@ public class Meteo {
 			break;
 		case "Oceanie":
 			switch (season) {
-			case 0: // ISTO NAO ESTA PRONTO PARA A OCEANIA
-				res = new Meteo(randomno.nextFloat() * 0,
+			case 0:
+				res = new Meteo(randomno.nextFloat() * 40,
 						randomno.nextFloat() * 85);
 				break;
 			case 1:
-				res = new Meteo(randomno.nextFloat() * 25,
+				res = new Meteo(randomno.nextFloat() * 35,
 						randomno.nextFloat() * 55);
 				break;
 			case 2:
-				res = new Meteo(randomno.nextFloat() * 40,
+				res = new Meteo(randomno.nextFloat() * 22,
 						randomno.nextFloat() * 5);
 				break;
 			case 3:
-				res = new Meteo(randomno.nextFloat() * 25,
+				res = new Meteo(randomno.nextFloat() * 30,
 						randomno.nextFloat() * 50);
 				break;
 			}
