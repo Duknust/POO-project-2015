@@ -30,7 +30,6 @@ public class Position {
 		this.difficulty = difficulty;
 	}
 
-<<<<<<< HEAD
 	public String getContinent() {
 		return continent;
 	}
@@ -38,8 +37,6 @@ public class Position {
 	public void setContinent(String continent) {
 		this.continent = continent;
 	}
-=======
->>>>>>> 22c5438facafb9a5bc004b73b0ec38b2c40094e3
 
 	public double getLongi() {
 		return longi;
@@ -81,8 +78,6 @@ public class Position {
 		this.difficulty = difficulty;
 	}
 
-<<<<<<< HEAD
-=======
 	public int getQuadrant() {
 		int res = 0;
 		if (this.longi >= 0 && this.lati <= 0) {
@@ -115,9 +110,7 @@ public class Position {
     public String getCoords() {
         return this.lati+"," + longi;
     }
-    
 
->>>>>>> 22c5438facafb9a5bc004b73b0ec38b2c40094e3
 	public int getSeason(boolean northHemisphere, GregorianCalendar date) {// 0-winter;
 																			// 1-spring;
 		// 2-summer; 3-autumn
