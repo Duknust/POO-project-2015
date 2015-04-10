@@ -9,6 +9,11 @@ import java.util.HashMap;
 
 public class Event extends Cache {
 
+    /*
+    An Event Cache is a gathering of local geocachers or geocaching organizations.
+    The Event Cache page specifies a time for the event and provides coordinates to its location.
+    After the event has ended, it is archived.
+     */
     HashMap<String, User> participants;
     GregorianCalendar date;
     int maxParticipants;
@@ -38,6 +43,6 @@ public class Event extends Cache {
 
     @Override
     public String toString() {
-        return "Event - "+date.toString() +"\nOrganizer: "+super.getOwner().toString()+ "\nDescription:\n"+super.getDescription()+"\nTotal Participants:"+this.participants.size()+"\nParticipants:\n"+participants.toString();
+        return "Event - "+super.getCacheTitle() + " - " + date.toString() +"\nOrganizer: "+super.getOwner().toString()+ "\nDescription:\n"+super.getDescription()+"\nTotal Participants:"+this.participants.size()+"\nParticipants:\n"+participants.toString();
     }
 }

@@ -14,6 +14,7 @@ public abstract class Cache {
 
 	private GregorianCalendar publishDate; // Date cache was placed
 	private String cacheID; // Cache ID number
+	private boolean premiumOnly; // Cache Premium
 	private String description; // Cache description
 	private Status cacheState; // Cache Status
 	private String cacheTitle; // Cache name
@@ -21,12 +22,12 @@ public abstract class Cache {
 	private int cacheSize; // Type of container
 	private float difficulty; // How difficult is it to find the cache
 	private Position position;
-	private String hints; // Hints to find the cache
+	private String hint; // Hints to find the cache
 	private Logs cache_Logs; // Cache logs
 	private ArrayList<String> travel_bugs; // Travel bugs in cache container
 
 	// Constructors
-	public Cache(GregorianCalendar publishDate, String cacheID, String description, Status cacheState, String cacheTitle, User owner, int cacheSize, float difficulty, Position position, String hints, Logs cache_Logs, ArrayList<String> travel_bugs) {
+	public Cache(GregorianCalendar publishDate, String cacheID, String description, Status cacheState, String cacheTitle, User owner, int cacheSize, float difficulty, Position position, String hint, Logs cache_Logs, ArrayList<String> travel_bugs) {
 		this.publishDate = publishDate;
 		this.cacheID = cacheID;
 		this.description = description;
@@ -36,7 +37,7 @@ public abstract class Cache {
 		this.cacheSize = cacheSize;
 		this.difficulty = difficulty;
 		this.position = position;
-		this.hints = hints;
+		this.hint = hint;
 		this.cache_Logs = cache_Logs;
 		this.travel_bugs = travel_bugs;
 	}
@@ -111,12 +112,12 @@ public abstract class Cache {
 		this.position = position;
 	}
 
-	public String getHints() {
-		return hints;
+	public String getHint() {
+		return hint;
 	}
 
-	public void setHints(String hints) {
-		this.hints = hints;
+	public void setHint(String hint) {
+		this.hint = hint;
 	}
 
 	public Logs getCache_Logs() {
@@ -127,12 +128,47 @@ public abstract class Cache {
 		this.cache_Logs = cache_Logs;
 	}
 
-	public ArrayList<String> getTravel_bugs() {
-		return travel_bugs;
+	public ArrayList<String> getTravel_bugs() {return travel_bugs;}
+
+	public void setTravel_bugs(ArrayList<String> travel_bugs) {this.travel_bugs = travel_bugs;}
+
+	// ToString
+
+
+	@Override
+	public String toString() {
+		return "Cache{" +
+				"publishDate=" + publishDate +
+				", cacheID='" + cacheID + '\'' +
+				", description='" + description + '\'' +
+				", cacheState=" + cacheState +
+				", cacheTitle='" + cacheTitle + '\'' +
+				", premiumOnly='" + premiumOnly + '\'' +
+				", owner=" + owner +
+				", cacheSize=" + cacheSize +
+				", difficulty=" + difficulty +
+				", position=" + position +
+				", hint='" + hint + '\'' +
+				", travel_bugs=" + travel_bugs +
+				", cache_Logs=" + cache_Logs +
+				'}';
 	}
 
-	public void setTravel_bugs(ArrayList<String> travel_bugs) {
-		this.travel_bugs = travel_bugs;
+	public String toListing() {
+		return  "\nTitle = '" + cacheTitle + '\'' +
+				"\nPublishing Date = " + publishDate +
+				"\nCache ID = '" + cacheID + '\'' +
+				//"\nCacheState = " + cacheState +
+				"\nOwner = " + owner +
+				"\nSize = " + cacheSize +
+				"\nDifficulty = " + difficulty +
+				position.toListing() +
+				"\nTravel bugs ("+ travel_bugs.size()+")  =  " + travel_bugs +
+				"\nDescription = '" + description + '\'' +
+				"\nHint = '" + hint + '\'';
 	}
 
+	public String toLogsListing() {
+		return  "\nCache Logs = " + cache_Logs;
+	}
 }
