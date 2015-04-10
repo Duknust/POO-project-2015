@@ -1,2 +1,5 @@
-*.class
-.idea/*
+/activity/
+/base/
+/caches/
+/meteo/
+/user/
