@@ -9,6 +9,11 @@ public class Position {
 	private String city = "";
 	private float difficulty = 0;
 
+
+    public Position() {
+
+    }
+
 	public Position(double lati, double longi) {
 		this.lati = lati;
 		this.longi = longi;
@@ -22,6 +27,7 @@ public class Position {
 		this.city = city;
 		this.difficulty = difficulty;
 	}
+
 
 	public double getLongi() {
 		return longi;
@@ -73,9 +79,29 @@ public class Position {
 			res = 3;
 		} else
 			res = 4;
-
 		return res;
 	}
+    // ToString
+
+    @Override
+    public String toString() {
+        return "Position{" +
+                "lati=" + lati +
+                ", longi=" + longi +
+                ", country='" + country + '\'' +
+                ", city='" + city + '\'' +
+                ", difficulty=" + difficulty +
+                '}';
+    }
+
+    public String toListing() {
+        return "Terrain = "+this.difficulty+"\nPosition = " + lati + " , " + longi;
+    }
+
+    public String getCoords() {
+        return this.lati+"," + longi;
+    }
+    
 
 	public int getSeason(boolean northHemisphere, GregorianCalendar date) {// 0-winter;
 																			// 1-spring;
