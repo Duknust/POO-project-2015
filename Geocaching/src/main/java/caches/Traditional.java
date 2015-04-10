@@ -14,7 +14,16 @@ public class Traditional extends Cache {
     Larger containers may contain items for trade and trackables.
      */
 
-    public Traditional(GregorianCalendar publishDate, String cacheID, String description, Status cacheState, String cacheTitle, User owner, int cacheSize, float difficulty, Position position, String hints, Logs cache_Logs, ArrayList<String> travel_bugs) {
-        super(publishDate, cacheID, description, cacheState, cacheTitle, owner, cacheSize, difficulty, position, hints, cache_Logs, travel_bugs);
+    public Traditional(GregorianCalendar publishDate, String cacheID, String description, Status cacheState, String cacheTitle, User owner, int cacheSize, float difficulty, Position position, String hints, ArrayList<Log> cache_Log, ArrayList<String> travel_bugs) {
+        super(publishDate, cacheID, description, cacheState, cacheTitle, owner, cacheSize, difficulty, position, hints, cache_Log, travel_bugs);
+    }
+
+
+
+    // toString
+
+    @Override
+    public String toString() {
+        return super.toListing("Traditional") + super.toLogsListing();
     }
 }

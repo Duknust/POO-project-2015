@@ -1,12 +1,10 @@
 package caches;
 
 import base.Position;
-import javafx.geometry.Pos;
 import user.User;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 
 public class Multi extends Cache {
 
@@ -19,33 +17,38 @@ public class Multi extends Cache {
      */
 
 
-    // Represents a Stage
-    class Stage extends Position{
-
-        private String description="";
-
-        public Stage(double lati, double longi, String description) {
-            super(lati, longi);
-            this.description = description;
-        }
-    }
-
+    // At least One Stage
     ArrayList<Stage> stages;
 
-    public Multi(GregorianCalendar publishDate, String cacheID, String description, Status cacheState, String cacheTitle, User owner, int cacheSize, float difficulty, Position position, String hints, Logs cache_Logs, ArrayList<String> travel_bugs,ArrayList<Stage> stages) {
-        super(publishDate, cacheID, description, cacheState, cacheTitle, owner, cacheSize, difficulty, position, hints, cache_Logs, travel_bugs);
+    public Multi(GregorianCalendar publishDate, String cacheID, String description, Status cacheState, String cacheTitle, User owner, int cacheSize, float difficulty, Position position, String hints, ArrayList<Log> cache_Log, ArrayList<String> travel_bugs,ArrayList<Stage> stages) {
+        super(publishDate, cacheID, description, cacheState, cacheTitle, owner, cacheSize, difficulty, position, hints, cache_Log, travel_bugs);
         this.stages = stages;
     }
 
 
     @Override
     public String toString() {
-        return "Multi Cache\n"+super.toListing() + this.stages.toString() + super.toLogsListing();
+        return super.toListing("Multi") + this.stages.toString() + super.toLogsListing();
     }
 
     public void AddStage(double lati, double longi, String description){
-        Stage st = new Stage(lati,longi,description);
+        Stage st = new Stage(lati,longi,description,this.stages.size()+1);
         this.stages.add(st);
+    }
+
+    public String ListStages(boolean user) {
+        StringBuilder text = new StringBuilder();
+        text.append(stages.size()+" Stages ----\n");
+
+        if(user)// If regular user
+            text.append(stages);
+        else // If Admin or Reviewer
+        {
+            for(Stage s : stages)
+                text.append(s.toStringFull()); // List Full Coordinates
+        }
+
+        return text.toString();
     }
 
 }

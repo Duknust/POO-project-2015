@@ -15,8 +15,43 @@ public class Mistery extends Cache {
      that do not fit in another category.
      */
 
+    private Position finalPos=null;
 
-    public Mistery(GregorianCalendar publishDate, String cacheID, String description, Status cacheState, String cacheTitle, User owner, int cacheSize, float difficulty, Position position, String hints, Logs cache_Logs, ArrayList<String> travel_bugs) {
-        super(publishDate, cacheID, description, cacheState, cacheTitle, owner, cacheSize, difficulty, position, hints, cache_Logs, travel_bugs);
+    // Constructors
+
+    public Mistery(GregorianCalendar publishDate, String cacheID, String description, Status cacheState, String cacheTitle, User owner, int cacheSize, float difficulty, Position position, String hints, ArrayList<Log> cache_Log, ArrayList<String> travel_bugs, Position pos) {
+        super(publishDate, cacheID, description, cacheState, cacheTitle, owner, cacheSize, difficulty, position, hints, cache_Log, travel_bugs);
+        this.finalPos = pos;
+    }
+
+    // Getters and Setters
+
+    public Position getFinalPos() {
+        return finalPos;
+    }
+
+    public void setFinalPos(Position finalPos) {
+        this.finalPos = finalPos;
+    }
+
+    // Methods
+
+
+
+    // toString
+
+    @Override
+    public String toString() {
+        return super.toListing("Mystery") + super.toLogsListing();
+    }
+
+    public String Listing(boolean user) {
+
+        if(user)// If regular user
+            return super.toListing("Mystery") + super.toLogsListing();
+        else // If Admin or Reviewer
+        {
+            return super.toListing("Mystery") + finalPos.getCoords() + super.toLogsListing(); // List Full Coordinates
+        }
     }
 }

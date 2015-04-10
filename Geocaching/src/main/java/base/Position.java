@@ -81,4 +81,8 @@ public class Position {
         return "Terrain = "+this.difficulty+"\nPosition = " + lati + " , " + longi;
     }
 
+    public String getCoords() {
+        return this.lati+"," + longi;
+    }
+
 }

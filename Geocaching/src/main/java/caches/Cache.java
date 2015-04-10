@@ -5,11 +5,23 @@ import java.util.GregorianCalendar;
 
 import user.User;
 import base.Position;
+import caches.Log.Trackable_State;
 
 public abstract class Cache {
 
 	public enum Status {
-		UNPUBLISHED,PUBLISHED,ARCHIVED
+		UNPUBLISHED, ENABLED, DISABLED,ARCHIVED;
+
+		@Override
+		public String toString() {
+			switch(this) {
+				case UNPUBLISHED: return "Unpublished";
+				case ENABLED: return "Enabled";
+				case DISABLED: return "Disabled";
+				case ARCHIVED: return "Archived";
+				default: throw new IllegalArgumentException();
+			}
+		}
 	}
 
 	private GregorianCalendar publishDate; // Date cache was placed
@@ -23,11 +35,11 @@ public abstract class Cache {
 	private float difficulty; // How difficult is it to find the cache
 	private Position position;
 	private String hint; // Hints to find the cache
-	private Logs cache_Logs; // Cache logs
+	private ArrayList<Log> cache_Logs; // Cache logs
 	private ArrayList<String> travel_bugs; // Travel bugs in cache container
 
 	// Constructors
-	public Cache(GregorianCalendar publishDate, String cacheID, String description, Status cacheState, String cacheTitle, User owner, int cacheSize, float difficulty, Position position, String hint, Logs cache_Logs, ArrayList<String> travel_bugs) {
+	public Cache(GregorianCalendar publishDate, String cacheID, String description, Status cacheState, String cacheTitle, User owner, int cacheSize, float difficulty, Position position, String hint, ArrayList<Log> cache_Logs, ArrayList<String> travel_bugs) {
 		this.publishDate = publishDate;
 		this.cacheID = cacheID;
 		this.description = description;
@@ -120,17 +132,31 @@ public abstract class Cache {
 		this.hint = hint;
 	}
 
-	public Logs getCache_Logs() {
+	public ArrayList<Log> getCache_Logs() {
 		return cache_Logs;
 	}
 
-	public void setCache_Logs(Logs cache_Logs) {
+	public void setCache_Logs(ArrayList<Log> cache_Logs) {
 		this.cache_Logs = cache_Logs;
 	}
 
 	public ArrayList<String> getTravel_bugs() {return travel_bugs;}
 
 	public void setTravel_bugs(ArrayList<String> travel_bugs) {this.travel_bugs = travel_bugs;}
+
+	// Methods
+
+	public void disable(){this.cacheState = Status.DISABLED;}
+
+	public void enable(){this.cacheState = Status.ENABLED;}
+
+	public void logCache(User user,String logUser, Trackable_State dropTb, GregorianCalendar date){
+		Log log;
+
+		log = new Log(user, logUser, user.getTrackable(), dropTb, date);
+		user.removeTb();
+		this.cache_Logs.add(log);
+	}
 
 	// ToString
 
@@ -154,11 +180,12 @@ public abstract class Cache {
 				'}';
 	}
 
-	public String toListing() {
+	public String toListing(String type) {
 		return  "\nTitle = '" + cacheTitle + '\'' +
+				"\nType = " + type +
 				"\nPublishing Date = " + publishDate +
 				"\nCache ID = '" + cacheID + '\'' +
-				//"\nCacheState = " + cacheState +
+				"\nCacheState = " + cacheState +
 				"\nOwner = " + owner +
 				"\nSize = " + cacheSize +
 				"\nDifficulty = " + difficulty +
@@ -169,6 +196,6 @@ public abstract class Cache {
 	}
 
 	public String toLogsListing() {
-		return  "\nCache Logs = " + cache_Logs;
+		return  "\nCache Log = " + cache_Logs;
 	}
 }

@@ -15,15 +15,26 @@ public class CITO extends Cache {
      removal of invasive species, planting trees and vegetation and trail building.
     */
     GregorianCalendar date;
-    HashMap<String,User> users;
+    HashMap<String,User> participants;
 
-    public CITO(GregorianCalendar publishDate, String cacheID, String description, Status cacheState, String cacheTitle, User owner, int cacheSize, float difficulty, Position position, String hints, Logs cache_Logs, ArrayList<String> travel_bugs,GregorianCalendar date) {
-        super(publishDate, cacheID, description, cacheState, cacheTitle, owner, cacheSize, difficulty, position, hints, cache_Logs, travel_bugs);
+    public CITO(GregorianCalendar publishDate, String cacheID, String description, Status cacheState, String cacheTitle, User owner, int cacheSize, float difficulty, Position position, String hints, ArrayList<Log> cache_Log, ArrayList<String> travel_bugs,GregorianCalendar date) {
+        super(publishDate, cacheID, description, cacheState, cacheTitle, owner, cacheSize, difficulty, position, hints, cache_Log, travel_bugs);
         this.date = date;
     }
 
+    // Methods
+
+    public void addParticipant(User user){
+        this.participants.put(user.getName(),user);
+    }
+
+    public void remParticipant(User user){
+        this.participants.remove(user.getName());
+    }
+
+    // toString
     @Override
     public String toString() {
-        return "CITO Event- "+date.toString() +"\nOrganizer: "+super.getOwner().toString()+ "\nDescription:\n"+super.getDescription()+"\nTotal Participants:"+this.users.size()+"\nParticipants:\n"+users.toString();
+        return "CITO Event- "+date.toString() +"\nOrganizer: "+super.getOwner().toString()+ "\nDescription:\n"+super.getDescription()+"\nTotal participants:"+this.participants.size()+"\nparticipants:\n"+ participants.toString();
     }
 }
