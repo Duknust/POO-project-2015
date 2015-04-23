@@ -1,11 +1,13 @@
 package user;
 
+import base.Data;
 import caches.Cache;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-public abstract class User {
+public abstract class User implements Serializable {
 
     private String email;
     private String password;
@@ -19,9 +21,10 @@ public abstract class User {
 
     private ArrayList<Cache> caches = null;
     private HashMap<String, User> friends = null;
+    private Data data = null;
 
-	// Constructors
-    public User(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, String tb, ArrayList<Cache> caches, HashMap<String, User> friends) {
+    // Constructors
+    public User(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, String tb, ArrayList<Cache> caches, HashMap<String, User> friends, Data data) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -33,9 +36,10 @@ public abstract class User {
         this.trackable = tb;
         this.caches = caches;
         this.friends = friends;
+        this.data = data;
     }
 
-	// Getters and Setters
+    // Getters and Setters
     public String getEmail() {
         return email;
     }
@@ -124,12 +128,31 @@ public abstract class User {
         this.trackable = tb;
     }
 
-	// Methods
+    public Data getData() {
+        return data;
+    }
+
+    public void setData(Data data) {
+        this.data = data;
+    }
+
+    // Methods
     public void removeTb() {
         this.trackable = "";
     }
 
-	// toString
+    public boolean createCache(Cache cache) {
+        if (this.data.getAllCaches().containsKey(cache.getCacheID()) == false) {
+            return false;
+        }
+        cache.setCacheID(cache.genID(6));
+        cache.setOwner(this);
+        cache.setCacheState(Cache.Status.UNPUBLISHED);
+        this.data.getUnpublishedCaches().put(cache.getCacheID(), cache);
+        return true;
+    }
+
+    // toString
     @Override
     public String toString() {
         return "'" + name + " (" + totalFound + ")'" + (premium ? " Premium" : "");
