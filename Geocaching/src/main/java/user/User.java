@@ -7,6 +7,7 @@ import java.util.HashMap;
 import caches.Cache;
 
 public abstract class User {
+
 	private String email;
 	private String password;
 	private String name;
@@ -21,8 +22,10 @@ public abstract class User {
 	private HashMap<String, User> friends = null;
 
 	// Constructors
-
-	public User(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, String tb, ArrayList<Cache> caches, HashMap<String, User> friends) {
+	public User(String email, String password, String name, String gender,
+			String address, GregorianCalendar birthDate, boolean premium,
+			int totalFound, String tb, ArrayList<Cache> caches,
+			HashMap<String, User> friends) {
 		this.email = email;
 		this.password = password;
 		this.name = name;
@@ -36,9 +39,7 @@ public abstract class User {
 		this.friends = friends;
 	}
 
-
 	// Getters and Setters
-
 	public String getEmail() {
 		return email;
 	}
@@ -95,30 +96,47 @@ public abstract class User {
 		this.caches = caches;
 	}
 
-	public HashMap<String, User> getFriends() {return friends;}
+	public HashMap<String, User> getFriends() {
+		return friends;
+	}
 
-	public void setFriends(HashMap<String, User> friends) {this.friends = friends;}
+	public void setFriends(HashMap<String, User> friends) {
+		this.friends = friends;
+	}
 
-	public boolean isPremium() {return premium;}
+	public boolean isPremium() {
+		return premium;
+	}
 
-	public void setPremium(boolean premium) {this.premium = premium;}
+	public void setPremium(boolean premium) {
+		this.premium = premium;
+	}
 
-	public int getTotalFound() {return totalFound;}
+	public int getTotalFound() {
+		return totalFound;
+	}
 
-	public void setTotalFound(int totalFound) {this.totalFound = totalFound;}
+	public void setTotalFound(int totalFound) {
+		this.totalFound = totalFound;
+	}
 
-	public String getTrackable() {return trackable;}
+	public String getTrackable() {
+		return trackable;
+	}
 
-	public void setTb(String tb) {this.trackable = tb;}
+	public void setTb(String tb) {
+		this.trackable = tb;
+	}
 
 	// Methods
-
-	public void removeTb() {this.trackable = "";}
+	public void removeTb() {
+		this.trackable = "";
+	}
 
 	// toString
-
 	@Override
 	public String toString() {
-		return "'" + name + " (" + totalFound+")'" + (premium ? " Premium" : "");
+		return "'" + name + " (" + totalFound + ")'"
+				+ (premium ? " Premium" : "");
 	}
 }

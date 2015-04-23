@@ -85,12 +85,14 @@ public class Meteo {
 	}
 
 	public int compareTo(Meteo m) {
-		if (this.equals(m))
+		if (this.equals(m)) {
 			return 0;
-		if (this.rainProbability < m.getRainProbability())
+		}
+		if (this.rainProbability < m.getRainProbability()) {
 			return -1;
-		else
+		} else {
 			return 1;
+		}
 	}
 
 	public Meteo autoMeteo() {
@@ -110,9 +112,9 @@ public class Meteo {
 				|| position.getContinent().equals("North America")
 				|| position.getContinent().equals("Asia");
 		int season = position.getSeason(northHemisphere, date); // 0-winter;
-																// 1-spring;
-																// 2-summer;
-																// 3-autumn
+		// 1-spring;
+		// 2-summer;
+		// 3-autumn
 		Random randomno = new Random();
 		switch (position.getContinent()) {
 		case "Europe":

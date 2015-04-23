@@ -7,7 +7,9 @@ import user.User;
 import caches.Cache;
 
 public abstract class Activity implements Comparable<Activity>, Serializable {
+
 	public enum Type {
+
 		NEW_CACHE, FOUND_CACHE, NOT_FOUND_CACHE, ARCHIVED_CACHE
 	}
 

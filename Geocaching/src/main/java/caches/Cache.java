@@ -10,16 +10,22 @@ import caches.Log.Trackable_State;
 public abstract class Cache {
 
 	public enum Status {
-		UNPUBLISHED, ENABLED, DISABLED,ARCHIVED;
+
+		UNPUBLISHED, ENABLED, DISABLED, ARCHIVED;
 
 		@Override
 		public String toString() {
-			switch(this) {
-				case UNPUBLISHED: return "Unpublished";
-				case ENABLED: return "Enabled";
-				case DISABLED: return "Disabled";
-				case ARCHIVED: return "Archived";
-				default: throw new IllegalArgumentException();
+			switch (this) {
+			case UNPUBLISHED:
+				return "Unpublished";
+			case ENABLED:
+				return "Enabled";
+			case DISABLED:
+				return "Disabled";
+			case ARCHIVED:
+				return "Archived";
+			default:
+				throw new IllegalArgumentException();
 			}
 		}
 	}
@@ -33,13 +39,17 @@ public abstract class Cache {
 	private User owner; // Who placed the cache
 	private int cacheSize; // Type of container
 	private float difficulty; // How difficult is it to find the cache
-	private Position position;
+	private Position position; // Cache Localization
 	private String hint; // Hints to find the cache
 	private ArrayList<Log> cache_Logs; // Cache logs
 	private ArrayList<String> travel_bugs; // Travel bugs in cache container
 
 	// Constructors
-	public Cache(GregorianCalendar publishDate, String cacheID, String description, Status cacheState, String cacheTitle, User owner, int cacheSize, float difficulty, Position position, String hint, ArrayList<Log> cache_Logs, ArrayList<String> travel_bugs) {
+	public Cache(GregorianCalendar publishDate, String cacheID,
+			String description, Status cacheState, String cacheTitle,
+			User owner, int cacheSize, float difficulty, Position position,
+			String hint, ArrayList<Log> cache_Logs,
+			ArrayList<String> travel_bugs) {
 		this.publishDate = publishDate;
 		this.cacheID = cacheID;
 		this.description = description;
@@ -53,7 +63,6 @@ public abstract class Cache {
 		this.cache_Logs = cache_Logs;
 		this.travel_bugs = travel_bugs;
 	}
-
 
 	// Getters and Setters
 	public GregorianCalendar getPublishDate() {
@@ -80,9 +89,13 @@ public abstract class Cache {
 		this.cacheState = cacheState;
 	}
 
-	public String getDescription() {return description;}
+	public String getDescription() {
+		return description;
+	}
 
-	public void setDescription(String description) {this.description = description;}
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	public String getCacheTitle() {
 		return cacheTitle;
@@ -140,17 +153,25 @@ public abstract class Cache {
 		this.cache_Logs = cache_Logs;
 	}
 
-	public ArrayList<String> getTravel_bugs() {return travel_bugs;}
+	public ArrayList<String> getTravel_bugs() {
+		return travel_bugs;
+	}
 
-	public void setTravel_bugs(ArrayList<String> travel_bugs) {this.travel_bugs = travel_bugs;}
+	public void setTravel_bugs(ArrayList<String> travel_bugs) {
+		this.travel_bugs = travel_bugs;
+	}
 
 	// Methods
+	public void disable() {
+		this.cacheState = Status.DISABLED;
+	}
 
-	public void disable(){this.cacheState = Status.DISABLED;}
+	public void enable() {
+		this.cacheState = Status.ENABLED;
+	}
 
-	public void enable(){this.cacheState = Status.ENABLED;}
-
-	public void logCache(User user,String logUser, Trackable_State dropTb, GregorianCalendar date){
+	public void logCache(User user, String logUser, Trackable_State dropTb,
+			GregorianCalendar date) {
 		Log log;
 
 		log = new Log(user, logUser, user.getTrackable(), dropTb, date);
@@ -159,43 +180,30 @@ public abstract class Cache {
 	}
 
 	// ToString
-
-
 	@Override
 	public String toString() {
-		return "Cache{" +
-				"publishDate=" + publishDate +
-				", cacheID='" + cacheID + '\'' +
-				", description='" + description + '\'' +
-				", cacheState=" + cacheState +
-				", cacheTitle='" + cacheTitle + '\'' +
-				", premiumOnly='" + premiumOnly + '\'' +
-				", owner=" + owner +
-				", cacheSize=" + cacheSize +
-				", difficulty=" + difficulty +
-				", position=" + position +
-				", hint='" + hint + '\'' +
-				", travel_bugs=" + travel_bugs +
-				", cache_Logs=" + cache_Logs +
-				'}';
+		return "Cache{" + "publishDate=" + publishDate + ", cacheID='"
+				+ cacheID + '\'' + ", description='" + description + '\''
+				+ ", cacheState=" + cacheState + ", cacheTitle='" + cacheTitle
+				+ '\'' + ", premiumOnly='" + premiumOnly + '\'' + ", owner="
+				+ owner + ", cacheSize=" + cacheSize + ", difficulty="
+				+ difficulty + ", position=" + position + ", hint='" + hint
+				+ '\'' + ", travel_bugs=" + travel_bugs + ", cache_Logs="
+				+ cache_Logs + '}';
 	}
 
 	public String toListing(String type) {
-		return  "\nTitle = '" + cacheTitle + '\'' +
-				"\nType = " + type +
-				"\nPublishing Date = " + publishDate +
-				"\nCache ID = '" + cacheID + '\'' +
-				"\nCacheState = " + cacheState +
-				"\nOwner = " + owner +
-				"\nSize = " + cacheSize +
-				"\nDifficulty = " + difficulty +
-				position.toListing() +
-				"\nTravel bugs ("+ travel_bugs.size()+")  =  " + travel_bugs +
-				"\nDescription = '" + description + '\'' +
-				"\nHint = '" + hint + '\'';
+		return "\nTitle = '" + cacheTitle + '\'' + "\nType = " + type
+				+ "\nPublishing Date = " + publishDate + "\nCache ID = '"
+				+ cacheID + '\'' + "\nCacheState = " + cacheState
+				+ "\nOwner = " + owner + "\nSize = " + cacheSize
+				+ "\nDifficulty = " + difficulty + position.toListing()
+				+ "\nTravel bugs (" + travel_bugs.size() + ")  =  "
+				+ travel_bugs + "\nDescription = '" + description + '\''
+				+ "\nHint = '" + hint + '\'';
 	}
 
 	public String toLogsListing() {
-		return  "\nCache Log = " + cache_Logs;
+		return "\nCache Log = " + cache_Logs;
 	}
 }

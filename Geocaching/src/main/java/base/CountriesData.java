@@ -1,11 +1,12 @@
-package main.java.base;
+package base;
 
 import java.util.HashMap;
 import java.util.Random;
 
 public final class CountriesData {
-<<<<<<< HEAD
+
 	// europe
+
 	public static final Position portugal = new Position(38.736946, -9.142685,
 			"Europe", "Portugal", "Lisbon", 3);
 	public static final Position spain = new Position(40.415363, -3.707398,
@@ -125,12 +126,12 @@ public final class CountriesData {
 	public static HashMap<String, Position> localizationsInOceanie = null;
 
 	public CountriesData() {
-		localizationsInEurope = new HashMap<String, Position>();
-		localizationsInNorthAmerica = new HashMap<String, Position>();
-		localizationsInSouthAmerica = new HashMap<String, Position>();
-		localizationsInAfrica = new HashMap<String, Position>();
-		localizationsInAsia = new HashMap<String, Position>();
-		localizationsInOceanie = new HashMap<String, Position>();
+		localizationsInEurope = new HashMap<>();
+		localizationsInNorthAmerica = new HashMap<>();
+		localizationsInSouthAmerica = new HashMap<>();
+		localizationsInAfrica = new HashMap<>();
+		localizationsInAsia = new HashMap<>();
+		localizationsInOceanie = new HashMap<>();
 
 		localizationsInEurope.put(portugal.getCountry(), portugal);
 		localizationsInEurope.put(spain.getCountry(), spain);
@@ -189,26 +190,26 @@ public final class CountriesData {
 	}
 
 	public Position getRandomPosition() {
-		Position res = null;
+		Position res;
 		Random randomno = new Random();
 		float probArea = randomno.nextFloat() * 100;
 		if (probArea < 100 / 6) {
-			res = getCountryFromEurope();
+			res = getCountryFromEurope(true);
 		} else if (probArea < (100 / 6) * 2) {
-			res = getCountryFromNorthAmerica();
+			res = getCountryFromNorthAmerica(true);
 		} else if (probArea < (100 / 6) * 3) {
-			res = getCountryFromSouthAmerica();
+			res = getCountryFromSouthAmerica(true);
 		} else if (probArea < (100 / 6) * 4) {
-			res = getCountryFromAfrica();
+			res = getCountryFromAfrica(true);
 		} else if (probArea < (100 / 6) * 5) {
-			res = getCountryFromAsia();
+			res = getCountryFromAsia(true);
 		} else {
-			res = getCountryFromOceania();
+			res = getCountryFromOceania(true);
 		}
 		return res;
 	}
 
-	public Position getCountryFromEurope() {
+	public Position getCountryFromEurope(Boolean generateDiff) {
 		Position res = null;
 		Random randomno = new Random();
 		float prob = randomno.nextFloat() * 100;
@@ -217,6 +218,9 @@ public final class CountriesData {
 			if (i * 100 / numbLocalizationsInEurope < prob
 					&& (i + 1) * 100 / numbLocalizationsInEurope > prob) {
 				res = localizationsInEurope.get(key);
+				if (generateDiff) {
+					res.setDifficulty(Utilities.getValueToDifficulty());
+				}
 				break;
 			}
 			i++;
@@ -224,7 +228,7 @@ public final class CountriesData {
 		return res;
 	}
 
-	public Position getCountryFromNorthAmerica() {
+	public Position getCountryFromNorthAmerica(Boolean generateDiff) {
 		Position res = null;
 		Random randomno = new Random();
 		float prob = randomno.nextFloat() * 100;
@@ -233,6 +237,9 @@ public final class CountriesData {
 			if (i * 100 / numbLocalizationsInNorthAmerica < prob
 					&& (i + 1) * 100 / numbLocalizationsInNorthAmerica > prob) {
 				res = localizationsInNorthAmerica.get(key);
+				if (generateDiff) {
+					res.setDifficulty(Utilities.getValueToDifficulty());
+				}
 				break;
 			}
 			i++;
@@ -240,7 +247,7 @@ public final class CountriesData {
 		return res;
 	}
 
-	public Position getCountryFromSouthAmerica() {
+	public Position getCountryFromSouthAmerica(Boolean generateDiff) {
 		Position res = null;
 		Random randomno = new Random();
 		float prob = randomno.nextFloat() * 100;
@@ -249,6 +256,9 @@ public final class CountriesData {
 			if (i * 100 / numbLocalizationsInSouthAmerica < prob
 					&& (i + 1) * 100 / numbLocalizationsInSouthAmerica > prob) {
 				res = localizationsInSouthAmerica.get(key);
+				if (generateDiff) {
+					res.setDifficulty(Utilities.getValueToDifficulty());
+				}
 				break;
 			}
 			i++;
@@ -256,7 +266,7 @@ public final class CountriesData {
 		return res;
 	}
 
-	public Position getCountryFromAfrica() {
+	public Position getCountryFromAfrica(Boolean generateDiff) {
 		Position res = null;
 		Random randomno = new Random();
 		float prob = randomno.nextFloat() * 100;
@@ -265,6 +275,9 @@ public final class CountriesData {
 			if (i * 100 / numbLocalizationsInAfrica < prob
 					&& (i + 1) * 100 / numbLocalizationsInAfrica > prob) {
 				res = localizationsInAfrica.get(key);
+				if (generateDiff) {
+					res.setDifficulty(Utilities.getValueToDifficulty());
+				}
 				break;
 			}
 			i++;
@@ -272,7 +285,7 @@ public final class CountriesData {
 		return res;
 	}
 
-	public Position getCountryFromAsia() {
+	public Position getCountryFromAsia(Boolean generateDiff) {
 		Position res = null;
 		Random randomno = new Random();
 		float prob = randomno.nextFloat() * 100;
@@ -281,6 +294,9 @@ public final class CountriesData {
 			if (i * 100 / numbLocalizationsInAsia < prob
 					&& (i + 1) * 100 / numbLocalizationsInAsia > prob) {
 				res = localizationsInAsia.get(key);
+				if (generateDiff) {
+					res.setDifficulty(Utilities.getValueToDifficulty());
+				}
 				break;
 			}
 			i++;
@@ -288,7 +304,7 @@ public final class CountriesData {
 		return res;
 	}
 
-	public Position getCountryFromOceania() {
+	public Position getCountryFromOceania(Boolean generateDiff) {
 		Position res = null;
 		Random randomno = new Random();
 		float prob = randomno.nextFloat() * 100;
@@ -297,142 +313,13 @@ public final class CountriesData {
 			if (i * 100 / numbLocalizationsInOceanie < prob
 					&& (i + 1) * 100 / numbLocalizationsInOceanie > prob) {
 				res = localizationsInOceanie.get(key);
+				if (generateDiff) {
+					res.setDifficulty(Utilities.getValueToDifficulty());
+				}
 				break;
 			}
 			i++;
 		}
 		return res;
 	}
-=======
-
-    //europe
-    public static final Position portugal = new Position(38.736946, -9.142685);
-    public static final Position spain = new Position(40.415363, -3.707398);
-    public static final Position italy = new Position(41.890251, 12.492373);
-    public static final Position france = new Position(,);
-    public static final Position england = new Position(,);
-    public static final Position germany = new Position(,);
-    public static final Position poland = new Position(,);
-    public static final Position sweden = new Position(,);
-    public static final Position ireland = new Position(,);
-    public static final Position belgium = new Position(,);
-    public static final Position austria = new Position(,);
-    public static final Position norway = new Position(,);
-    public static final Position finland = new Position(,);
-    public static final Position greece = new Position(,);
-    public static final Position turkey = new Position(,);
-    //north america
-    public static final Position canada = new Position(,);
-    public static final Position usa_L = new Position(,);
-    public static final Position usa_C = new Position(,);
-    public static final Position usa_R = new Position(,);
-    public static final Position mexico = new Position(,);
-    public static final Position guatemala = new Position(,);
-    public static final Position cuba = new Position(,);
-    //south america
-    public static final Position brazil = new Position(,);
-    public static final Position argentina = new Position(,);
-    public static final Position uruguay = new Position(,);
-    public static final Position colombia = new Position(,);
-    public static final Position venezuela = new Position(,);
-    public static final Position peru = new Position(,);
-    public static final Position ecuador = new Position(,);
-    //africa
-    public static final Position algeria = new Position(,);
-    public static final Position libya = new Position(,);
-    public static final Position egypt = new Position(,);
-    public static final Position mali = new Position(,);
-    public static final Position kenya = new Position(,);
-    public static final Position angola = new Position(,);
-    public static final Position mozambique = new Position(,);
-    public static final Position southAfrica = new Position(,);
-    //asia
-    public static final Position iran = new Position(,);
-    public static final Position iraq = new Position(,);
-    public static final Position pakistan = new Position(,);
-    public static final Position china = new Position(,);
-    public static final Position mongolia = new Position(,);
-    public static final Position thailand = new Position(,);
-    public static final Position malaysia = new Position(,);
-    public static final Position japan = new Position(,);
-    public static final Position northKorea = new Position(,);
-    public static final Position southKorea = new Position(,);
-    //oceanie
-    public static final Position australia = new Position(,);
-    public static final Position newZealand = new Position(,);
-    public static final Position samoa = new Position(,);
-
-    public static final int numbLocalizationsInEurope = 15;
-    public static final int numbLocalizationsInNorthAmerica = 7;
-    public static final int numbLocalizationsInSouthAmerica = 7;
-    public static final int numbLocalizationsInAfrica = 8;
-    public static final int numbLocalizationsInAsia = 10;
-    public static final int numbLocalizationsInOceanie = 3;
-
-    public static HashMap<String, Position> localizationsInEurope = null;
-    public static HashMap<String, Position> localizationsInNorthAmerica = null;
-    public static HashMap<String, Position> localizationsInSouthAmerica = null;
-    public static HashMap<String, Position> localizationsInAfrica = null;
-    public static HashMap<String, Position> localizationsInAsia = null;
-    public static HashMap<String, Position> localizationsInOceanie = null;
-
-    public CountriesData() {
-        localizationsInEurope = new HashMap<String, Position>();
-        localizationsInNorthAmerica = new HashMap<String, Position>();
-        localizationsInSouthAmerica = new HashMap<String, Position>();
-        localizationsInAfrica = new HashMap<String, Position>();
-        localizationsInAsia = new HashMap<String, Position>();
-        localizationsInOceanie = new HashMap<String, Position>();
-
-        localizationsInEurope.put(portugal.getCountry(), portugal);
-        localizationsInEurope.put(spain.getCountry(), spain);
-        localizationsInEurope.put(italy.getCountry(), italy);
-        localizationsInEurope.put(france.getCountry(), france);
-        localizationsInEurope.put(england.getCountry(), england);
-        localizationsInEurope.put(germany.getCountry(), germany);
-        localizationsInEurope.put(poland.getCountry(), poland);
-        localizationsInEurope.put(sweden.getCountry(), sweden);
-        localizationsInEurope.put(ireland.getCountry(), ireland);
-        localizationsInEurope.put(belgium.getCountry(), belgium);
-        localizationsInEurope.put(austria.getCountry(), austria);
-        localizationsInEurope.put(norway.getCountry(), norway);
-        localizationsInEurope.put(finland.getCountry(), finland);
-        localizationsInEurope.put(greece.getCountry(), greece);
-        localizationsInEurope.put(turkey.getCountry(), turkey);
-    }
-
-    public Position getRandomPosition() {
-        return null;
-    }
-
-    public Position getCountryFromEurope() {
-        return null;
-    }
-
-    public Position getCountryFromNorthAmerica() {
-        return null;
-    }
-
-    public Position getCountryFromSouthAmerica() {
-        return null;
-    }
-
-    public Position getCountryFromAfrica() {
-        return null;
-    }
-
-    public Position getCountryFromAsia() {
-        return null;
-    }
-
-    public Position getCountryFromOceania() {
-        Position res = null;
-        Random randomno = new Random();
-        float prob = randomno.nextFloat() * 100;
-        if prob
-	  {
-
-        }
-    }
->>>>>>> 22c5438facafb9a5bc004b73b0ec38b2c40094e3
 }
