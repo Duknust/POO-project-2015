@@ -1,12 +1,14 @@
 package caches;
 
 import base.Position;
-import caches.Log.Trackable_State;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Objects;
+import java.util.TreeMap;
+import user.Reviewer;
 import user.User;
+import user.UserAbstract;
 
 public abstract class Cache implements Serializable, Comparable<Cache> {
 
@@ -38,18 +40,21 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
     private String description; // Cache description
     private Status cacheState; // Cache Status
     private String cacheTitle; // Cache name
-    private User owner; // Who placed the cache
+    private UserAbstract owner; // Who placed the cache
     private int cacheSize; // Type of container
     private float difficulty; // How difficult is it to find the cache
     private Position position;
     private String hint; // Hints to find the cache
-    private ArrayList<Log> cache_Logs; // Cache logs
+    private TreeMap<GregorianCalendar, Log> cache_Logs; // Cache logs
     private ArrayList<String> travel_bugs; // Travel bugs in cache container
+    private Reviewer reviewer = null; // Reviewer responsible
 
     // Constructors
-    public Cache(GregorianCalendar creationDate, String cacheID, String description, Status cacheState, String cacheTitle, User owner, int cacheSize, float difficulty, Position position, String hint, ArrayList<Log> cache_Logs, ArrayList<String> travel_bugs) {
+    public Cache(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, ArrayList<String> travel_bugs, Reviewer reviewer) {
+        this.publishDate = publishDate;
         this.creationDate = creationDate;
         this.cacheID = cacheID;
+        this.premiumOnly = premiumOnly;
         this.description = description;
         this.cacheState = cacheState;
         this.cacheTitle = cacheTitle;
@@ -60,10 +65,26 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.hint = hint;
         this.cache_Logs = cache_Logs;
         this.travel_bugs = travel_bugs;
+        this.reviewer = reviewer;
     }
 
     // w/o ID
-    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, ArrayList<Log> cache_Logs, ArrayList<String> travel_bugs) {
+    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, ArrayList<String> travel_bugs, Reviewer reviewer) {
+        this.creationDate = creationDate;
+        this.description = description;
+        this.cacheState = Status.UNPUBLISHED;
+        this.cacheTitle = cacheTitle;
+        this.cacheSize = cacheSize;
+        this.difficulty = difficulty;
+        this.position = position;
+        this.hint = hint;
+        this.cache_Logs = cache_Logs;
+        this.travel_bugs = travel_bugs;
+        this.reviewer = reviewer;
+    }
+
+    // w/o ID and Reviewer
+    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, ArrayList<String> travel_bugs) {
         this.creationDate = creationDate;
         this.description = description;
         this.cacheState = Status.UNPUBLISHED;
@@ -133,11 +154,11 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.cacheTitle = cacheTitle;
     }
 
-    public User getOwner() {
+    public UserAbstract getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(UserAbstract owner) {
         this.owner = owner;
     }
 
@@ -173,11 +194,11 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.hint = hint;
     }
 
-    public ArrayList<Log> getCache_Logs() {
+    public TreeMap<GregorianCalendar, Log> getCache_Logs() {
         return cache_Logs;
     }
 
-    public void setCache_Logs(ArrayList<Log> cache_Logs) {
+    public void setCache_Logs(TreeMap<GregorianCalendar, Log> cache_Logs) {
         this.cache_Logs = cache_Logs;
     }
 
@@ -189,6 +210,14 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.travel_bugs = travel_bugs;
     }
 
+    public Reviewer getReviewer() {
+        return reviewer;
+    }
+
+    public void setReviewer(Reviewer reviewer) {
+        this.reviewer = reviewer;
+    }
+
     // Methods
     public void disable() {
         this.cacheState = Status.DISABLED;
@@ -198,12 +227,21 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.cacheState = Status.ENABLED;
     }
 
-    public void logCache(User user, String logUser, Trackable_State dropTb, GregorianCalendar date) {
-        Log log;
+    public boolean getTb(String name) {
+        for (String t : this.travel_bugs) {
+            if (t.equals(name)) {
+                return this.travel_bugs.remove(name);
+            }
+        }
+        return false;
+    }
 
-        log = new Log(user, logUser, user.getTrackable(), dropTb, date);
-        user.removeTb();
-        this.cache_Logs.add(log);
+    public void logCache(User user, Log log) {// CHECK THIS , STUFF MISSING !!!
+        if (log.getTrackable_state() == Log.Trackable_State.REMOVED) {
+            this.getTb(log.getTrackable());
+        }
+
+        this.cache_Logs.put(log.getDate(), log);
     }
 
     public String genID(int size) {

@@ -5,7 +5,7 @@ import caches.Cache;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.TreeMap;
-import user.User;
+import user.UserAbstract;
 
 public class Data implements Serializable {
 
@@ -14,8 +14,10 @@ public class Data implements Serializable {
     HashMap<String, Cache> unpublishedCaches = null;
     HashMap<String, Cache> archivedCaches = null;
 
-    HashMap<String, User> allUsers = null;
+    HashMap<String, UserAbstract> allUsers = null;
     TreeMap<String, Activity> allActivities = null;
+
+    TreeMap<String, Position> allPositions = null;
 
     public Data() {
     }
@@ -53,11 +55,11 @@ public class Data implements Serializable {
         this.archivedCaches = archivedCaches;
     }
 
-    public HashMap<String, User> getAllUsers() {
+    public HashMap<String, UserAbstract> getAllUsers() {
         return allUsers;
     }
 
-    public void setAllUsers(HashMap<String, User> allUsers) {
+    public void setAllUsers(HashMap<String, UserAbstract> allUsers) {
         this.allUsers = allUsers;
     }
 
@@ -67,6 +69,14 @@ public class Data implements Serializable {
 
     public void setAllActivities(TreeMap<String, Activity> allActivities) {
         this.allActivities = allActivities;
+    }
+
+    public TreeMap<String, Position> getAllPositions() {
+        return allPositions;
+    }
+
+    public void setAllPositions(TreeMap<String, Position> allPositions) {
+        this.allPositions = allPositions;
     }
 
     public HashMap<String, Cache> getAllCaches() {

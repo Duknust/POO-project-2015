@@ -3,7 +3,7 @@ package activity;
 import java.io.Serializable;
 import java.util.GregorianCalendar;
 
-import user.User;
+import user.UserAbstract;
 import caches.Cache;
 
 public abstract class Activity implements Comparable<Activity>, Serializable {
@@ -16,7 +16,7 @@ public abstract class Activity implements Comparable<Activity>, Serializable {
 	private GregorianCalendar date;
 	private Type type;
 	private Cache cache;
-	private User user;
+	private UserAbstract user;
 
 	@Override
 	public int compareTo(Activity other) {

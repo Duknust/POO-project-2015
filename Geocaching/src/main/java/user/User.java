@@ -2,38 +2,20 @@ package user;
 
 import base.Data;
 import caches.Cache;
+import caches.Log;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-public abstract class User implements Serializable {
+public class User extends UserAbstract implements Serializable {
 
-    private String email;
-    private String password;
-    private String name;
-    private String gender;
-    private String address;
-    private GregorianCalendar birthDate;
-    private boolean premium;
-    private int totalFound;
-    private String trackable;
-
-    private ArrayList<Cache> caches = null;
+    private HashMap<String, Cache> caches = null;
     private HashMap<String, User> friends = null;
     private Data data = null;
 
     // Constructors
-    public User(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, String tb, ArrayList<Cache> caches, HashMap<String, User> friends, Data data) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.gender = gender;
-        this.address = address;
-        this.birthDate = birthDate;
-        this.premium = premium;
-        this.totalFound = totalFound;
-        this.trackable = tb;
+    public User(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, String tb, HashMap<String, Cache> caches, HashMap<String, User> friends, Data data) {
+        super(email, password, name, gender, address, birthDate, premium, totalFound, tb);
         this.caches = caches;
         this.friends = friends;
         this.data = data;
@@ -41,63 +23,63 @@ public abstract class User implements Serializable {
 
     // Getters and Setters
     public String getEmail() {
-        return email;
+        return super.getEmail();
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        super.setEmail(email);
     }
 
     public String getPassword() {
-        return password;
+        return super.getPassword();
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        super.setPassword(password);
     }
 
     public String getName() {
-        return name;
+        return super.getName();
     }
 
     public void setName(String name) {
-        this.name = name;
+        super.setName(name);
     }
 
     public String getGender() {
-        return gender;
+        return super.getGender();
     }
 
     public void setGender(String gender) {
-        this.gender = gender;
+        super.setGender(gender);
     }
 
     public String getAddress() {
-        return address;
+        return super.getAddress();
     }
 
     public void setAddress(String address) {
-        this.address = address;
+        super.setAddress(address);
     }
 
     public GregorianCalendar getBirthDate() {
-        return birthDate;
+        return super.getBirthDate();
     }
 
     public void setBirthDate(GregorianCalendar birthDate) {
-        this.birthDate = birthDate;
+        super.setBirthDate(birthDate);
     }
 
-    public ArrayList<Cache> getCaches() {
-        return caches;
+    public HashMap<String, Cache> getCaches() {
+        return this.getCaches();
     }
 
-    public void setCaches(ArrayList<Cache> caches) {
-        this.caches = caches;
+    public void setCaches(HashMap<String, Cache> caches) {
+        this.setCaches(caches);
     }
 
     public HashMap<String, User> getFriends() {
-        return friends;
+        return this.getFriends();
     }
 
     public void setFriends(HashMap<String, User> friends) {
@@ -105,27 +87,27 @@ public abstract class User implements Serializable {
     }
 
     public boolean isPremium() {
-        return premium;
+        return super.isPremium();
     }
 
     public void setPremium(boolean premium) {
-        this.premium = premium;
+        super.setPremium(premium);
     }
 
     public int getTotalFound() {
-        return totalFound;
+        return super.getTotalFound();
     }
 
     public void setTotalFound(int totalFound) {
-        this.totalFound = totalFound;
+        super.setTotalFound(totalFound);
     }
 
     public String getTrackable() {
-        return trackable;
+        return super.getTrackable();
     }
 
     public void setTb(String tb) {
-        this.trackable = tb;
+        super.setTb(tb);
     }
 
     public Data getData() {
@@ -138,11 +120,11 @@ public abstract class User implements Serializable {
 
     // Methods
     public void removeTb() {
-        this.trackable = "";
+        super.setTb("");
     }
 
     public boolean createCache(Cache cache) {
-        if (this.data.getAllCaches().containsKey(cache.getCacheID()) == false) {
+        if (this.data.getAllCaches().containsKey(cache.getCacheID()) == true) {
             return false;
         }
         cache.setCacheID(cache.genID(6));
@@ -152,9 +134,13 @@ public abstract class User implements Serializable {
         return true;
     }
 
+    public void logCache(Log l, Cache c) {
+        c.logCache(this, l);
+    }
+
     // toString
     @Override
     public String toString() {
-        return "'" + name + " (" + totalFound + ")'" + (premium ? " Premium" : "");
+        return "User:\n" + super.toString();
     }
 }
