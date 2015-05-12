@@ -1,142 +1,307 @@
 package user;
 
-import java.util.ArrayList;
+import activity.Activity;
+import base.Data;
+import caches.Cache;
+import caches.Log;
+import java.io.Serializable;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-import caches.Cache;
+public class User extends UserAbstract implements Serializable {
 
-public abstract class User {
+    private HashMap<String, Cache> caches = null;
+    private HashMap<String, User> friends = null;
+    private Data data = new Data();
 
-	private String email;
-	private String password;
-	private String name;
-	private String gender;
-	private String address;
-	private GregorianCalendar birthDate;
-	private boolean premium;
-	private int totalFound;
-	private String trackable;
+    // Constructors
+    public User(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, String tb, HashMap<String, Cache> caches, HashMap<String, User> friends, Data data) {
+        super(email, password, name, gender, address, birthDate, premium, totalFound, tb);
 
-	private ArrayList<Cache> caches = null;
-	private HashMap<String, User> friends = null;
+        if (caches == null) {
+            this.caches = new HashMap<String, Cache>();
+        } else {
+            this.caches = caches;
+        }
 
-	// Constructors
-	public User(String email, String password, String name, String gender,
-			String address, GregorianCalendar birthDate, boolean premium,
-			int totalFound, String tb, ArrayList<Cache> caches,
-			HashMap<String, User> friends) {
-		this.email = email;
-		this.password = password;
-		this.name = name;
-		this.gender = gender;
-		this.address = address;
-		this.birthDate = birthDate;
-		this.premium = premium;
-		this.totalFound = totalFound;
-		this.trackable = tb;
-		this.caches = caches;
-		this.friends = friends;
-	}
+        if (friends == null) {
+            this.friends = new HashMap<String, User>();
+        } else {
+            this.friends = friends;
+        }
 
-	// Getters and Setters
-	public String getEmail() {
-		return email;
-	}
+        this.data = data;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    // Getters and Setters
+    public String getEmail() {
+        return super.getEmail();
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public void setEmail(String email) {
+        super.setEmail(email);
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public String getPassword() {
+        return super.getPassword();
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setPassword(String password) {
+        super.setPassword(password);
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return super.getName();
+    }
 
-	public String getGender() {
-		return gender;
-	}
+    public void setName(String name) {
+        super.setName(name);
+    }
 
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
+    public String getGender() {
+        return super.getGender();
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    public void setGender(String gender) {
+        super.setGender(gender);
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public String getAddress() {
+        return super.getAddress();
+    }
 
-	public GregorianCalendar getBirthDate() {
-		return birthDate;
-	}
+    public void setAddress(String address) {
+        super.setAddress(address);
+    }
 
-	public void setBirthDate(GregorianCalendar birthDate) {
-		this.birthDate = birthDate;
-	}
+    public GregorianCalendar getBirthDate() {
+        return super.getBirthDate();
+    }
 
-	public ArrayList<Cache> getCaches() {
-		return caches;
-	}
+    public void setBirthDate(GregorianCalendar birthDate) {
+        super.setBirthDate(birthDate);
+    }
 
-	public void setCaches(ArrayList<Cache> caches) {
-		this.caches = caches;
-	}
+    public HashMap<String, Cache> getCaches() {
+        return this.caches;
+    }
 
-	public HashMap<String, User> getFriends() {
-		return friends;
-	}
+    public void setCaches(HashMap<String, Cache> caches) {
+        this.setCaches(caches);
+    }
 
-	public void setFriends(HashMap<String, User> friends) {
-		this.friends = friends;
-	}
+    public HashMap<String, User> getFriends() {
+        return this.friends;
+    }
 
-	public boolean isPremium() {
-		return premium;
-	}
+    public void setFriends(HashMap<String, User> friends) {
+        this.friends = friends;
+    }
 
-	public void setPremium(boolean premium) {
-		this.premium = premium;
-	}
+    public boolean isPremium() {
+        return super.isPremium();
+    }
 
-	public int getTotalFound() {
-		return totalFound;
-	}
+    public void setPremium(boolean premium) {
+        super.setPremium(premium);
+    }
 
-	public void setTotalFound(int totalFound) {
-		this.totalFound = totalFound;
-	}
+    public int getTotalFound() {
+        return super.getTotalFound();
+    }
 
-	public String getTrackable() {
-		return trackable;
-	}
+    public void setTotalFound(int totalFound) {
+        super.setTotalFound(totalFound);
+    }
 
-	public void setTb(String tb) {
-		this.trackable = tb;
-	}
+    public String getTrackable() {
+        return super.getTrackable();
+    }
 
-	// Methods
-	public void removeTb() {
-		this.trackable = "";
-	}
+    public void setTb(String tb) {
+        super.setTb(tb);
+    }
 
-	// toString
-	@Override
-	public String toString() {
-		return "'" + name + " (" + totalFound + ")'"
-				+ (premium ? " Premium" : "");
-	}
+    public Data getData() {
+        return this.data;
+    }
+
+    public void setData(Data data) {
+        this.data = data;
+    }
+
+    // Methods
+    public void removeTb() {
+        super.setTb("");
+    }
+
+    public boolean createCache(Cache cache) {
+        HashMap<String, Cache> map = this.data.getAllCaches();
+        if (map == null) {
+            return false;
+        }
+
+        if (map.containsKey(cache.getCacheID()) == true) {
+            return false;
+        }
+        cache.setCacheID(cache.genID(6));
+        cache.setOwner(this);
+        cache.setCacheState(Cache.Status.UNPUBLISHED);
+        this.data.getUnpublishedCaches().put(cache.getCacheID(), cache);
+        this.caches.put(cache.getCacheID(), cache);
+        return true;
+    }
+
+    public boolean disableCache(Cache c) {
+        /*
+         if (c.getReviewer() != null) {
+         if (c.getReviewer().getName().equals(this.getName()) == false) { // If I am not the reviewer
+         return false;
+         }
+         }
+
+         if (c.getOwner().getName().equals(this.getName()) == false) { // nor the owner
+         return false;
+         }
+         */
+
+        if (this instanceof Admin == true)
+            ; else if (this instanceof Reviewer) {
+            if (c.getReviewer() == null) {
+                return false;
+            }
+            if (c.getReviewer().getName().equals(this.getName()) == false) { // If I am the reviewer
+                return false;
+            }
+
+        } else if (this instanceof User) {
+            if (c.getOwner().getName().equals(this.getName()) == false) { // If I am not the owner
+                return false;
+            }
+        }
+
+        if (c.getCacheStatus() != Cache.Status.ENABLED) // Can only disable a enabled cache
+        {
+            return false;
+        }
+
+        this.data.getEnabledCaches().remove(c.getCacheID(), c);
+        c.setCacheState(Cache.Status.DISABLED); // Disable it
+        this.data.getDisabledCaches().put(c.getCacheID(), c);
+
+        Activity act = new Activity(new GregorianCalendar(), Activity.Type.DISABLED_CACHE, c, c.getOwner()); // Create Activity
+        this.data.addActivity(act);
+
+        return true;
+    }
+
+    public boolean archiveCache(Cache c) {
+
+        if (this instanceof Admin == true)
+            ; else if (this instanceof Reviewer) {
+            if (c.getReviewer() == null) {
+                return false;
+            }
+            if (c.getReviewer().getName().equals(this.getName()) == false) { // If I am the reviewer
+                return false;
+            }
+
+        } else if (this instanceof User) {
+            if (c.getOwner().getName().equals(this.getName()) == false) { // If I am not the owner
+                return false;
+            }
+        }
+
+        switch (c.getCacheStatus()) // Can only disable a enabled cache
+        {
+            case ARCHIVED: // Already archived
+                return false;
+
+            case UNPUBLISHED:
+                this.data.getUnpublishedCaches().remove(c.getCacheID(), c);
+                c.setCacheState(Cache.Status.ARCHIVED);
+                this.data.getArchivedCaches().put(c.getCacheID(), c);
+                break;
+            case ENABLED:
+
+                this.data.getEnabledCaches().remove(c.getCacheID(), c);
+                c.setCacheState(Cache.Status.ARCHIVED);
+                this.data.getArchivedCaches().put(c.getCacheID(), c);
+                break;
+            case DISABLED:
+
+                this.data.getDisabledCaches().remove(c.getCacheID(), c);
+                c.setCacheState(Cache.Status.ARCHIVED);
+                this.data.getArchivedCaches().put(c.getCacheID(), c);
+                break;
+        }
+
+        Activity act = new Activity(new GregorianCalendar(), Activity.Type.ARCHIVED_CACHE, c, c.getOwner()); // Create Activity
+        this.data.addActivity(act);
+
+        return true;
+    }
+
+    public boolean enableCache(Cache c) {
+
+        if (this instanceof Admin == true)
+            ; else if (this instanceof Reviewer) {
+            if (c.getReviewer() == null) {
+                return false;
+            }
+            if (c.getReviewer().getName().equals(this.getName()) == false) { // If I am the reviewer
+                return false;
+            }
+
+        } else if (this instanceof User) {
+            if (c.getOwner().getName().equals(this.getName()) == false) { // If I am not the owner
+                return false;
+            }
+        }
+
+        switch (c.getCacheStatus()) // Can only disable a enabled cache
+        {
+            case ENABLED: // Already enabled
+            case UNPUBLISHED: // Not published, if reviewer he should use publishCache
+                return false;
+
+            case ARCHIVED:
+                if (c.getPublishDate() == null) {
+                    return false; // Can't enable a cache that is unpublished and archived
+                }
+                this.data.getArchivedCaches().remove(c.getCacheID(), c);
+                c.setCacheState(Cache.Status.ENABLED);
+                this.data.getEnabledCaches().put(c.getCacheID(), c);
+                break;
+
+            case DISABLED:
+                this.data.getDisabledCaches().remove(c.getCacheID(), c);
+                c.setCacheState(Cache.Status.ENABLED);
+                this.data.getEnabledCaches().put(c.getCacheID(), c);
+                break;
+        }
+
+        Activity act = new Activity(new GregorianCalendar(), Activity.Type.ENABLED_CACHE, c, c.getOwner()); // Create Activity
+        this.data.addActivity(act);
+
+        return true;
+    }
+
+    public void logCache(Log l, Cache c) {
+        c.logCache(this, l);
+        if (l.getLogType() == Log.Log_Type.FOUND_IT) {
+            this.incFounds();
+        }
+    }
+
+    // toString
+    @Override
+    public String toString() {
+        return "User:\n" + super.toString();
+    }
+
+    // Increment by 1 the Number of Founds
+    private void incFounds() {
+        this.setTotalFound(this.getTotalFound() + 1);
+    }
 }

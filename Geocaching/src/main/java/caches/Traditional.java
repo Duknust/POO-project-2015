@@ -1,31 +1,33 @@
 package caches;
 
+import base.Position;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-
-import user.User;
-import base.Position;
+import java.util.TreeMap;
+import user.Reviewer;
+import user.UserAbstract;
 
 public class Traditional extends Cache {
-	/*
-	 * This is the original type of geocache and the most straightforward. These
-	 * geocaches will be a container at the given coordinates. The size may
-	 * vary, but at minimum, all of these geocaches will have a logbook. Larger
-	 * containers may contain items for trade and trackables.
-	 */
+    /*
+     * This is the original type of geocache and the most straightforward. These
+     * geocaches will be a container at the given coordinates. The size may
+     * vary, but at minimum, all of these geocaches will have a logbook. Larger
+     * containers may contain items for trade and trackables.
+     */
 
-	public Traditional(GregorianCalendar publishDate, String cacheID,
-			String description, Status cacheState, String cacheTitle,
-			User owner, int cacheSize, float difficulty, Position position,
-			String hints, ArrayList<Log> cache_Log,
-			ArrayList<String> travel_bugs) {
-		super(publishDate, cacheID, description, cacheState, cacheTitle, owner,
-				cacheSize, difficulty, position, hints, cache_Log, travel_bugs);
-	}
+    // Constructors
+    public Traditional(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, ArrayList<String> travel_bugs, Reviewer reviewer) {
+        super(publishDate, creationDate, cacheID, premiumOnly, description, cacheState,
+                cacheTitle, owner, cacheSize, difficulty, position, hint, cache_Logs, travel_bugs, reviewer);
+    }
 
-	// toString
-	@Override
-	public String toString() {
-		return super.toListing("Traditional") + super.toLogsListing();
-	}
+    public Traditional(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, ArrayList<String> travel_bugs) {
+        super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs, travel_bugs);
+    }
+
+    // toString
+    @Override
+    public String toString() {
+        return super.toListing("Traditional") + super.toLogsListing();
+    }
 }
