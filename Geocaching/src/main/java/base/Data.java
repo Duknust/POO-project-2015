@@ -3,23 +3,31 @@ package base;
 import activity.Activity;
 import caches.Cache;
 import java.io.Serializable;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.TreeMap;
 import user.UserAbstract;
 
 public class Data implements Serializable {
 
-    HashMap<String, Cache> enabledCaches = null;
+    HashMap<String, Cache> enabledCaches = null; // The published ones
     HashMap<String, Cache> disabledCaches = null;
     HashMap<String, Cache> unpublishedCaches = null;
     HashMap<String, Cache> archivedCaches = null;
 
     HashMap<String, UserAbstract> allUsers = null;
-    TreeMap<String, Activity> allActivities = null;
+    TreeMap<GregorianCalendar, Activity> allActivities = null;
 
     TreeMap<String, Position> allPositions = null;
 
     public Data() {
+        enabledCaches = new HashMap<>();
+        disabledCaches = new HashMap<>();
+        unpublishedCaches = new HashMap<>();
+        archivedCaches = new HashMap<>();
+        allUsers = new HashMap<>();
+        allActivities = new TreeMap<>();
+        allPositions = new TreeMap<>();
     }
 
     // Getters and Setters
@@ -63,11 +71,11 @@ public class Data implements Serializable {
         this.allUsers = allUsers;
     }
 
-    public TreeMap<String, Activity> getAllActivities() {
+    public TreeMap<GregorianCalendar, Activity> getAllActivities() {
         return allActivities;
     }
 
-    public void setAllActivities(TreeMap<String, Activity> allActivities) {
+    public void setAllActivities(TreeMap<GregorianCalendar, Activity> allActivities) {
         this.allActivities = allActivities;
     }
 
@@ -79,6 +87,7 @@ public class Data implements Serializable {
         this.allPositions = allPositions;
     }
 
+    // Methods
     public HashMap<String, Cache> getAllCaches() {
 
         HashMap<String, Cache> allCaches = new HashMap<>();
@@ -88,6 +97,10 @@ public class Data implements Serializable {
         allCaches.putAll(disabledCaches);
         allCaches.putAll(unpublishedCaches);
         return allCaches;
+    }
+
+    public void addActivity(Activity act) {
+        this.allActivities.put(act.getDate(), act);
     }
 
 }

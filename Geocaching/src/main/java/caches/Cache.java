@@ -130,7 +130,7 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.cacheID = cacheID;
     }
 
-    public Status getCacheState() {
+    public Status getCacheStatus() {
         return cacheState;
     }
 

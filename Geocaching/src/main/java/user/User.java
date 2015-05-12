@@ -1,5 +1,6 @@
 package user;
 
+import activity.Activity;
 import base.Data;
 import caches.Cache;
 import caches.Log;
@@ -11,7 +12,7 @@ public class User extends UserAbstract implements Serializable {
 
     private HashMap<String, Cache> caches = null;
     private HashMap<String, User> friends = null;
-    private Data data = null;
+    private Data data = new Data();
 
     // Constructors
     public User(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, String tb, HashMap<String, Cache> caches, HashMap<String, User> friends, Data data) {
@@ -124,7 +125,12 @@ public class User extends UserAbstract implements Serializable {
     }
 
     public boolean createCache(Cache cache) {
-        if (this.data.getAllCaches().containsKey(cache.getCacheID()) == true) {
+        HashMap<String, Cache> map = this.data.getAllCaches();
+        if (map == null) {
+            return false;
+        }
+
+        if (map.containsKey(cache.getCacheID()) == true) {
             return false;
         }
         cache.setCacheID(cache.genID(6));
@@ -134,13 +140,150 @@ public class User extends UserAbstract implements Serializable {
         return true;
     }
 
+    public boolean disableCache(Cache c) {
+        /*
+         if (c.getReviewer() != null) {
+         if (c.getReviewer().getName().equals(this.getName()) == false) { // If I am not the reviewer
+         return false;
+         }
+         }
+
+         if (c.getOwner().getName().equals(this.getName()) == false) { // nor the owner
+         return false;
+         }
+         */
+
+        if (this instanceof Reviewer) {
+            if (c.getReviewer() == null) {
+                return false;
+            }
+            if (c.getReviewer().getName().equals(this.getName()) == false) { // If I am the reviewer
+                return false;
+            }
+
+        } else if (this instanceof User) {
+            if (c.getOwner().getName().equals(this.getName()) == false) { // If I am not the owner
+                return false;
+            }
+        } // else Admin
+
+        if (c.getCacheStatus() != Cache.Status.ENABLED) // Can only disable a enabled cache
+        {
+            return false;
+        }
+
+        this.data.getEnabledCaches().remove(c.getCacheID(), c);
+        c.setCacheState(Cache.Status.DISABLED); // Disable it
+        this.data.getDisabledCaches().put(c.getCacheID(), c);
+
+        Activity act = new Activity(new GregorianCalendar(), Activity.Type.DISABLED_CACHE, c, c.getOwner()); // Create Activity
+        this.data.addActivity(act);
+
+        return true;
+    }
+
+    public boolean archiveCache(Cache c) {
+
+        if (this instanceof Reviewer) {
+            if (c.getReviewer() == null) {
+                return false;
+            }
+            if (c.getReviewer().getName().equals(this.getName()) == false) { // If I am the reviewer
+                return false;
+            }
+
+        } else if (this instanceof User) {
+            if (c.getOwner().getName().equals(this.getName()) == false) { // If I am not the owner
+                return false;
+            }
+        } // else Admin
+
+        switch (c.getCacheStatus()) // Can only disable a enabled cache
+        {
+            case ARCHIVED: // Already archived
+                return false;
+
+            case UNPUBLISHED:
+                this.data.getUnpublishedCaches().remove(c.getCacheID(), c);
+                c.setCacheState(Cache.Status.ARCHIVED);
+                this.data.getArchivedCaches().put(c.getCacheID(), c);
+                break;
+            case ENABLED:
+
+                this.data.getEnabledCaches().remove(c.getCacheID(), c);
+                c.setCacheState(Cache.Status.ARCHIVED);
+                this.data.getArchivedCaches().put(c.getCacheID(), c);
+                break;
+            case DISABLED:
+
+                this.data.getDisabledCaches().remove(c.getCacheID(), c);
+                c.setCacheState(Cache.Status.ARCHIVED);
+                this.data.getArchivedCaches().put(c.getCacheID(), c);
+                break;
+        }
+
+        Activity act = new Activity(new GregorianCalendar(), Activity.Type.ARCHIVED_CACHE, c, c.getOwner()); // Create Activity
+        this.data.addActivity(act);
+
+        return true;
+    }
+
+    public boolean enableCache(Cache c) {
+
+        if (this instanceof Reviewer) {
+            if (c.getReviewer() == null) {
+                return false;
+            }
+            if (c.getReviewer().getName().equals(this.getName()) == false) { // If I am the reviewer
+                return false;
+            }
+
+        } else if (this instanceof User) {
+            if (c.getOwner().getName().equals(this.getName()) == false) { // If I am not the owner
+                return false;
+            }
+        } // else Admin
+
+        switch (c.getCacheStatus()) // Can only disable a enabled cache
+        {
+            case ENABLED: // Already enabled
+            case UNPUBLISHED: // Not published, if reviewer he should use publishCache
+                return false;
+
+            case ARCHIVED:
+                this.data.getArchivedCaches().remove(c.getCacheID(), c);
+                c.setCacheState(Cache.Status.ENABLED);
+                this.data.getEnabledCaches().put(c.getCacheID(), c);
+                break;
+
+            case DISABLED:
+                this.data.getDisabledCaches().remove(c.getCacheID(), c);
+                c.setCacheState(Cache.Status.ENABLED);
+                this.data.getEnabledCaches().put(c.getCacheID(), c);
+                break;
+        }
+
+        Activity act = new Activity(new GregorianCalendar(), Activity.Type.ENABLED_CACHE, c, c.getOwner()); // Create Activity
+        this.data.addActivity(act);
+
+        return true;
+    }
+
     public void logCache(Log l, Cache c) {
         c.logCache(this, l);
+        if (l.getLogType() == Log.Log_Type.FOUND_IT) {
+            this.incFounds();
+        }
     }
 
     // toString
     @Override
     public String toString() {
         return "User:\n" + super.toString();
+    }
+
+    // Increment by 1 the Number of Founds
+    private void incFounds() {
+        this.setTotalFound(this.getTotalFound() + 1);
     }
 }

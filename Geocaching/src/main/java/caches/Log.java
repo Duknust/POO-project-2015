@@ -28,18 +28,48 @@ public class Log {
         }
     }
 
+    public enum Log_Type {
+
+        FOUND_IT, DNF, NEEDS_MAINTENANCE, REVIEWER_NOTE, NEEDS_ARCHIVING, ARCHIVE, NOTE, UPDATED_CACHE;
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case FOUND_IT:
+                    return "Found it";
+                case DNF:
+                    return "Didn't find it";
+                case NEEDS_MAINTENANCE:
+                    return "Needs Maintenance";
+                case REVIEWER_NOTE:
+                    return "Reviewer Note";
+                case NEEDS_ARCHIVING:
+                    return "Needs Archiving";
+                case ARCHIVE:
+                    return "Archive";
+                case NOTE:
+                    return "Note";
+                case UPDATED_CACHE:
+                    return "Cache Updated";
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+    }
+
     private UserAbstract user = null;
     private String log = "";
     private String trackable = "";
     private Trackable_State trackable_state = Trackable_State.NO_ACTION;
     private GregorianCalendar date;
+    private Log_Type logType;
 
-    // private Cache cache;
     // Constructors
     public Log(UserAbstract user, String log, String trackable,
-            Trackable_State trackable_state, GregorianCalendar date) {
+            Trackable_State trackable_state, GregorianCalendar date, Log_Type logType) {
         this.user = user;
         this.log = log;
+        this.logType = logType;
 
         this.trackable_state = trackable_state;
         if (trackable_state == Trackable_State.NONE) // If the trackable
@@ -91,6 +121,10 @@ public class Log {
 
     public void setTrackable_state(Trackable_State trackable_state) {
         this.trackable_state = trackable_state;
+    }
+
+    public Log_Type getLogType() {
+        return logType;
     }
 
     // toString
