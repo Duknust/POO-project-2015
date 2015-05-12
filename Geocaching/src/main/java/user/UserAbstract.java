@@ -2,6 +2,7 @@ package user;
 
 import java.io.Serializable;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 
 public abstract class UserAbstract implements Serializable {
 
@@ -96,4 +97,20 @@ public abstract class UserAbstract implements Serializable {
     public String toString() {
         return "'" + name + " (" + totalFound + ")'" + (premium ? " Premium" : "");
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final UserAbstract other = (UserAbstract) obj;
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        return true;
+    }
+
 }

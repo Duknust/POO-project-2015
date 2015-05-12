@@ -1,13 +1,28 @@
 package caches;
 
+import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 import user.UserAbstract;
 
 public class Log {
 
+    /*
+     Who can log ?
+
+     | Cache State | Owner/Reviewer |  Regular User  |
+     |             |  View |  Write |  View |  Write |
+     |-------------|-------|--------|-------|--------|
+     | Archived    |  Yes  |  Notes |  Yes  |  Notes |
+     | Enabled     |  Yes  |  Yes   |  Yes  |  Notes |
+     | Disabled    |  Yes  |  Notes |  Yes  |  Notes |
+     | Unpublished |  Yes  | RNotes |   No  |   No   |
+
+
+     */
     public enum Log_Type {
 
-        FOUND_IT, DNF, NEEDS_MAINTENANCE, REVIEWER_NOTE, NEEDS_ARCHIVING, ARCHIVE, NOTE, UPDATED_CACHE;
+        FOUND_IT, DNF, NEEDS_MAINTENANCE, REVIEWER_NOTE, NEEDS_ARCHIVING, NOTE, ARCHIVED, ENABLED, DISABLED;
 
         @Override
         public String toString() {
@@ -22,12 +37,14 @@ public class Log {
                     return "Reviewer Note";
                 case NEEDS_ARCHIVING:
                     return "Needs Archiving";
-                case ARCHIVE:
-                    return "Archive";
                 case NOTE:
                     return "Note";
-                case UPDATED_CACHE:
-                    return "Cache Updated";
+                case ARCHIVED: // Automatic Log
+                    return "Archived";
+                case DISABLED: // Automatic Log
+                    return "Disabled";
+                case ENABLED: // Automatic Log
+                    return "Enabled Listing";
                 default:
                     throw new IllegalArgumentException();
             }
@@ -44,7 +61,13 @@ public class Log {
         this.user = user;
         this.log = log;
         this.logType = logType;
+        this.date = date;
+    }
 
+    public Log(String log, GregorianCalendar date, Log_Type logType) {
+        this.user = null;
+        this.log = log;
+        this.logType = logType;
         this.date = date;
     }
 
@@ -80,10 +103,13 @@ public class Log {
     // toString
     @Override
     public String toString() {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        timeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String date_str = timeFormat.format(date);
         return " "
                 + user
                 + "\nDate="
-                + date
+                + date_str
                 + "\nLog = "
                 + log;
     }

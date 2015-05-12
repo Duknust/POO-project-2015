@@ -74,7 +74,7 @@ public class Reviewer extends User {
             return false; // Already Published
         }
         if (this instanceof Admin == false) { // If I am not Admin, and obviously not an User
-            if (c.getReviewer().getName().equals(this.getName()) == false) { // and not the assigned reviewer
+            if (c.getReviewer().equals(this) == false) { // and not the assigned reviewer
                 return false;
             }
         }
