@@ -1,7 +1,6 @@
 package caches;
 
 import base.Position;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -21,15 +20,15 @@ public class Event extends Cache {
     int maxParticipants;
 
     // Constructors
-    public Event(HashMap<String, UserAbstract> participants, GregorianCalendar date, int maxParticipants, GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, ArrayList<String> travel_bugs, Reviewer reviewer) {
-        super(publishDate, creationDate, cacheID, premiumOnly, description, cacheState, cacheTitle, owner, cacheSize, difficulty, position, hint, cache_Logs, travel_bugs, reviewer);
+    public Event(HashMap<String, UserAbstract> participants, GregorianCalendar date, int maxParticipants, GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, Reviewer reviewer) {
+        super(publishDate, creationDate, cacheID, premiumOnly, description, cacheState, cacheTitle, owner, cacheSize, difficulty, position, hint, cache_Logs, reviewer);
         this.participants = participants;
         this.date = date;
         this.maxParticipants = maxParticipants;
     }
 
-    public Event(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, ArrayList<String> travel_bugs, HashMap<String, UserAbstract> participants, GregorianCalendar date, int maxParticipants) {
-        super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs, travel_bugs);
+    public Event(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, HashMap<String, UserAbstract> participants, GregorianCalendar date, int maxParticipants) {
+        super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs);
         this.participants = participants;
         this.date = date;
         this.maxParticipants = maxParticipants;

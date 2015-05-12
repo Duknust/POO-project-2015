@@ -1,7 +1,6 @@
 package caches;
 
 import base.Position;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.TreeMap;
 import user.Reviewer;
@@ -18,13 +17,13 @@ public class Mistery extends Cache {
     private Position finalPos = null;
 
     // Constructors
-    public Mistery(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, ArrayList<String> travel_bugs, Reviewer reviewer) {
+    public Mistery(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, Reviewer reviewer) {
         super(publishDate, creationDate, cacheID, premiumOnly, description, cacheState,
-                cacheTitle, owner, cacheSize, difficulty, position, hint, cache_Logs, travel_bugs, reviewer);
+                cacheTitle, owner, cacheSize, difficulty, position, hint, cache_Logs, reviewer);
     }
 
-    public Mistery(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, ArrayList<String> travel_bugs, Position pos) {
-        super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs, travel_bugs);
+    public Mistery(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, Position pos) {
+        super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs);
         this.finalPos = pos;
     }
 

@@ -13,10 +13,9 @@ public abstract class UserAbstract implements Serializable {
     private GregorianCalendar birthDate;
     private boolean premium;
     private int totalFound;
-    private String trackable;
 
     // Constructors
-    public UserAbstract(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, String tb) {
+    public UserAbstract(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -25,7 +24,6 @@ public abstract class UserAbstract implements Serializable {
         this.birthDate = birthDate;
         this.premium = premium;
         this.totalFound = totalFound;
-        this.trackable = tb;
     }
 
     // Getters and Setters
@@ -91,19 +89,6 @@ public abstract class UserAbstract implements Serializable {
 
     public void setTotalFound(int totalFound) {
         this.totalFound = totalFound;
-    }
-
-    public String getTrackable() {
-        return trackable;
-    }
-
-    public void setTb(String tb) {
-        this.trackable = tb;
-    }
-
-    // Methods
-    public void removeTb() {
-        this.trackable = "";
     }
 
     // toString

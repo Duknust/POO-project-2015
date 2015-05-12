@@ -13,13 +13,13 @@ public class Reviewer extends User {
     TreeSet<Cache> assignedCaches;
 
     // Constructors
-    public Reviewer(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, String tb, HashMap<String, Cache> caches, HashMap<String, User> friends, Data data) {
-        super(email, password, name, gender, address, birthDate, premium, totalFound, tb, caches, friends, data);
+    public Reviewer(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, HashMap<String, Cache> caches, HashMap<String, User> friends, Data data) {
+        super(email, password, name, gender, address, birthDate, premium, totalFound, caches, friends, data);
         this.assignedCaches = new TreeSet<>();
     }
 
-    public Reviewer(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, String tb, HashMap<String, Cache> caches, HashMap<String, User> friends, Data data, TreeSet<Cache> assignedCaches) {
-        super(email, password, name, gender, address, birthDate, premium, totalFound, tb, caches, friends, data);
+    public Reviewer(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, HashMap<String, Cache> caches, HashMap<String, User> friends, Data data, TreeSet<Cache> assignedCaches) {
+        super(email, password, name, gender, address, birthDate, premium, totalFound, caches, friends, data);
 
         if (assignedCaches == null) {
             this.assignedCaches = new TreeSet<>();

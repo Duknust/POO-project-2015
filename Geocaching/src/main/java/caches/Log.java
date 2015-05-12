@@ -5,29 +5,6 @@ import user.UserAbstract;
 
 public class Log {
 
-    public enum Trackable_State {
-
-        VISITED, DROPPED, NO_ACTION, NONE, REMOVED;
-
-        @Override
-        public String toString() {
-            switch (this) {
-                case VISITED:
-                    return "Visited";
-                case DROPPED:
-                    return "Was Dropped";
-                case NO_ACTION:
-                    return "No Action";
-                case NONE:
-                    return "None";
-                case REMOVED:
-                    return "Removed";
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-    }
-
     public enum Log_Type {
 
         FOUND_IT, DNF, NEEDS_MAINTENANCE, REVIEWER_NOTE, NEEDS_ARCHIVING, ARCHIVE, NOTE, UPDATED_CACHE;
@@ -59,26 +36,15 @@ public class Log {
 
     private UserAbstract user = null;
     private String log = "";
-    private String trackable = "";
-    private Trackable_State trackable_state = Trackable_State.NO_ACTION;
     private GregorianCalendar date;
     private Log_Type logType;
 
     // Constructors
-    public Log(UserAbstract user, String log, String trackable,
-            Trackable_State trackable_state, GregorianCalendar date, Log_Type logType) {
+    public Log(UserAbstract user, String log, GregorianCalendar date, Log_Type logType) {
         this.user = user;
         this.log = log;
         this.logType = logType;
 
-        this.trackable_state = trackable_state;
-        if (trackable_state == Trackable_State.NONE) // If the trackable
-        // has no action
-        {
-            this.trackable = ""; // Then none was referenced
-        } else {
-            this.trackable = trackable; // Else reference the Trackable
-        }
         this.date = date;
     }
 
@@ -99,28 +65,12 @@ public class Log {
         this.log = log;
     }
 
-    public String getTrackable() {
-        return trackable;
-    }
-
-    public void setTrackable(String trackable) {
-        this.trackable = trackable;
-    }
-
     public GregorianCalendar getDate() {
         return date;
     }
 
     public void setDate(GregorianCalendar date) {
         this.date = date;
-    }
-
-    public Trackable_State getTrackable_state() {
-        return trackable_state;
-    }
-
-    public void setTrackable_state(Trackable_State trackable_state) {
-        this.trackable_state = trackable_state;
     }
 
     public Log_Type getLogType() {
@@ -135,10 +85,7 @@ public class Log {
                 + "\nDate="
                 + date
                 + "\nLog = "
-                + log
-                + (trackable_state.NO_ACTION == this.trackable_state ? "\n"
-                        : "\nTrackable='" + trackable + '\'' + " "
-                        + trackable_state);
+                + log;
     }
 
 }
