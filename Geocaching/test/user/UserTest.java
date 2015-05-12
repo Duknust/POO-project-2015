@@ -103,11 +103,13 @@ public class UserTest {
 
         Log log1 = new Log("FTF!", new GregorianCalendar(), Log.Log_Type.FOUND_IT);
         Log log2 = new Log("STF!", new GregorianCalendar(), Log.Log_Type.FOUND_IT);
-        Log log3 = new Log("Should fail!", new GregorianCalendar(), Log.Log_Type.FOUND_IT);
-        Log log4 = new Log("Should fail 2!", new GregorianCalendar(), Log.Log_Type.NOTE);
-        Log log5 = new Log("DNF!", new GregorianCalendar(), Log.Log_Type.DNF);
+        Log log3 = new Log("YEAH, got it!", new GregorianCalendar(), Log.Log_Type.FOUND_IT);
+        Log log4 = new Log("Just a note!", new GregorianCalendar(), Log.Log_Type.NOTE);
+        Log log5 = new Log("DNF, too much difficult!", new GregorianCalendar(), Log.Log_Type.DNF);
         Log log6 = new Log("A Note!", new GregorianCalendar(), Log.Log_Type.NOTE);
         Log log7 = new Log("Rev Note!", new GregorianCalendar(), Log.Log_Type.REVIEWER_NOTE);
+        Log log8 = new Log("Another Note!", new GregorianCalendar(), Log.Log_Type.NOTE);
+        Log log9 = new Log("Rev Note important!", new GregorianCalendar(), Log.Log_Type.REVIEWER_NOTE);
 
         Cache cc = rev.giveMeCache(tca1);
         rev.publishCache(cc);
@@ -125,9 +127,9 @@ public class UserTest {
         // tca1 archived
         // tca2 unpublished
         assertTrue(usr1.logCache(log6, tca1));
-        assertFalse(usr1.logCache(log1, tca1));
-        assertFalse(usr2.logCache(log7, tca1));
-        assertTrue(usr2.logCache(log6, tca1));
+        assertFalse(usr1.logCache(log5, tca1));
+        assertFalse(usr2.logCache(log9, tca1));
+        assertTrue(usr2.logCache(log8, tca1));
 
     }
 
@@ -263,6 +265,24 @@ public class UserTest {
         assertFalse(rev.archiveCache(tca2));
 
         assertTrue(rev.enableCache(tca1));
+    }
+
+    /**
+     * Test of login method, of class User.
+     */
+    @Test
+    public void testLogin() {
+        String email = "mail@m.com";
+        String password = "12345";
+        User usr1 = new User(email, password, "Ulisses", "M", "rua", new GregorianCalendar(), false, 0, null, null, null);
+        assertFalse(usr1.login("fake", "fake"));
+        assertFalse(usr1.login(null, "fake"));
+        assertFalse(usr1.login("fake", null));
+        assertFalse(usr1.login(null, null));
+        assertFalse(usr1.login(email, "fake"));
+        assertFalse(usr1.login("fake", password));
+        assertTrue(usr1.login(email, password));
+
     }
 
 }

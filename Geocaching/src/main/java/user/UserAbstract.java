@@ -32,10 +32,10 @@ public abstract class UserAbstract implements Serializable {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
+    /* // Should be Impossible to change email
+     public void setEmail(String email) {
+     this.email = email;
+     }*/
     public String getPassword() {
         return password;
     }
@@ -92,6 +92,11 @@ public abstract class UserAbstract implements Serializable {
         this.totalFound = totalFound;
     }
 
+    // Methods
+    public boolean login(String email, String password) {
+        return this.getEmail().equals(email) && this.getPassword().equals(password);
+    }
+
     // toString
     @Override
     public String toString() {
@@ -107,7 +112,7 @@ public abstract class UserAbstract implements Serializable {
             return false;
         }
         final UserAbstract other = (UserAbstract) obj;
-        if (!Objects.equals(this.name, other.name)) {
+        if (!Objects.equals(this.email, other.email)) {
             return false;
         }
         return true;

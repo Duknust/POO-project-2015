@@ -37,10 +37,10 @@ public class User extends UserAbstract implements Serializable {
     public String getEmail() {
         return super.getEmail();
     }
-
-    public void setEmail(String email) {
-        super.setEmail(email);
-    }
+    /*
+     public void setEmail(String email) {
+     super.setEmail(email);
+     }*/
 
     public String getPassword() {
         return super.getPassword();

@@ -265,8 +265,16 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
             case ENABLED:
                 // Everyone can log
                 if (log.getLogType() == Log.Log_Type.ARCHIVED || log.getLogType() == Log.Log_Type.DISABLED
-                        || log.getLogType() == Log.Log_Type.ENABLED || log.getLogType() == Log.Log_Type.REVIEWER_NOTE) { // Check Log Type
+                        || log.getLogType() == Log.Log_Type.ENABLED) { // Check Log Type
                     return false;
+                } else if (log.getLogType() == Log.Log_Type.REVIEWER_NOTE) {
+                    if (user instanceof Reviewer == true) {
+                        if (user.equals(this.getReviewer()) == false) {
+                            return false; // Not the assigned Reviewer
+                        }
+                    } else {
+                        return false;
+                    }
                 }
                 break;
 
@@ -278,6 +286,10 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
 
     public String genID(int size) {
         return Long.toHexString(Double.doubleToLongBits(Math.random())).substring(15 - size, 15).toUpperCase();
+    }
+
+    public void clearLogs() {
+        this.cache_Logs.clear();
     }
 
     @Override
