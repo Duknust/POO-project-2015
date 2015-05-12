@@ -17,8 +17,19 @@ public class User extends UserAbstract implements Serializable {
     // Constructors
     public User(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, String tb, HashMap<String, Cache> caches, HashMap<String, User> friends, Data data) {
         super(email, password, name, gender, address, birthDate, premium, totalFound, tb);
-        this.caches = caches;
-        this.friends = friends;
+
+        if (caches == null) {
+            this.caches = new HashMap<String, Cache>();
+        } else {
+            this.caches = caches;
+        }
+
+        if (friends == null) {
+            this.friends = new HashMap<String, User>();
+        } else {
+            this.friends = friends;
+        }
+
         this.data = data;
     }
 
@@ -72,7 +83,7 @@ public class User extends UserAbstract implements Serializable {
     }
 
     public HashMap<String, Cache> getCaches() {
-        return this.getCaches();
+        return this.caches;
     }
 
     public void setCaches(HashMap<String, Cache> caches) {
@@ -80,7 +91,7 @@ public class User extends UserAbstract implements Serializable {
     }
 
     public HashMap<String, User> getFriends() {
-        return this.getFriends();
+        return this.friends;
     }
 
     public void setFriends(HashMap<String, User> friends) {
@@ -112,7 +123,7 @@ public class User extends UserAbstract implements Serializable {
     }
 
     public Data getData() {
-        return data;
+        return this.data;
     }
 
     public void setData(Data data) {
@@ -137,6 +148,7 @@ public class User extends UserAbstract implements Serializable {
         cache.setOwner(this);
         cache.setCacheState(Cache.Status.UNPUBLISHED);
         this.data.getUnpublishedCaches().put(cache.getCacheID(), cache);
+        this.caches.put(cache.getCacheID(), cache);
         return true;
     }
 
@@ -153,7 +165,8 @@ public class User extends UserAbstract implements Serializable {
          }
          */
 
-        if (this instanceof Reviewer) {
+        if (this instanceof Admin == true)
+            ; else if (this instanceof Reviewer) {
             if (c.getReviewer() == null) {
                 return false;
             }
@@ -165,7 +178,7 @@ public class User extends UserAbstract implements Serializable {
             if (c.getOwner().getName().equals(this.getName()) == false) { // If I am not the owner
                 return false;
             }
-        } // else Admin
+        }
 
         if (c.getCacheStatus() != Cache.Status.ENABLED) // Can only disable a enabled cache
         {
@@ -184,7 +197,8 @@ public class User extends UserAbstract implements Serializable {
 
     public boolean archiveCache(Cache c) {
 
-        if (this instanceof Reviewer) {
+        if (this instanceof Admin == true)
+            ; else if (this instanceof Reviewer) {
             if (c.getReviewer() == null) {
                 return false;
             }
@@ -196,7 +210,7 @@ public class User extends UserAbstract implements Serializable {
             if (c.getOwner().getName().equals(this.getName()) == false) { // If I am not the owner
                 return false;
             }
-        } // else Admin
+        }
 
         switch (c.getCacheStatus()) // Can only disable a enabled cache
         {
@@ -230,7 +244,8 @@ public class User extends UserAbstract implements Serializable {
 
     public boolean enableCache(Cache c) {
 
-        if (this instanceof Reviewer) {
+        if (this instanceof Admin == true)
+            ; else if (this instanceof Reviewer) {
             if (c.getReviewer() == null) {
                 return false;
             }
@@ -242,7 +257,7 @@ public class User extends UserAbstract implements Serializable {
             if (c.getOwner().getName().equals(this.getName()) == false) { // If I am not the owner
                 return false;
             }
-        } // else Admin
+        }
 
         switch (c.getCacheStatus()) // Can only disable a enabled cache
         {
@@ -251,6 +266,9 @@ public class User extends UserAbstract implements Serializable {
                 return false;
 
             case ARCHIVED:
+                if (c.getPublishDate() == null) {
+                    return false; // Can't enable a cache that is unpublished and archived
+                }
                 this.data.getArchivedCaches().remove(c.getCacheID(), c);
                 c.setCacheState(Cache.Status.ENABLED);
                 this.data.getEnabledCaches().put(c.getCacheID(), c);
