@@ -15,8 +15,8 @@ public class User extends UserAbstract implements Serializable {
     private Data data = new Data();
 
     // Constructors
-    public User(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, String tb, HashMap<String, Cache> caches, HashMap<String, User> friends, Data data) {
-        super(email, password, name, gender, address, birthDate, premium, totalFound, tb);
+    public User(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, HashMap<String, Cache> caches, HashMap<String, User> friends, Data data) {
+        super(email, password, name, gender, address, birthDate, premium, totalFound);
 
         if (caches == null) {
             this.caches = new HashMap<String, Cache>();
@@ -114,14 +114,6 @@ public class User extends UserAbstract implements Serializable {
         super.setTotalFound(totalFound);
     }
 
-    public String getTrackable() {
-        return super.getTrackable();
-    }
-
-    public void setTb(String tb) {
-        super.setTb(tb);
-    }
-
     public Data getData() {
         return this.data;
     }
@@ -131,10 +123,6 @@ public class User extends UserAbstract implements Serializable {
     }
 
     // Methods
-    public void removeTb() {
-        super.setTb("");
-    }
-
     public boolean createCache(Cache cache) {
         HashMap<String, Cache> map = this.data.getAllCaches();
         if (map == null) {
@@ -153,17 +141,6 @@ public class User extends UserAbstract implements Serializable {
     }
 
     public boolean disableCache(Cache c) {
-        /*
-         if (c.getReviewer() != null) {
-         if (c.getReviewer().getName().equals(this.getName()) == false) { // If I am not the reviewer
-         return false;
-         }
-         }
-
-         if (c.getOwner().getName().equals(this.getName()) == false) { // nor the owner
-         return false;
-         }
-         */
 
         if (this instanceof Admin == true)
             ; else if (this instanceof Reviewer) {
@@ -287,11 +264,13 @@ public class User extends UserAbstract implements Serializable {
         return true;
     }
 
-    public void logCache(Log l, Cache c) {
+    public boolean logCache(Log l, Cache c) {
+
         c.logCache(this, l);
         if (l.getLogType() == Log.Log_Type.FOUND_IT) {
             this.incFounds();
         }
+        return true;
     }
 
     // toString
