@@ -1,12 +1,14 @@
 package user;
 
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
 public abstract class UserAbstract implements Serializable {
 
-    private String email;
+    private final String email;
     private String password;
     private String name;
     private String gender;
@@ -18,7 +20,7 @@ public abstract class UserAbstract implements Serializable {
     // Constructors
     public UserAbstract(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound) {
         this.email = email;
-        this.password = password;
+        this.password = getHash(password);
         this.name = name;
         this.gender = gender;
         this.address = address;
@@ -41,7 +43,7 @@ public abstract class UserAbstract implements Serializable {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = getHash(password);
     }
 
     public String getName() {
@@ -93,8 +95,26 @@ public abstract class UserAbstract implements Serializable {
     }
 
     // Methods
+    private String getHash(String password) { //SHA-256
+        StringBuilder sb = new StringBuilder();
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(password.getBytes());
+
+            byte byteData[] = md.digest();
+
+            //convert the byte to hex format
+            for (int i = 0; i < byteData.length; i++) {
+                sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+            }
+        } catch (NoSuchAlgorithmException ex) {
+            return null;
+        }
+        return sb.toString();
+    }
+
     public boolean login(String email, String password) {
-        return this.getEmail().equals(email) && this.getPassword().equals(password);
+        return this.getEmail().equals(email) && this.getPassword().equals(getHash(password));
     }
 
     // toString

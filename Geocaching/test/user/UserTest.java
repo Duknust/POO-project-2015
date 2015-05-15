@@ -272,6 +272,8 @@ public class UserTest {
      */
     @Test
     public void testLogin() {
+        System.out.println("testLogin");
+
         String email = "mail@m.com";
         String password = "12345";
         User usr1 = new User(email, password, "Ulisses", "M", "rua", new GregorianCalendar(), false, 0, null, null, null);
