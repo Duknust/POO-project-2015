@@ -37,12 +37,12 @@ public class User extends UserAbstract implements Serializable {
     public String getEmail() {
         return super.getEmail();
     }
+    /*
+     public void setEmail(String email) {
+     super.setEmail(email);
+     }*/
 
-    public void setEmail(String email) {
-        super.setEmail(email);
-    }
-
-    public String getPassword() {
+    public byte[] getPassword() {
         return super.getPassword();
     }
 
@@ -147,12 +147,12 @@ public class User extends UserAbstract implements Serializable {
             if (c.getReviewer() == null) {
                 return false;
             }
-            if (c.getReviewer().getName().equals(this.getName()) == false) { // If I am the reviewer
+            if (c.getReviewer().equals(this) == false) { // If I am the reviewer
                 return false;
             }
 
         } else if (this instanceof User) {
-            if (c.getOwner().getName().equals(this.getName()) == false) { // If I am not the owner
+            if (c.getOwner().equals(this) == false) { // If I am not the owner
                 return false;
             }
         }
@@ -179,12 +179,12 @@ public class User extends UserAbstract implements Serializable {
             if (c.getReviewer() == null) {
                 return false;
             }
-            if (c.getReviewer().getName().equals(this.getName()) == false) { // If I am the reviewer
+            if (c.getReviewer().equals(this) == false) { // If I am the reviewer
                 return false;
             }
 
         } else if (this instanceof User) {
-            if (c.getOwner().getName().equals(this.getName()) == false) { // If I am not the owner
+            if (c.getOwner().equals(this) == false) { // If I am not the owner
                 return false;
             }
         }
@@ -226,12 +226,12 @@ public class User extends UserAbstract implements Serializable {
             if (c.getReviewer() == null) {
                 return false;
             }
-            if (c.getReviewer().getName().equals(this.getName()) == false) { // If I am the reviewer
+            if (c.getReviewer().equals(this) == false) { // If I am the reviewer
                 return false;
             }
 
         } else if (this instanceof User) {
-            if (c.getOwner().getName().equals(this.getName()) == false) { // If I am not the owner
+            if (c.getOwner().equals(this) == false) { // If I am not the owner
                 return false;
             }
         }
@@ -266,9 +266,21 @@ public class User extends UserAbstract implements Serializable {
 
     public boolean logCache(Log l, Cache c) {
 
-        c.logCache(this, l);
+        if (c == null) {
+            return false;
+        }
+        if (l == null) {
+            return false;
+        }
+
+        l.setUser(this); // Assign this user to the log
+
+        if (c.logCache(this, l) == false) {
+            return false;
+        }
+
         if (l.getLogType() == Log.Log_Type.FOUND_IT) {
-            this.incFounds();
+            this.incFounds(1);
         }
         return true;
     }
@@ -279,8 +291,8 @@ public class User extends UserAbstract implements Serializable {
         return "User:\n" + super.toString();
     }
 
-    // Increment by 1 the Number of Founds
-    private void incFounds() {
-        this.setTotalFound(this.getTotalFound() + 1);
+    // Increment by number the Number of Founds
+    private void incFounds(int number) {
+        this.setTotalFound(this.getTotalFound() + number);
     }
 }

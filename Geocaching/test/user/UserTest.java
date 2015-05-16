@@ -77,6 +77,63 @@ public class UserTest {
     }
 
     /**
+     * Test of logCache method, of class User.
+     */
+    @Test
+    public void testLogCache() {
+        System.out.println("logCache");
+
+        Data datat = new Data();
+
+        User usr1 = new User("x@x.com", "12345", "Ulisses", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
+        User usr2 = new User("x@x.com", "12345", "Ulisses", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
+        Reviewer rev = new Reviewer("x1@x.com", "12345", "Rickon", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
+        Admin adm = new Admin("x2@x.com", "12345", "Aemon", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
+
+        datat.getAllUsers().put(usr1.getName(), usr1);
+        datat.getAllUsers().put(usr1.getName(), usr2);
+        datat.getAllUsers().put(rev.getName(), rev);
+        datat.getAllUsers().put(adm.getName(), adm);
+
+        Traditional tca1 = new Traditional(new GregorianCalendar(), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeMap<GregorianCalendar, Log>(), new ArrayList<>());
+        Traditional tca2 = new Traditional(new GregorianCalendar(), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeMap<GregorianCalendar, Log>(), new ArrayList<>());
+
+        usr1.createCache(tca1);
+        usr1.createCache(tca2);
+
+        Log log1 = new Log("FTF!", new GregorianCalendar(), Log.Log_Type.FOUND_IT);
+        Log log2 = new Log("STF!", new GregorianCalendar(), Log.Log_Type.FOUND_IT);
+        Log log3 = new Log("YEAH, got it!", new GregorianCalendar(), Log.Log_Type.FOUND_IT);
+        Log log4 = new Log("Just a note!", new GregorianCalendar(), Log.Log_Type.NOTE);
+        Log log5 = new Log("DNF, too much difficult!", new GregorianCalendar(), Log.Log_Type.DNF);
+        Log log6 = new Log("A Note!", new GregorianCalendar(), Log.Log_Type.NOTE);
+        Log log7 = new Log("Rev Note!", new GregorianCalendar(), Log.Log_Type.REVIEWER_NOTE);
+        Log log8 = new Log("Another Note!", new GregorianCalendar(), Log.Log_Type.NOTE);
+        Log log9 = new Log("Rev Note important!", new GregorianCalendar(), Log.Log_Type.REVIEWER_NOTE);
+
+        Cache cc = rev.giveMeCache(tca1);
+        rev.publishCache(cc);
+
+        // tca1 enabled
+        // tca2 unpublished
+        assertTrue(usr1.logCache(log1, tca1));
+        assertTrue(usr2.logCache(log2, tca1));
+
+        assertFalse(usr1.logCache(log3, tca2));
+        assertFalse(usr2.logCache(log4, tca2));
+        assertTrue(usr2.logCache(log7, tca2));
+
+        adm.archiveCache(tca1);
+        // tca1 archived
+        // tca2 unpublished
+        assertTrue(usr1.logCache(log6, tca1));
+        assertFalse(usr1.logCache(log5, tca1));
+        assertFalse(usr2.logCache(log9, tca1));
+        assertTrue(usr2.logCache(log8, tca1));
+
+    }
+
+    /**
      * Test of giveMeCache method, of class Reviewer.
      */
     @Test
@@ -208,6 +265,26 @@ public class UserTest {
         assertFalse(rev.archiveCache(tca2));
 
         assertTrue(rev.enableCache(tca1));
+    }
+
+    /**
+     * Test of login method, of class User.
+     */
+    @Test
+    public void testLogin() {
+        System.out.println("testLogin");
+
+        String email = "mail@m.com";
+        String password = "12345";
+        User usr1 = new User(email, password, "Ulisses", "M", "rua", new GregorianCalendar(), false, 0, null, null, null);
+        assertFalse(usr1.login("fake", "fake"));
+        assertFalse(usr1.login(null, "fake"));
+        assertFalse(usr1.login("fake", null));
+        assertFalse(usr1.login(null, null));
+        assertFalse(usr1.login(email, "fake"));
+        assertFalse(usr1.login("fake", password));
+        assertTrue(usr1.login(email, password));
+
     }
 
 }

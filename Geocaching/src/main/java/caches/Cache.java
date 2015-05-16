@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.TreeMap;
+import user.Admin;
 import user.Reviewer;
 import user.User;
 import user.UserAbstract;
@@ -216,12 +217,79 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
 
     public boolean logCache(User user, Log log) {// CHECK THIS , STUFF MISSING !!!
 
+        switch (this.getCacheStatus()) {
+            case UNPUBLISHED:
+                // If Reviewer
+                if (user instanceof Reviewer == true) {
+                    if (this.reviewer == null) {
+                        return false; // No Reviewer No Log
+                    } else if (this.reviewer.equals(user) == false) {
+                        return false; // If this Reviewer is not assigned, No Log
+                    }
+                    if (log.getLogType() != Log.Log_Type.REVIEWER_NOTE) { // Check Log Type
+                        return false;
+                    }
+
+                } else if (user instanceof Admin == true) {
+                    if (log.getLogType() != Log.Log_Type.REVIEWER_NOTE) { // Check Log Type
+                        return false;
+                    }
+                } else // User
+                {
+                    if (this.getOwner().equals(user)) // If he is the Owner
+                    {
+                        if (log.getLogType() != Log.Log_Type.REVIEWER_NOTE) { // Check Log Type
+                            return false;
+                        }
+                    } else // Not the Owner
+                    {
+                        return false;
+                    }
+                }
+                break;
+
+            case DISABLED:
+                // Everyone can log
+                if (log.getLogType() != Log.Log_Type.NOTE) { // Check Log Type
+                    return false;
+                }
+                break;
+
+            case ARCHIVED:
+                // Everyone can log
+                if (log.getLogType() != Log.Log_Type.NOTE) { // Check Log Type
+                    return false;
+                }
+                break;
+
+            case ENABLED:
+                // Everyone can log
+                if (log.getLogType() == Log.Log_Type.ARCHIVED || log.getLogType() == Log.Log_Type.DISABLED
+                        || log.getLogType() == Log.Log_Type.ENABLED) { // Check Log Type
+                    return false;
+                } else if (log.getLogType() == Log.Log_Type.REVIEWER_NOTE) {
+                    if (user instanceof Reviewer == true) {
+                        if (user.equals(this.getReviewer()) == false) {
+                            return false; // Not the assigned Reviewer
+                        }
+                    } else {
+                        return false;
+                    }
+                }
+                break;
+
+        }
+
         this.cache_Logs.put(log.getDate(), log);
         return true;
     }
 
     public String genID(int size) {
         return Long.toHexString(Double.doubleToLongBits(Math.random())).substring(15 - size, 15).toUpperCase();
+    }
+
+    public void clearLogs() {
+        this.cache_Logs.clear();
     }
 
     @Override

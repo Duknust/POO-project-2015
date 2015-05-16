@@ -3,6 +3,7 @@ package user;
 import activity.Activity;
 import base.Data;
 import caches.Cache;
+import caches.Log;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -74,12 +75,17 @@ public class Reviewer extends User {
             return false; // Already Published
         }
         if (this instanceof Admin == false) { // If I am not Admin, and obviously not an User
-            if (c.getReviewer().getName().equals(this.getName()) == false) { // and not the assigned reviewer
+            if (c.getReviewer().equals(this) == false) { // and not the assigned reviewer
                 return false;
             }
         }
 
+        // Remove all the logs
+        c.clearLogs();
+
         c.enable();
+        c.logCache(this, new Log("Enabled Listing", new GregorianCalendar(), Log.Log_Type.ENABLED));
+
         c.setPublishDate(new GregorianCalendar()); // Set the Published Date
         super.getData().getEnabledCaches().put(c.getCacheID(), c); // Move it from Unpublished to Published
         super.getData().getUnpublishedCaches().remove(c.getCacheID(), c);

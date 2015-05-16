@@ -1,12 +1,16 @@
 package user;
 
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 
 public abstract class UserAbstract implements Serializable {
 
-    private String email;
-    private String password;
+    private final String email;
+    private byte[] password;
     private String name;
     private String gender;
     private String address;
@@ -17,7 +21,7 @@ public abstract class UserAbstract implements Serializable {
     // Constructors
     public UserAbstract(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound) {
         this.email = email;
-        this.password = password;
+        this.password = getHash(password);
         this.name = name;
         this.gender = gender;
         this.address = address;
@@ -31,16 +35,16 @@ public abstract class UserAbstract implements Serializable {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
+    /* // Should be Impossible to change email
+     public void setEmail(String email) {
+     this.email = email;
+     }*/
+    public byte[] getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = getHash(password);
     }
 
     public String getName() {
@@ -91,9 +95,44 @@ public abstract class UserAbstract implements Serializable {
         this.totalFound = totalFound;
     }
 
+    // Methods
+    private byte[] getHash(String password) { //SHA-256
+        byte byteData[] = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(password.getBytes());
+
+            byteData = md.digest();
+
+        } catch (NoSuchAlgorithmException ex) {
+            return null;
+        }
+        return byteData;
+    }
+
+    public boolean login(String email, String password) {
+        return this.getEmail().equals(email) && Arrays.equals(this.getPassword(), getHash(password));
+    }
+
     // toString
     @Override
     public String toString() {
         return "'" + name + " (" + totalFound + ")'" + (premium ? " Premium" : "");
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final UserAbstract other = (UserAbstract) obj;
+        if (!Objects.equals(this.email, other.email)) {
+            return false;
+        }
+        return true;
+    }
+
 }
