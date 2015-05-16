@@ -3,13 +3,14 @@ package user;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
 public abstract class UserAbstract implements Serializable {
 
     private final String email;
-    private String password;
+    private byte[] password;
     private String name;
     private String gender;
     private String address;
@@ -38,7 +39,7 @@ public abstract class UserAbstract implements Serializable {
      public void setEmail(String email) {
      this.email = email;
      }*/
-    public String getPassword() {
+    public byte[] getPassword() {
         return password;
     }
 
@@ -95,26 +96,22 @@ public abstract class UserAbstract implements Serializable {
     }
 
     // Methods
-    private String getHash(String password) { //SHA-256
-        StringBuilder sb = new StringBuilder();
+    private byte[] getHash(String password) { //SHA-256
+        byte byteData[] = null;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(password.getBytes());
 
-            byte byteData[] = md.digest();
+            byteData = md.digest();
 
-            //convert the byte to hex format
-            for (int i = 0; i < byteData.length; i++) {
-                sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
-            }
         } catch (NoSuchAlgorithmException ex) {
             return null;
         }
-        return sb.toString();
+        return byteData;
     }
 
     public boolean login(String email, String password) {
-        return this.getEmail().equals(email) && this.getPassword().equals(getHash(password));
+        return this.getEmail().equals(email) && Arrays.equals(this.getPassword(), getHash(password));
     }
 
     // toString

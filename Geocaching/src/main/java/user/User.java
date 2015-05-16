@@ -42,7 +42,7 @@ public class User extends UserAbstract implements Serializable {
      super.setEmail(email);
      }*/
 
-    public String getPassword() {
+    public byte[] getPassword() {
         return super.getPassword();
     }
 
