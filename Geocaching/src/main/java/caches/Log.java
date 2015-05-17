@@ -1,52 +1,82 @@
 package caches;
 
-import user.User;
-
+import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
+import user.UserAbstract;
 
 public class Log {
 
-    public enum Trackable_State {
-        VISITED,DROPPED,NO_ACTION;
+    /*
+     Who can log ?
+
+     | Cache State | Owner/Reviewer |  Regular User  |
+     |             |  View |  Write |  View |  Write |
+     |-------------|-------|--------|-------|--------|
+     | Archived    |  Yes  |  Notes |  Yes  |  Notes |
+     | Enabled     |  Yes  |  Yes   |  Yes  |  Notes |
+     | Disabled    |  Yes  |  Notes |  Yes  |  Notes |
+     | Unpublished |  Yes  | RNotes |   No  |   No   |
+
+
+     */
+    public enum Log_Type {
+
+        FOUND_IT, DNF, NEEDS_MAINTENANCE, REVIEWER_NOTE, NEEDS_ARCHIVING, NOTE, ARCHIVED, ENABLED, DISABLED;
+
         @Override
         public String toString() {
-            switch(this) {
-                case VISITED: return "Visited";
-                case DROPPED: return "Was Dropped";
-                case NO_ACTION: return "No Action";
-                default: throw new IllegalArgumentException();
+            switch (this) {
+                case FOUND_IT:
+                    return "Found it";
+                case DNF:
+                    return "Didn't find it";
+                case NEEDS_MAINTENANCE:
+                    return "Needs Maintenance";
+                case REVIEWER_NOTE:
+                    return "Reviewer Note";
+                case NEEDS_ARCHIVING:
+                    return "Needs Archiving";
+                case NOTE:
+                    return "Note";
+                case ARCHIVED: // Automatic Log
+                    return "Archived";
+                case DISABLED: // Automatic Log
+                    return "Disabled";
+                case ENABLED: // Automatic Log
+                    return "Enabled Listing";
+                default:
+                    throw new IllegalArgumentException();
             }
         }
     }
-    private User user=null;
-    private String log="";
-    private String trackable="";
-    private Trackable_State trackable_state=Trackable_State.NO_ACTION;
+
+    private UserAbstract user = null;
+    private String log = "";
     private GregorianCalendar date;
-    //private Cache cache;
+    private Log_Type logType;
 
     // Constructors
-
-    public Log(User user, String log, String trackable, Trackable_State trackable_state, GregorianCalendar date) {
+    public Log(UserAbstract user, String log, GregorianCalendar date, Log_Type logType) {
         this.user = user;
         this.log = log;
-
-        this.trackable_state = trackable_state;
-        if(trackable_state == Trackable_State.NO_ACTION) // If the trackable has no action
-            this.trackable = ""; // Then none was referenced
-        else
-            this.trackable = trackable; // Else reference the Trackable
+        this.logType = logType;
         this.date = date;
     }
 
+    public Log(String log, GregorianCalendar date, Log_Type logType) {
+        this.user = null;
+        this.log = log;
+        this.logType = logType;
+        this.date = date;
+    }
 
     // Getters and Setters
-
-    public User getUser() {
+    public UserAbstract getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserAbstract user) {
         this.user = user;
     }
 
@@ -58,14 +88,6 @@ public class Log {
         this.log = log;
     }
 
-    public String getTrackable() {
-        return trackable;
-    }
-
-    public void setTrackable(String trackable) {
-        this.trackable = trackable;
-    }
-
     public GregorianCalendar getDate() {
         return date;
     }
@@ -74,26 +96,22 @@ public class Log {
         this.date = date;
     }
 
-    public Trackable_State getTrackable_state() {
-        return trackable_state;
+    public Log_Type getLogType() {
+        return logType;
     }
-
-    public void setTrackable_state(Trackable_State trackable_state) {
-        this.trackable_state = trackable_state;
-    }
-
 
     // toString
-
     @Override
     public String toString() {
-        return " " + user +
-                "\nDate=" + date +
-                "\nLog = " + log +
-                (trackable_state.NO_ACTION == this.trackable_state ? "\n" : "\nTrackable='" + trackable + '\'' +
-                        " " + trackable_state);
+        SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        timeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String date_str = timeFormat.format(date);
+        return " "
+                + user
+                + "\nDate="
+                + date_str
+                + "\nLog = "
+                + log;
     }
-
-
 
 }

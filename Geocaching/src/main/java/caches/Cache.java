@@ -1,201 +1,361 @@
 package caches;
 
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-
-import user.User;
 import base.Position;
-import caches.Log.Trackable_State;
+import java.io.Serializable;
+import java.util.GregorianCalendar;
+import java.util.Objects;
+import java.util.TreeMap;
+import user.Admin;
+import user.Reviewer;
+import user.User;
+import user.UserAbstract;
 
-public abstract class Cache {
+public abstract class Cache implements Serializable, Comparable<Cache> {
 
-	public enum Status {
-		UNPUBLISHED, ENABLED, DISABLED,ARCHIVED;
+    public enum Status {
 
-		@Override
-		public String toString() {
-			switch(this) {
-				case UNPUBLISHED: return "Unpublished";
-				case ENABLED: return "Enabled";
-				case DISABLED: return "Disabled";
-				case ARCHIVED: return "Archived";
-				default: throw new IllegalArgumentException();
-			}
-		}
-	}
+        UNPUBLISHED, ENABLED, DISABLED, ARCHIVED;
 
-	private GregorianCalendar publishDate; // Date cache was placed
-	private String cacheID; // Cache ID number
-	private boolean premiumOnly; // Cache Premium
-	private String description; // Cache description
-	private Status cacheState; // Cache Status
-	private String cacheTitle; // Cache name
-	private User owner; // Who placed the cache
-	private int cacheSize; // Type of container
-	private float difficulty; // How difficult is it to find the cache
-	private Position position;
-	private String hint; // Hints to find the cache
-	private ArrayList<Log> cache_Logs; // Cache logs
-	private ArrayList<String> travel_bugs; // Travel bugs in cache container
+        @Override
+        public String toString() {
+            switch (this) {
+                case UNPUBLISHED:
+                    return "Unpublished";
+                case ENABLED:
+                    return "Enabled";
+                case DISABLED:
+                    return "Disabled";
+                case ARCHIVED:
+                    return "Archived";
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+    }
 
-	// Constructors
-	public Cache(GregorianCalendar publishDate, String cacheID, String description, Status cacheState, String cacheTitle, User owner, int cacheSize, float difficulty, Position position, String hint, ArrayList<Log> cache_Logs, ArrayList<String> travel_bugs) {
-		this.publishDate = publishDate;
-		this.cacheID = cacheID;
-		this.description = description;
-		this.cacheState = cacheState;
-		this.cacheTitle = cacheTitle;
-		this.owner = owner;
-		this.cacheSize = cacheSize;
-		this.difficulty = difficulty;
-		this.position = position;
-		this.hint = hint;
-		this.cache_Logs = cache_Logs;
-		this.travel_bugs = travel_bugs;
-	}
+    private GregorianCalendar publishDate; // Date cache was published
+    private GregorianCalendar creationDate; // Date cache was created
+    private String cacheID; // Cache ID number
+    private boolean premiumOnly; // Cache Premium
+    private String description; // Cache description
+    private Status cacheState; // Cache Status
+    private String cacheTitle; // Cache name
+    private UserAbstract owner; // Who placed the cache
+    private int cacheSize; // Type of container
+    private float difficulty; // How difficult is it to find the cache
+    private Position position;
+    private String hint; // Hints to find the cache
+    private TreeMap<GregorianCalendar, Log> cache_Logs; // Cache logs
+    private Reviewer reviewer = null; // Reviewer responsible
 
+    // Constructors
+    public Cache(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, Reviewer reviewer) {
+        this.publishDate = publishDate;
+        this.creationDate = creationDate;
+        this.cacheID = cacheID;
+        this.premiumOnly = premiumOnly;
+        this.description = description;
+        this.cacheState = cacheState;
+        this.cacheTitle = cacheTitle;
+        this.owner = owner;
+        this.cacheSize = cacheSize;
+        this.difficulty = difficulty;
+        this.position = position;
+        this.hint = hint;
+        this.cache_Logs = cache_Logs;
+        this.reviewer = reviewer;
+    }
 
-	// Getters and Setters
-	public GregorianCalendar getPublishDate() {
-		return publishDate;
-	}
+    // w/o ID
+    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, Reviewer reviewer) {
+        this.creationDate = creationDate;
+        this.description = description;
+        this.cacheState = Status.UNPUBLISHED;
+        this.cacheTitle = cacheTitle;
+        this.cacheSize = cacheSize;
+        this.difficulty = difficulty;
+        this.position = position;
+        this.hint = hint;
+        this.cache_Logs = cache_Logs;
+        this.reviewer = reviewer;
+    }
 
-	public void setPublishDate(GregorianCalendar publishDate) {
-		this.publishDate = publishDate;
-	}
+    // w/o ID and Reviewer
+    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs) {
+        this.creationDate = creationDate;
+        this.description = description;
+        this.cacheState = Status.UNPUBLISHED;
+        this.cacheTitle = cacheTitle;
+        this.cacheSize = cacheSize;
+        this.difficulty = difficulty;
+        this.position = position;
+        this.hint = hint;
+        this.cache_Logs = cache_Logs;
+    }
 
-	public String getCacheID() {
-		return cacheID;
-	}
+    // Getters and Setters
+    public GregorianCalendar getPublishDate() {
+        return publishDate;
+    }
 
-	public void setCacheID(String cacheID) {
-		this.cacheID = cacheID;
-	}
+    public void setPublishDate(GregorianCalendar publishDate) {
+        this.publishDate = publishDate;
+    }
 
-	public Status getCacheState() {
-		return cacheState;
-	}
+    public GregorianCalendar getCreationDate() {
+        return creationDate;
+    }
 
-	public void setCacheState(Status cacheState) {
-		this.cacheState = cacheState;
-	}
+    public void setCreationDate(GregorianCalendar creationDate) {
+        this.creationDate = creationDate;
+    }
 
-	public String getDescription() {return description;}
+    public boolean isPremiumOnly() {
+        return premiumOnly;
+    }
 
-	public void setDescription(String description) {this.description = description;}
+    public void setPremiumOnly(boolean premiumOnly) {
+        this.premiumOnly = premiumOnly;
+    }
 
-	public String getCacheTitle() {
-		return cacheTitle;
-	}
+    public String getCacheID() {
+        return cacheID;
+    }
 
-	public void setCacheTitle(String cacheTitle) {
-		this.cacheTitle = cacheTitle;
-	}
+    public void setCacheID(String cacheID) {
+        this.cacheID = cacheID;
+    }
 
-	public User getOwner() {
-		return owner;
-	}
+    public Status getCacheStatus() {
+        return cacheState;
+    }
 
-	public void setOwner(User owner) {
-		this.owner = owner;
-	}
+    public void setCacheState(Status cacheState) {
+        this.cacheState = cacheState;
+    }
 
-	public int getCacheSize() {
-		return cacheSize;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setCacheSize(int cacheSize) {
-		this.cacheSize = cacheSize;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public float getDifficulty() {
-		return difficulty;
-	}
+    public String getCacheTitle() {
+        return cacheTitle;
+    }
 
-	public void setDifficulty(float difficulty) {
-		this.difficulty = difficulty;
-	}
+    public void setCacheTitle(String cacheTitle) {
+        this.cacheTitle = cacheTitle;
+    }
 
-	public Position getPosition() {
-		return position;
-	}
+    public UserAbstract getOwner() {
+        return owner;
+    }
 
-	public void setPosition(Position position) {
-		this.position = position;
-	}
+    public void setOwner(UserAbstract owner) {
+        this.owner = owner;
+    }
 
-	public String getHint() {
-		return hint;
-	}
+    public int getCacheSize() {
+        return cacheSize;
+    }
 
-	public void setHint(String hint) {
-		this.hint = hint;
-	}
+    public void setCacheSize(int cacheSize) {
+        this.cacheSize = cacheSize;
+    }
 
-	public ArrayList<Log> getCache_Logs() {
-		return cache_Logs;
-	}
+    public float getDifficulty() {
+        return difficulty;
+    }
 
-	public void setCache_Logs(ArrayList<Log> cache_Logs) {
-		this.cache_Logs = cache_Logs;
-	}
+    public void setDifficulty(float difficulty) {
+        this.difficulty = difficulty;
+    }
 
-	public ArrayList<String> getTravel_bugs() {return travel_bugs;}
+    public Position getPosition() {
+        return position;
+    }
 
-	public void setTravel_bugs(ArrayList<String> travel_bugs) {this.travel_bugs = travel_bugs;}
+    public void setPosition(Position position) {
+        this.position = position;
+    }
 
-	// Methods
+    public String getHint() {
+        return hint;
+    }
 
-	public void disable(){this.cacheState = Status.DISABLED;}
+    public void setHint(String hint) {
+        this.hint = hint;
+    }
 
-	public void enable(){this.cacheState = Status.ENABLED;}
+    public TreeMap<GregorianCalendar, Log> getCache_Logs() {
+        return cache_Logs;
+    }
 
-	public void logCache(User user,String logUser, Trackable_State dropTb, GregorianCalendar date){
-		Log log;
+    public void setCache_Logs(TreeMap<GregorianCalendar, Log> cache_Logs) {
+        this.cache_Logs = cache_Logs;
+    }
 
-		log = new Log(user, logUser, user.getTrackable(), dropTb, date);
-		user.removeTb();
-		this.cache_Logs.add(log);
-	}
+    public Reviewer getReviewer() {
+        return reviewer;
+    }
 
-	// ToString
+    public void setReviewer(Reviewer reviewer) {
+        this.reviewer = reviewer;
+    }
 
+    // Methods
+    public void disable() {
+        this.cacheState = Status.DISABLED;
+    }
 
-	@Override
-	public String toString() {
-		return "Cache{" +
-				"publishDate=" + publishDate +
-				", cacheID='" + cacheID + '\'' +
-				", description='" + description + '\'' +
-				", cacheState=" + cacheState +
-				", cacheTitle='" + cacheTitle + '\'' +
-				", premiumOnly='" + premiumOnly + '\'' +
-				", owner=" + owner +
-				", cacheSize=" + cacheSize +
-				", difficulty=" + difficulty +
-				", position=" + position +
-				", hint='" + hint + '\'' +
-				", travel_bugs=" + travel_bugs +
-				", cache_Logs=" + cache_Logs +
-				'}';
-	}
+    public void enable() {
+        this.cacheState = Status.ENABLED;
+    }
 
-	public String toListing(String type) {
-		return  "\nTitle = '" + cacheTitle + '\'' +
-				"\nType = " + type +
-				"\nPublishing Date = " + publishDate +
-				"\nCache ID = '" + cacheID + '\'' +
-				"\nCacheState = " + cacheState +
-				"\nOwner = " + owner +
-				"\nSize = " + cacheSize +
-				"\nDifficulty = " + difficulty +
-				position.toListing() +
-				"\nTravel bugs ("+ travel_bugs.size()+")  =  " + travel_bugs +
-				"\nDescription = '" + description + '\'' +
-				"\nHint = '" + hint + '\'';
-	}
+    public boolean logCache(User user, Log log) {// CHECK THIS , STUFF MISSING !!!
 
-	public String toLogsListing() {
-		return  "\nCache Log = " + cache_Logs;
-	}
+        switch (this.getCacheStatus()) {
+            case UNPUBLISHED:
+                // If Reviewer
+                if (user instanceof Reviewer == true) {
+                    if (this.reviewer == null) {
+                        return false; // No Reviewer No Log
+                    } else if (this.reviewer.equals(user) == false) {
+                        return false; // If this Reviewer is not assigned, No Log
+                    }
+                    if (log.getLogType() != Log.Log_Type.REVIEWER_NOTE) { // Check Log Type
+                        return false;
+                    }
+
+                } else if (user instanceof Admin == true) {
+                    if (log.getLogType() != Log.Log_Type.REVIEWER_NOTE) { // Check Log Type
+                        return false;
+                    }
+                } else // User
+                {
+                    if (this.getOwner().equals(user)) // If he is the Owner
+                    {
+                        if (log.getLogType() != Log.Log_Type.REVIEWER_NOTE) { // Check Log Type
+                            return false;
+                        }
+                    } else // Not the Owner
+                    {
+                        return false;
+                    }
+                }
+                break;
+
+            case DISABLED:
+                // Everyone can log
+                if (log.getLogType() != Log.Log_Type.NOTE) { // Check Log Type
+                    return false;
+                }
+                break;
+
+            case ARCHIVED:
+                // Everyone can log
+                if (log.getLogType() != Log.Log_Type.NOTE) { // Check Log Type
+                    return false;
+                }
+                break;
+
+            case ENABLED:
+                // Everyone can log
+                if (log.getLogType() == Log.Log_Type.ARCHIVED || log.getLogType() == Log.Log_Type.DISABLED
+                        || log.getLogType() == Log.Log_Type.ENABLED) { // Check Log Type
+                    return false;
+                } else if (log.getLogType() == Log.Log_Type.REVIEWER_NOTE) {
+                    if (user instanceof Reviewer == true) {
+                        if (user.equals(this.getReviewer()) == false) {
+                            return false; // Not the assigned Reviewer
+                        }
+                    } else {
+                        return false;
+                    }
+                }
+                break;
+
+        }
+
+        this.cache_Logs.put(log.getDate(), log);
+        return true;
+    }
+
+    public String genID(int size) {
+        return Long.toHexString(Double.doubleToLongBits(Math.random())).substring(15 - size, 15).toUpperCase();
+    }
+
+    public void clearLogs() {
+        this.cache_Logs.clear();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Cache other = (Cache) obj;
+        if (!Objects.equals(this.cacheID, other.cacheID)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int compareTo(Cache other) {
+        // compareTo should return < 0 if this is supposed to be
+        // less than other, > 0 if this is supposed to be greater than
+        // other and 0 if they are supposed to be equal
+        return this.cacheID.compareTo(other.cacheID);
+
+    }
+
+    // ToString
+    @Override
+    public String toString() {
+        return "Cache{"
+                + "publishDate=" + publishDate
+                + ", cacheID='" + cacheID + '\''
+                + ", description='" + description + '\''
+                + ", cacheState=" + cacheState
+                + ", cacheTitle='" + cacheTitle + '\''
+                + ", premiumOnly='" + premiumOnly + '\''
+                + ", owner=" + owner
+                + ", cacheSize=" + cacheSize
+                + ", difficulty=" + difficulty
+                + ", position=" + position
+                + ", hint='" + hint + '\''
+                + ", cache_Logs=" + cache_Logs
+                + '}';
+    }
+
+    public String toListing(String type) {
+        return "\nTitle = '" + cacheTitle + '\''
+                + "\nType = " + type
+                + "\nPublishing Date = " + publishDate
+                + "\nCache ID = '" + cacheID + '\''
+                + "\nCacheState = " + cacheState
+                + "\nOwner = " + owner
+                + "\nSize = " + cacheSize
+                + "\nDifficulty = " + difficulty
+                + position.toListing()
+                + "\nDescription = '" + description + '\''
+                + "\nHint = '" + hint + '\'';
+    }
+
+    public String toLogsListing() {
+        return "\nCache Log = " + cache_Logs;
+    }
 }
