@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
@@ -31,8 +32,7 @@ public class Geocaching {
 
         data = getData();
 
-        populateData(data);
-
+        //populateData(data);
         System.out.println("---------------------------------------------------");
         System.out.println("---------------- Welcome to GeoPOO ----------------");
         System.out.println("---------------------------------------------------");
@@ -396,22 +396,6 @@ public class Geocaching {
         }
     }
 
-    private static void populateData(Data data) {
-
-        User u1 = new User("x@x.com", "12345", "Ulisses", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
-        User u2 = new User("y@y.com", "12345", "Uche Villareal", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
-        Reviewer r1 = new Reviewer("x1@x.com", "12345", "Rickon", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
-        Admin a1 = new Admin("x2@x.com", "12345", "Aemon", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
-
-        data.getAllUsers().put(u1.getEmail(), u1);
-        data.getAllUsers().put(u2.getEmail(), u2);
-        data.getAllUsers().put(r1.getEmail(), r1);
-        data.getAllUsers().put(a1.getEmail(), a1);
-
-        u1.newFriendship(u2);
-
-    }
-
     private static void mExit() {
         if (saveData()) {
             System.out.println("Program exit successfully!");
@@ -452,7 +436,46 @@ public class Geocaching {
     }
 
     private static void mFriends() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int choice = -1;
+        String format = "\t[%3d] ";
+
+        while (choice == -1) {
+            System.out.println("####### Friends #######\n");
+            ArrayList<User> arrayUser = ((User) userOnline).getFriendsArray();
+
+            for (int i = 0; i < arrayUser.size(); i++)// For each Friend
+            {
+                User fr = arrayUser.get(i);
+                System.out.format(format + fr.toString() + "\n", i + 1);
+            }
+            System.out.println("\n-- [X] View Friend");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                default:
+                    if (choice > 0 && choice <= arrayUser.size()) {
+                        clearConsole();
+                        mViewFriend(arrayUser.get(choice - 1));
+                        clearConsole();
+                    } else {
+                        System.out.println("Error: Invalid Option");
+                    }
+                    choice = -1;
+                    break;
+            }
+        }
     }
 
     private static void mCaches() {
@@ -488,7 +511,6 @@ public class Geocaching {
             switch (choice) {
                 case 1:
                     userOnline.setPremium(!userOnline.isPremium()); // Switch Membership
-                    userOnline.setName("Farrusco");
                     clearConsole();
                     System.out.println("Premium Membership successfully changed!");
                     choice = -1;
@@ -504,6 +526,100 @@ public class Geocaching {
     }
 
     private static void mEditProfile() {
+
+    }
+
+    private static void mViewFriend(User friend) {
+        int choice = -1;
+        while (choice == -1) {
+            System.out.println("####### " + friend.getName() + " Profile #######\n");
+            System.out.println(userOnline.toStringTotal() + "\n");
+            System.out.println("-- [1] Remove Friend");
+            System.out.println("-- [2] View Activities");
+            System.out.println("-- [3] View Statistics");
+            System.out.println("-- [4] View Found Caches");
+            System.out.println("-- [5] View Owned Caches");
+            System.out.println("-----");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 1:
+                    clearConsole();
+                    ((User) userOnline).removeFriendship(friend);
+                    System.out.println("Friendship with " + friend.getName() + " has been Removed!");
+                    // Go Back
+                    break;
+                case 2:
+                    clearConsole();
+                    mViewActivities(friend);
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 3:
+                    clearConsole();
+                    mViewStatistics(friend);
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 4:
+                    clearConsole();
+                    mViewFoundCaches(friend);
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 5:
+                    clearConsole();
+                    mViewOwnedCaches(friend);
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Error: Option not available");
+                    choice = -1;
+                    break;
+            }
+        }
+    }
+
+    // Pre-Made Dataset
+    private static void populateData(Data data) {
+
+        User u1 = new User("1", "1", "Ulisses", "M", "rua", new GregorianCalendar(), true, 0, null, null, data);
+        User u2 = new User("y@y.com", "12345", "Uche Villareal", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
+        Reviewer r1 = new Reviewer("x1@x.com", "12345", "Rickon", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
+        Admin a1 = new Admin("x2@x.com", "12345", "Aemon", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
+
+        data.getAllUsers().put(u1.getEmail(), u1);
+        data.getAllUsers().put(u2.getEmail(), u2);
+        data.getAllUsers().put(r1.getEmail(), r1);
+        data.getAllUsers().put(a1.getEmail(), a1);
+
+        u1.newFriendship(u2);
+
+    }
+
+    private static void mViewActivities(User friend) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static void mViewStatistics(User friend) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static void mViewFoundCaches(User friend) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static void mViewOwnedCaches(User friend) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -5,6 +5,7 @@ import base.Data;
 import caches.Cache;
 import caches.Log;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
@@ -290,7 +291,13 @@ public class User extends UserAbstract implements Serializable {
         u2.friends.put(this.getEmail(), this);
     }
 
+    public void removeFriendship(User u2) {
+        this.friends.remove(u2.getEmail(), u2);
+        u2.friends.remove(this.getEmail(), this);
+    }
+
     // toString
+
     @Override
     public String toString() {
         return super.toString();
@@ -304,6 +311,16 @@ public class User extends UserAbstract implements Serializable {
         return sb.toString();
     }
 
+    public ArrayList<User> getFriendsArray() {
+
+        ArrayList<User> array = new ArrayList<User>();
+
+        for (User u : this.getFriends().values()) {
+            array.add(u);
+        }
+        return array;
+    }
+
     @Override
     public String toStringTotal() {
         return "E-Mail - " + super.getEmail()
@@ -311,6 +328,16 @@ public class User extends UserAbstract implements Serializable {
                 + "\nGender - " + super.getGender()
                 + "\nAddress - " + super.getAddress()
                 + "\nBirth Date - " + super.formatDate(super.getBirthDate())
+                + "\nPremium - " + super.isPremium()
+                + "\nTotal Found - " + super.getTotalFound()
+                + "\nTotal Owned Caches - " + this.caches.size()
+                + "\nFriends - " + this.friends.size() + "\n"
+                + this.friendsToString();
+    }
+
+    public String toStringFriend() {
+        return "Name - " + super.getName()
+                + "\nGender - " + super.getGender()
                 + "\nPremium - " + super.isPremium()
                 + "\nTotal Found - " + super.getTotalFound()
                 + "\nTotal Owned Caches - " + this.caches.size()
