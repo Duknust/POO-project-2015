@@ -3,6 +3,7 @@ package user;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.Objects;
@@ -114,10 +115,26 @@ public abstract class UserAbstract implements Serializable {
         return this.getEmail().equals(email) && Arrays.equals(this.getPassword(), getHash(password));
     }
 
+    public static String formatDate(GregorianCalendar calendar) {
+        SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
+        fmt.setCalendar(calendar);
+        return fmt.format(calendar.getTime());
+    }
+
     // toString
-    @Override
+    //@Override
     public String toString() {
-        return "'" + name + " (" + totalFound + ")'" + (premium ? " Premium" : "");
+        return name + " (" + totalFound + ")" + (premium ? " Premium" : "");
+    }
+
+    public String toStringTotal() {
+        return "E-Mail - " + email
+                + "\nName - " + name
+                + "\nGender - " + gender
+                + "\nAddress - " + address
+                + "\nBirth Date - " + formatDate(birthDate)
+                + "\nPremium - " + premium
+                + "\nTotal Found - " + totalFound;
     }
 
     @Override

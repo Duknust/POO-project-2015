@@ -2,6 +2,7 @@ package caches;
 
 import base.Position;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -292,10 +293,10 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.cache_Logs.clear();
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        return hash;
+    public static String formatDateTime(GregorianCalendar calendar) {
+        SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        fmt.setCalendar(calendar);
+        return fmt.format(calendar.getTime());
     }
 
     @Override
@@ -326,7 +327,7 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
     @Override
     public String toString() {
         return "Cache{"
-                + "publishDate=" + publishDate
+                + "publishDate=" + formatDateTime(publishDate)
                 + ", cacheID='" + cacheID + '\''
                 + ", description='" + description + '\''
                 + ", cacheState=" + cacheState
@@ -344,7 +345,8 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
     public String toListing(String type) {
         return "\nTitle = '" + cacheTitle + '\''
                 + "\nType = " + type
-                + "\nPublishing Date = " + publishDate
+                + "\nCreation Date = " + formatDateTime(creationDate)
+                + "\nPublishing Date = " + formatDateTime(publishDate)
                 + "\nCache ID = '" + cacheID + '\''
                 + "\nCacheState = " + cacheState
                 + "\nOwner = " + owner
