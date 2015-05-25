@@ -34,8 +34,13 @@ public class Letterbox extends Cache {
 
     @Override
     public String toString() {
-        return "Letterbox Cache\n" + super.toListing("Letterbox")
+        return "Letterbox Cache\n" + super.toListing()
                 + this.stages.toString() + super.toLogsListing();
+    }
+
+    @Override
+    public Type getType() {
+        return Type.LETTERBOX;
     }
 
     public void AddStage(double lati, double longi, String description) {

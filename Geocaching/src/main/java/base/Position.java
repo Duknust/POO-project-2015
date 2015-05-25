@@ -1,8 +1,9 @@
 package base;
 
+import java.io.Serializable;
 import java.util.GregorianCalendar;
 
-public class Position {
+public class Position implements Serializable {
 
     private double lati = 0.0;
     private double longi = 0.0;

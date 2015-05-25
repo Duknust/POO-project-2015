@@ -1,5 +1,8 @@
 package base;
 
+import caches.Cache;
+import caches.Log;
+import caches.Traditional;
 import java.io.BufferedReader;
 import java.io.Console;
 import java.io.FileInputStream;
@@ -15,6 +18,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import user.Admin;
@@ -32,7 +39,7 @@ public class Geocaching {
 
         data = getData();
 
-        //populateData(data);
+        populateData(data); // Use Pre-Made Database _ Atention, use with caution ! ---------------------------------------------
         showLogo();
 
         System.out.println("----------------------------------------------");
@@ -90,6 +97,7 @@ public class Geocaching {
         int choice = -1;
 
         while (choice == -1) {
+            System.out.println("Greetings " + userOnline.getName() + "! \n\n");
             System.out.println("####### Main Menu #######\n");
             System.out.println("-- [1] Profile");
             System.out.println("-- [2] Caches");
@@ -144,7 +152,7 @@ public class Geocaching {
 
     private static void mExit() {
         if (saveData()) {
-            System.out.println("Program exit successfully!");
+            System.out.println("Program exited successfully!");
         } else {
             System.out.println("Program couldn't save the Data");
         }
@@ -427,7 +435,56 @@ public class Geocaching {
     }
 
     private static void mCaches() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int choice = -1;
+        while (choice == -1) { // REVIEWER IFS MISSING
+            System.out.println("####### Caches Menu #######\n");
+            System.out.println("-- [1] Search Caches");
+            System.out.println("-- [2] Create a Cache");
+            System.out.println("-- [3] View Found Caches");
+            System.out.println("-- [4] View Owned Caches");
+            System.out.println("-----");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 1:
+                    clearConsole();
+                    mSearchCaches();
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 2:
+                    clearConsole();
+                    mCreateCache();
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 3:
+                    clearConsole();
+                    mViewFoundCaches((User) userOnline);
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 4:
+                    clearConsole();
+                    mViewOwnedCaches((User) userOnline);
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Error: Option not available");
+                    choice = -1;
+                    break;
+            }
+        }
     }
 
     private static void mStats() {
@@ -539,19 +596,254 @@ public class Geocaching {
         }
     }
 
+    // ------------------- CACHES MENU ------------------
+    private static void mViewOwnedCaches(User user) {
+
+        int choice = -1;
+        String format = "\t[%4d] ";
+
+        while (choice == -1) {
+            System.out.println("####### " + user.getName() + " Owned caches #######\n");
+            ArrayList<Cache> arrayCaches = ((User) userOnline).getCachesArrayPremiumCheck(userOnline);
+
+            for (int i = 0; i < arrayCaches.size(); i++)// For each Cache
+            {
+                Cache c = arrayCaches.get(i);
+                System.out.format(format + c.toSimpleListing() + "\n", i + 1);
+            }
+            System.out.println("\n-- [X] View Cache");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                default:
+                    if (choice > 0 && choice <= arrayCaches.size()) {
+                        clearConsole();
+                        mViewCache(arrayCaches.get(choice - 1));
+                        clearConsole();
+                    } else {
+                        System.out.println("Error: Invalid Option");
+                    }
+                    choice = -1;
+                    break;
+            }
+        }
+
+    }
+
+    private static void mViewFoundCaches(User user) {
+        int choice = -1, i = 0;
+        String format = "\t[%4d] ";
+
+        while (choice == -1) {
+            System.out.println("####### " + userOnline.getName() + " Founds #######\n");
+            SortedSet<Cache> arrayCaches = data.getCachesFrom(user);
+
+            for (Cache c : arrayCaches)// For each Friend
+            {
+                System.out.format(format + c.toSimpleListing() + "\n", i + 1);
+                i++;
+            }
+            System.out.println("\n-- [X] View Cache");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                default:
+                    if (choice > 0 && choice <= arrayCaches.size()) {
+                        clearConsole();
+                        Cache ca = null;
+                        Iterator<Cache> it = arrayCaches.iterator();
+                        i = 1;
+                        while (it.hasNext()) {
+                            ca = it.next();
+                            if (choice == i) {
+                                break;
+                            }
+                            i++;
+                        }
+                        mViewCache(ca);
+                        clearConsole();
+                    } else {
+                        System.out.println("Error: Invalid Option");
+                    }
+                    choice = -1;
+                    break;
+            }
+        }
+    }
+
+    private static void mViewCache(Cache get) {
+
+        int choice = -1;
+        while (choice == -1) {
+            boolean user = false, publish = false, archive = false, disable = false, enable = false, edit = false;
+            System.out.println("####### " + get.getCacheTitle() + " #######\n");
+            System.out.println(get.toListing() + "\n");
+            if (userOnline.getRole() == UserAbstract.Role.USER) { // Only Users can do these actions
+                System.out.println("-- [1] Log your visit");
+                System.out.println("-- [2] View My Logs");
+                System.out.println("-- [3] View Friends Logs");
+                System.out.println("-- [4] Report");
+                user = true;
+            }
+
+            if (userOnline.equals(get.getOwner()) || userOnline.equals(get.getReviewer())) { // Only Owner or Reviewer can see this menu
+                System.out.println("------- Admin Tools");
+
+                switch (get.getCacheStatus()) {
+
+                    case UNPUBLISHED:
+                        if (userOnline.equals(get.getReviewer())) {
+                            System.out.println("-- [6] Publish");
+                            publish = true;
+                            System.out.println("-- [7] Archive");
+                            archive = true;
+                            System.out.println("-- [8] Disable");
+                            disable = true;
+                        }
+                        break;
+
+                    case DISABLED:
+                        System.out.println("-- [7] Archive");
+                        archive = true;
+                        System.out.println("-- [8] Enable");
+                        enable = true;
+                        break;
+
+                    case ENABLED:
+                        System.out.println("-- [7] Archive");
+                        archive = true;
+                        System.out.println("-- [8] Disable");
+                        disable = true;
+                        break;
+
+                    case ARCHIVED:
+                        if (get.getPublishDate() != null) {
+                            // Only Enable if this Cache was already been Published
+                            System.out.println("-- [8] Enable");
+                            enable = true;
+                        }
+                        break;
+                }
+
+                System.out.println("-- [9] Edit Cache");
+                edit = true;
+            }
+
+            System.out.println("-----");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 1:
+                    if (user == true) {
+
+                        clearConsole();
+                        mLogCache(get);
+                    }
+                    choice = -1;
+                    break;
+                case 2:
+                    if (user == true) {
+                        clearConsole();
+                        HashMap<String, User> userlist = new HashMap<>();
+                        userlist.put(userOnline.getEmail(), (User) userOnline);
+                        mViewUserLogs(userlist);
+                        clearConsole();
+                    }
+                    choice = -1;
+                    break;
+                case 3:
+                    if (user == true) {
+                        clearConsole();
+                        mViewUserLogs(((User) userOnline).getFriends());
+                        clearConsole();
+                    }
+                    choice = -1;
+                    break;
+                case 6:
+                    if (publish == true) {
+                        clearConsole();
+                        ((Reviewer) userOnline).publishCache(get);
+                        clearConsole();
+                    }
+                    choice = -1;
+                    break;
+                case 7:
+                    if (archive == true) {
+                        clearConsole();
+                        ((User) userOnline).archiveCache(get);
+                        clearConsole();
+                    }
+                    choice = -1;
+                    break;
+                case 8:
+                    if (disable == true) {
+                        clearConsole();
+                        ((User) userOnline).disableCache(get);
+                        clearConsole();
+                    } else if (enable == true) {
+                        clearConsole();
+                        ((User) userOnline).enableCache(get);
+                        clearConsole();
+                    }
+                    choice = -1;
+                    break;
+                case 9:
+                    if (edit == true) {
+                        clearConsole();
+                        mEditCache(get);
+                        clearConsole();
+                    }
+                    choice = -1;
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Error: Option not available");
+                    choice = -1;
+                    break;
+            }
+        }
+
+    }
+// ------------------- ACTIVITES MENU ------------------
+
     private static void mViewActivities(User friend) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    // ------------------- STATISTICS MENU ------------------
     private static void mViewStatistics(User friend) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private static void mViewFoundCaches(User friend) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private static void mViewOwnedCaches(User friend) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -567,7 +859,9 @@ public class Geocaching {
                 Runtime.getRuntime().exec("clear");
             }
         } catch (final Exception e) {
-            //  Handle any exceptions.
+            for (int clear = 0; clear < 50; clear++) {
+                System.out.println("\b");
+            }
         }
     }
 
@@ -609,6 +903,7 @@ public class Geocaching {
         } catch (FileNotFoundException ex) {
             return false;
         } catch (Exception ex) {
+            ex.printStackTrace();
             return false;
         }
         return true;
@@ -618,14 +913,28 @@ public class Geocaching {
     private static void populateData(Data data) {
 
         User u1 = new User("1", "1", "Ulisses", "M", "rua", new GregorianCalendar(), true, 0, null, null, data);
-        User u2 = new User("y@y.com", "12345", "Uche Villareal", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
-        Reviewer r1 = new Reviewer("x1@x.com", "12345", "Rickon", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
-        Admin a1 = new Admin("x2@x.com", "12345", "Aemon", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
+        User u2 = new User("2", "2", "Uche Villareal", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
+        Reviewer r1 = new Reviewer("r", "r", "Rickon", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
+        Admin a1 = new Admin("a", "a", "Aemon", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
 
         data.getAllUsers().put(u1.getEmail(), u1);
         data.getAllUsers().put(u2.getEmail(), u2);
         data.getAllUsers().put(r1.getEmail(), r1);
         data.getAllUsers().put(a1.getEmail(), a1);
+
+        Position p1 = CountriesData.portugal;
+        Position p2 = new Position(41.57238, -8.47875, 1.5f);
+        Traditional tc1 = new Traditional(new GregorianCalendar(), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeMap<GregorianCalendar, Log>(), new ArrayList<>());
+        Traditional tc2 = new Traditional(new GregorianCalendar(), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeMap<GregorianCalendar, Log>(), new ArrayList<>());
+
+        u1.createCache(tc1);
+        u2.createCache(tc2);
+
+        r1.giveMeCache(tc1);
+        r1.giveMeCache(tc2);
+
+        r1.publishCache(tc1);
+        r1.publishCache(tc2);
 
         u1.newFriendship(u2);
 
@@ -656,6 +965,26 @@ public class Geocaching {
         System.out.println("..............0xx@@xx000000000xx@@x00.........");
         System.out.println(".................00000000000000000............");
         System.out.println("..............................................");
+    }
+
+    private static void mLogCache(Cache get) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static void mViewUserLogs(HashMap<String, User> userlist) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static void mEditCache(Cache get) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static void mSearchCaches() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static void mCreateCache() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

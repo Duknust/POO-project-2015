@@ -40,17 +40,22 @@ public class Mistery extends Cache {
     // toString
     @Override
     public String toString() {
-        return super.toListing("Mystery") + super.toLogsListing();
+        return super.toListing() + super.toLogsListing();
+    }
+
+    @Override
+    public Type getType() {
+        return Type.MYSTERY;
     }
 
     public String Listing(boolean user) {
 
         if (user)// If regular user
         {
-            return super.toListing("Mystery") + super.toLogsListing();
+            return super.toListing() + super.toLogsListing();
         } else // If Admin or Reviewer
         {
-            return super.toListing("Mystery") + finalPos.getCoords()
+            return super.toListing() + finalPos.getCoords()
                     + super.toLogsListing(); // List Full Coordinates
         }
     }

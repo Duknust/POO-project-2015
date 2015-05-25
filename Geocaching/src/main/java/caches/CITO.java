@@ -42,6 +42,11 @@ public class CITO extends Cache {
         this.participants.remove(user.getName());
     }
 
+    @Override
+    public Type getType() {
+        return Type.CITO;
+    }
+
     // toString
     @Override
     public String toString() {

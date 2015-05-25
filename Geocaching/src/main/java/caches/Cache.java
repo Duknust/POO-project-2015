@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import user.Admin;
 import user.Reviewer;
 import user.User;
@@ -28,6 +29,35 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
                     return "Disabled";
                 case ARCHIVED:
                     return "Archived";
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+    }
+
+    public enum Type {
+
+        CITO, EARTH, EVENT, LETTERBOX, MYSTERY, MULTI, TRADITIONAL, DEFAULT;
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case CITO:
+                    return "CITO";
+                case EARTH:
+                    return "Earth";
+                case EVENT:
+                    return "Event";
+                case LETTERBOX:
+                    return "Letterbox";
+                case MYSTERY:
+                    return "Mystery";
+                case MULTI:
+                    return "Multi";
+                case TRADITIONAL:
+                    return "Traditional";
+                case DEFAULT:
+                    return "";
                 default:
                     throw new IllegalArgumentException();
             }
@@ -213,7 +243,9 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
     }
 
     public void enable() {
-        this.cacheState = Status.ENABLED;
+        if (getPublishDate() != null) {// Only Enable if was Published before
+            this.cacheState = Status.ENABLED;
+        }
     }
 
     public boolean logCache(User user, Log log) {// CHECK THIS , STUFF MISSING !!!
@@ -286,7 +318,7 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
     }
 
     public String genID(int size) {
-        return Long.toHexString(Double.doubleToLongBits(Math.random())).substring(15 - size, 15).toUpperCase();
+        return "GC" + Long.toHexString(Double.doubleToLongBits(Math.random())).substring(15 - size, 15).toUpperCase();
     }
 
     public void clearLogs() {
@@ -294,9 +326,31 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
     }
 
     public static String formatDateTime(GregorianCalendar calendar) {
+        if (calendar == null) {
+            return "-/-/-";
+        }
         SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         fmt.setCalendar(calendar);
         return fmt.format(calendar.getTime());
+    }
+
+    public boolean hasFound(User user) {
+        for (Log l : this.cache_Logs.values()) {
+            if (l.getUser().equals(user) && l.getLogType() == Log.Log_Type.FOUND_IT) { // If User has a 'Found It' Log
+                return true; // Then he Found it !
+            }
+        }
+        return false;
+    }
+
+    public TreeSet<Log> getLogs(User user) {
+        TreeSet<Log> list = new TreeSet<>();
+        for (Log l : this.cache_Logs.values()) {
+            if (l.getUser().equals(user)) {
+                list.add(l);
+            }
+        }
+        return list;
     }
 
     @Override
@@ -323,6 +377,11 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
 
     }
 
+    // Should be Overrided
+    public Type getType() {
+        return Type.DEFAULT;
+    }
+
     // ToString
     @Override
     public String toString() {
@@ -342,19 +401,27 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
                 + '}';
     }
 
-    public String toListing(String type) {
+    public String toListing() {
         return "\nTitle = '" + cacheTitle + '\''
-                + "\nType = " + type
+                + "\nType = " + getType()
                 + "\nCreation Date = " + formatDateTime(creationDate)
                 + "\nPublishing Date = " + formatDateTime(publishDate)
                 + "\nCache ID = '" + cacheID + '\''
                 + "\nCacheState = " + cacheState
                 + "\nOwner = " + owner
                 + "\nSize = " + cacheSize
-                + "\nDifficulty = " + difficulty
+                + "\nDifficulty = " + difficulty + "\n"
                 + position.toListing()
                 + "\nDescription = '" + description + '\''
                 + "\nHint = '" + hint + '\'';
+    }
+
+    public String toSimpleListing() {
+        return cacheID
+                + " '" + cacheTitle + '\''
+                + " (" + getType() + ")"
+                + "D " + difficulty
+                + " / T " + position.getDifficulty();
     }
 
     public String toLogsListing() {

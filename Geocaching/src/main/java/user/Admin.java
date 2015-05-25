@@ -15,4 +15,9 @@ public class Admin extends Reviewer {
     void deleteLog(Log l, Cache c) {
         c.getCache_Logs().remove(l.getDate(), l);
     }
+
+    @Override
+    public Role getRole() {
+        return Role.ADMIN;
+    }
 }

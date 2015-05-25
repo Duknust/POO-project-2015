@@ -52,6 +52,11 @@ public class Event extends Cache {
         this.participants.remove(user.getName());
     }
 
+    @Override
+    public Type getType() {
+        return Type.EVENT;
+    }
+
     // toString
     @Override
     public String toString() {

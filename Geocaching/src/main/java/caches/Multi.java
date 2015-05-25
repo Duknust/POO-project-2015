@@ -33,8 +33,13 @@ public class Multi extends Cache {
 
     @Override
     public String toString() {
-        return super.toListing("Multi") + this.stages.toString()
+        return super.toListing() + this.stages.toString()
                 + super.toLogsListing();
+    }
+
+    @Override
+    public Type getType() {
+        return Type.MULTI;
     }
 
     public void AddStage(double lati, double longi, String description) {

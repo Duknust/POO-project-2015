@@ -125,7 +125,7 @@ public class User extends UserAbstract implements Serializable {
 
     // Methods
     public boolean createCache(Cache cache) {
-        HashMap<String, Cache> map = this.data.getAllCaches();
+        HashMap<String, Cache> map = this.data.getAllCachesAndUnpublished();
         if (map == null) {
             return false;
         }
@@ -297,7 +297,6 @@ public class User extends UserAbstract implements Serializable {
     }
 
     // toString
-
     @Override
     public String toString() {
         return super.toString();
@@ -317,6 +316,29 @@ public class User extends UserAbstract implements Serializable {
 
         for (User u : this.getFriends().values()) {
             array.add(u);
+        }
+        return array;
+    }
+
+    public ArrayList<Cache> getCachesArray() {
+
+        ArrayList<Cache> array = new ArrayList<Cache>();
+
+        for (Cache c : this.getCaches().values()) {
+            array.add(c);
+        }
+        return array;
+    }
+
+    public ArrayList<Cache> getCachesArrayPremiumCheck(UserAbstract userOnline) {
+        ArrayList<Cache> array = new ArrayList<Cache>();
+
+        for (Cache c : this.getCaches().values()) {
+            if (c.isPremiumOnly() == false || (c.isPremiumOnly() == true && userOnline.isPremium() == true)) // Check for Premium Only Caches
+            {
+                array.add(c);
+            }
+
         }
         return array;
     }
@@ -348,6 +370,11 @@ public class User extends UserAbstract implements Serializable {
     // Increment by number the Number of Founds
     private void incFounds(int number) {
         this.setTotalFound(this.getTotalFound() + number);
+    }
+
+    @Override
+    public Role getRole() {
+        return Role.USER;
     }
 
 }

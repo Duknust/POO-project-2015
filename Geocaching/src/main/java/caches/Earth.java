@@ -30,6 +30,12 @@ public class Earth extends Cache {
     // toString
     @Override
     public String toString() {
-        return super.toListing("Earth") + super.toLogsListing();
+        return super.toListing() + super.toLogsListing();
     }
+
+    @Override
+    public Type getType() {
+        return Type.EARTH;
+    }
+
 }
