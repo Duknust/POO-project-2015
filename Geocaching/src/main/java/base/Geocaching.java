@@ -2,6 +2,7 @@ package base;
 
 import caches.Cache;
 import caches.Log;
+import caches.Mystery;
 import caches.Traditional;
 import java.io.BufferedReader;
 import java.io.Console;
@@ -539,7 +540,7 @@ public class Geocaching {
         int choice = -1;
         while (choice == -1) {
             System.out.println("####### " + friend.getName() + " Profile #######\n");
-            System.out.println(userOnline.toStringTotal() + "\n");
+            System.out.println(friend.toStringFriend() + "\n");
             System.out.println("-- [1] Remove Friend");
             System.out.println("-- [2] View Activities");
             System.out.println("-- [3] View Statistics");
@@ -604,7 +605,7 @@ public class Geocaching {
 
         while (choice == -1) {
             System.out.println("####### " + user.getName() + " Owned caches #######\n");
-            ArrayList<Cache> arrayCaches = ((User) userOnline).getCachesArrayPremiumCheck(userOnline);
+            ArrayList<Cache> arrayCaches = user.getCachesArrayPremiumCheck(user);
 
             for (int i = 0; i < arrayCaches.size(); i++)// For each Cache
             {
@@ -648,7 +649,7 @@ public class Geocaching {
 
         while (choice == -1) {
             System.out.println("####### " + userOnline.getName() + " Founds #######\n");
-            SortedSet<Cache> arrayCaches = data.getCachesFrom(user);
+            SortedSet<Cache> arrayCaches = data.getCachesFoundFrom(user);
 
             for (Cache c : arrayCaches)// For each Friend
             {
@@ -699,14 +700,17 @@ public class Geocaching {
 
         int choice = -1;
         while (choice == -1) {
-            boolean user = false, publish = false, archive = false, disable = false, enable = false, edit = false;
+            boolean user = false, publish = false, archive = false, disable = false, enable = false, edit = false, mystery = false;
             System.out.println("####### " + get.getCacheTitle() + " #######\n");
             System.out.println(get.toListing() + "\n");
             if (userOnline.getRole() == UserAbstract.Role.USER) { // Only Users can do these actions
                 System.out.println("-- [1] Log your visit");
                 System.out.println("-- [2] View My Logs");
                 System.out.println("-- [3] View Friends Logs");
-                System.out.println("-- [4] Report");
+                if (get.getType() == Cache.Type.MYSTERY) {
+                    System.out.println("-- [4] Check Coordinates");
+                    mystery = true;
+                }
                 user = true;
             }
 
@@ -790,6 +794,19 @@ public class Geocaching {
                     }
                     choice = -1;
                     break;
+                case 4:
+                    if (user == true) {
+                        clearConsole();
+                        Position p = mInputPosition(true);
+                        if (((Mystery) get).checkCoord(p)) {
+                            System.out.println("Coordinates are correct !");
+                            System.out.println(((Mystery) get).getFinalText());
+                        } else {
+                            System.out.println("Coordinates are wrong !");
+                        }
+                    }
+                    choice = -1;
+                    break;
                 case 6:
                     if (publish == true) {
                         clearConsole();
@@ -836,7 +853,7 @@ public class Geocaching {
         }
 
     }
-// ------------------- ACTIVITES MENU ------------------
+    // ------------------- ACTIVITES MENU ------------------
 
     private static void mViewActivities(User friend) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -926,15 +943,19 @@ public class Geocaching {
         Position p2 = new Position(41.57238, -8.47875, 1.5f);
         Traditional tc1 = new Traditional(new GregorianCalendar(), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeMap<GregorianCalendar, Log>(), new ArrayList<>());
         Traditional tc2 = new Traditional(new GregorianCalendar(), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeMap<GregorianCalendar, Log>(), new ArrayList<>());
+        Mystery mc1 = new Mystery(new GregorianCalendar(), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeMap<GregorianCalendar, Log>(), new Position(1.1f, 2.2f), "YOU SOLVED IT!");
 
         u1.createCache(tc1);
         u2.createCache(tc2);
+        u1.createCache(mc1);
 
         r1.giveMeCache(tc1);
         r1.giveMeCache(tc2);
+        r1.giveMeCache(mc1);
 
         r1.publishCache(tc1);
         r1.publishCache(tc2);
+        r1.publishCache(mc1);
 
         u1.newFriendship(u2);
 
@@ -985,6 +1006,149 @@ public class Geocaching {
 
     private static void mCreateCache() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static Position mInputPosition(boolean onlyCoords) {
+        int OK = 0;
+        String slati = "", slongi = "", sdiff = "";
+        float lati = 0.0f, longi = 0.0f, diff = 0.0f;
+        String continent = "", country = "", city = "";
+        boolean status = false;
+
+        System.out.println("####### Position Input #######\n");
+        System.out.println("----- Please insert the following fields");
+
+        // Lati
+        System.out.println("-- Latitude");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                slati = input.readLine();
+                lati = Float.parseFloat(slati);
+                status = true;
+            } catch (Exception ex) {
+                System.out.println("Error: Number isn't in the correct format (12.345)");
+            }
+        }
+        status = false;
+
+        // Longi
+        System.out.println("-- Longitude");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                slongi = input.readLine();
+                longi = Float.parseFloat(slongi);
+                status = true;
+            } catch (Exception ex) {
+                System.out.println("Error: Number isn't in the correct format (12.345)");
+            }
+        }
+        status = false;
+
+        if (onlyCoords) { // Only the Latitude and Longitude are necessary
+            return new Position(lati, longi);
+        }
+
+        // Continent
+        System.out.println("-- Continent");
+        int choice = -1;
+        while (choice == -1) {
+
+            System.out.println("Please choose:\n");
+
+            System.out.println("-- [1] Europe");
+            System.out.println("-- [2] Asia");
+            System.out.println("-- [3] Africa");
+            System.out.println("-- [4] Oceania");
+            System.out.println("-- [5] North America");
+            System.out.println("-- [6] South America");
+            System.out.println("-- [7] Antartica");
+
+            System.out.println("-----");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 1:
+                    continent = "Europe";
+                    break;
+                case 2:
+                    continent = "Asia";
+                    break;
+                case 3:
+                    continent = "Africa";
+                    break;
+                case 4:
+                    continent = "Oceania";
+                    break;
+                case 5:
+                    continent = "North America";
+                    break;
+                case 6:
+                    continent = "South America";
+                    break;
+                case 7:
+                    continent = "Antartica";
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Error: Option not available");
+                    choice = -1;
+                    break;
+            }
+        }
+
+        // Country
+        System.out.println("-- Country");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                country = input.readLine();
+                status = true;
+            } catch (Exception ex) {
+                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        // City
+        System.out.println("-- City");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                city = input.readLine();
+                status = true;
+            } catch (Exception ex) {
+                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        // Difficulty
+        System.out.println("-- Difficulty");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                sdiff = input.readLine();
+                diff = Float.parseFloat(sdiff);
+            } catch (Exception ex) {
+                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            if (diff >= 1.0f && diff <= 5.0f) {
+                status = true;
+            } else {
+                System.out.println("Error: Number is between 1.0f and 5.0f");
+            }
+        }
+
+        return new Position(lati, longi, continent, country, city, diff);
     }
 
 }
