@@ -5,7 +5,7 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import user.UserAbstract;
 
-public class Log {
+public class Log implements Comparable {
 
     /*
      Who can log ?
@@ -112,6 +112,15 @@ public class Log {
                 + date_str
                 + "\nLog = "
                 + log;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+
+        // compareTo should return < 0 if this is supposed to be
+        // less than other, > 0 if this is supposed to be greater than
+        // other and 0 if they are supposed to be equal
+        return -((GregorianCalendar) o).compareTo(this.getDate()); // Minus because the more recent logs need to be the first to be shown
     }
 
 }

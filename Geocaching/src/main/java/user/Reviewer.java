@@ -75,7 +75,9 @@ public class Reviewer extends User {
             return false; // Already Published
         }
         if (this instanceof Admin == false) { // If I am not Admin, and obviously not an User
-            if (c.getReviewer().equals(this) == false) { // and not the assigned reviewer
+            if (c.getReviewer() == null) {
+                return false;
+            } else if (c.getReviewer().equals(this) == false) { // and not the assigned reviewer
                 return false;
             }
         }
@@ -83,16 +85,21 @@ public class Reviewer extends User {
         // Remove all the logs
         c.clearLogs();
 
-        c.enable();
         c.logCache(this, new Log("Enabled Listing", new GregorianCalendar(), Log.Log_Type.ENABLED));
 
         c.setPublishDate(new GregorianCalendar()); // Set the Published Date
+        c.enable();
         super.getData().getEnabledCaches().put(c.getCacheID(), c); // Move it from Unpublished to Published
         super.getData().getUnpublishedCaches().remove(c.getCacheID(), c);
 
         Activity act = new Activity(new GregorianCalendar(), Activity.Type.NEW_CACHE, c, c.getOwner()); // Create Activity
         super.getData().addActivity(act);
         return true;
+    }
+
+    @Override
+    public Role getRole() {
+        return Role.REVIEWER;
     }
 
 }

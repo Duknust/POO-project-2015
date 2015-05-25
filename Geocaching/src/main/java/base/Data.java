@@ -3,9 +3,13 @@ package base;
 import activity.Activity;
 import caches.Cache;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
+import user.User;
 import user.UserAbstract;
 
 public class Data implements Serializable {
@@ -95,12 +99,45 @@ public class Data implements Serializable {
         allCaches.putAll(archivedCaches);
         allCaches.putAll(enabledCaches);
         allCaches.putAll(disabledCaches);
+        return allCaches;
+    }
+
+    public HashMap<String, Cache> getAllCachesAndUnpublished() {
+
+        HashMap<String, Cache> allCaches = new HashMap<>();
+
+        allCaches.putAll(archivedCaches);
+        allCaches.putAll(enabledCaches);
+        allCaches.putAll(disabledCaches);
         allCaches.putAll(unpublishedCaches);
         return allCaches;
     }
 
     public void addActivity(Activity act) {
         this.allActivities.put(act.getDate(), act);
+    }
+
+    public SortedSet<Cache> getCachesFrom(User u) {
+
+        SortedSet<Cache> list = new TreeSet<>(compareCachePubDate());
+
+        HashMap<String, Cache> allCaches = getAllCaches();
+
+        for (Cache c : allCaches.values()) {
+            if (c.getOwner().equals(u)) {
+                list.add(c);
+            }
+        }
+
+        return list;
+    }
+
+    public Comparator<Cache> compareCachePubDate() {
+        return new Comparator<Cache>() {
+            public int compare(Cache o1, Cache o2) {
+                return -1 * o1.getPublishDate().compareTo(o2.getPublishDate());
+            }
+        };
     }
 
 }
