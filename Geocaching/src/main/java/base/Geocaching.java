@@ -3,6 +3,8 @@ package base;
 import java.util.HashMap;
 import java.util.TreeMap;
 
+import meteo.Meteo;
+import meteo.MeteoOnline;
 import user.User;
 import activity.Activity;
 import caches.Cache;
@@ -19,15 +21,15 @@ public class Geocaching {
 		 * Position p1 = new Position(41.5503200, -8.4200500); Position p2 = new
 		 * Position(41.6503200, -8.4200500); GeoTools gt = new GeoTools();
 		 * System.out.println(gt.calcDistance(p1, p2));
-		 * 
-		 * MeteoOnline mo = new MeteoOnline(); Meteo m = mo.getOnlineWeather(new
-		 * Position(41.5503200, -8.4200500));
-		 * 
-		 * System.out.println(m.toString());
 		 */
-		CountriesData cd = new CountriesData();
+		MeteoOnline mo = new MeteoOnline();
+		Meteo m = mo.getOnlineWeather(new Position(41.5503200, -8.4200500));
 
-		System.out.println(cd.getCountryFromEurope(true));
+		System.out.println(m.toString());
+
+		// CountriesData cd = new CountriesData();
+
+		// System.out.println(cd.getCountryFromEurope(true));
 
 	}
 
