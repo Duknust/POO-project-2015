@@ -132,6 +132,21 @@ public class Data implements Serializable {
         return list;
     }
 
+    public SortedSet<Cache> getCachesFoundFrom(User u) {
+
+        SortedSet<Cache> list = new TreeSet<>(compareCachePubDate());
+
+        HashMap<String, Cache> allCaches = getAllCaches();
+
+        for (Cache c : allCaches.values()) {
+            if (c.hasFound(u)) {
+                list.add(c);
+            }
+        }
+
+        return list;
+    }
+
     public Comparator<Cache> compareCachePubDate() {
         return new Comparator<Cache>() {
             public int compare(Cache o1, Cache o2) {
