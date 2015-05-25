@@ -1,57 +1,62 @@
 package caches;
 
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-
-import user.User;
 import base.Position;
+import java.util.GregorianCalendar;
+import java.util.TreeMap;
+import user.Reviewer;
+import user.UserAbstract;
 
 public class Mistery extends Cache {
 
-	/*
-	 * The "catch-all" of geocache types, this type may involve complicated
-	 * puzzles that you will first need to solve to determine the correct
-	 * coordinates. Mystery/Puzzle Caches often become the staging ground for
-	 * new and unique geocaches that do not fit in another category.
-	 */
-	private Position finalPos = null;
+    /*
+     * The "catch-all" of geocache types, this type may involve complicated
+     * puzzles that you will first need to solve to determine the correct
+     * coordinates. Mystery/Puzzle Caches often become the staging ground for
+     * new and unique geocaches that do not fit in another category.
+     */
+    private Position finalPos = null;
 
-	// Constructors
-	public Mistery(GregorianCalendar publishDate, String cacheID,
-			String description, Status cacheState, String cacheTitle,
-			User owner, int cacheSize, float difficulty, Position position,
-			String hints, ArrayList<Log> cache_Log,
-			ArrayList<String> travel_bugs, Position pos) {
-		super(publishDate, cacheID, description, cacheState, cacheTitle, owner,
-				cacheSize, difficulty, position, hints, cache_Log, travel_bugs);
-		this.finalPos = pos;
-	}
+    // Constructors
+    public Mistery(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, Reviewer reviewer) {
+        super(publishDate, creationDate, cacheID, premiumOnly, description, cacheState,
+                cacheTitle, owner, cacheSize, difficulty, position, hint, cache_Logs, reviewer);
+    }
 
-	// Getters and Setters
-	public Position getFinalPos() {
-		return finalPos;
-	}
+    public Mistery(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, Position pos) {
+        super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs);
+        this.finalPos = pos;
+    }
 
-	public void setFinalPos(Position finalPos) {
-		this.finalPos = finalPos;
-	}
+    // Getters and Setters
+    public Position getFinalPos() {
+        return finalPos;
+    }
 
-	// Methods
-	// toString
-	@Override
-	public String toString() {
-		return super.toListing("Mystery") + super.toLogsListing();
-	}
+    public void setFinalPos(Position finalPos) {
+        this.finalPos = finalPos;
+    }
 
-	public String Listing(boolean user) {
+    // Methods
+    // toString
+    @Override
+    public String toString() {
+        return super.toListing() + super.toLogsListing();
+    }
 
-		if (user)// If regular user
-		{
-			return super.toListing("Mystery") + super.toLogsListing();
-		} else // If Admin or Reviewer
-		{
-			return super.toListing("Mystery") + finalPos.getCoords()
-					+ super.toLogsListing(); // List Full Coordinates
-		}
-	}
+    @Override
+    public Type getType() {
+        return Type.MYSTERY;
+    }
+
+    public String Listing(boolean user) {
+
+        if (user)// If regular user
+        {
+            return super.toListing() + super.toLogsListing();
+        } else // If Admin or Reviewer
+        {
+            return super.toListing() + finalPos.getCoords()
+                    + super.toLogsListing(); // List Full Coordinates
+        }
+    }
 }

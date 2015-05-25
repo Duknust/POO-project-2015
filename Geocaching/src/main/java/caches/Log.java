@@ -1,108 +1,126 @@
 package caches;
 
+import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
+import user.UserAbstract;
 
-import user.User;
+public class Log implements Comparable {
 
-public class Log {
+    /*
+     Who can log ?
 
-	public enum Trackable_State {
+     | Cache State | Owner/Reviewer |  Regular User  |
+     |             |  View |  Write |  View |  Write |
+     |-------------|-------|--------|-------|--------|
+     | Archived    |  Yes  |  Notes |  Yes  |  Notes |
+     | Enabled     |  Yes  |  Yes   |  Yes  |  Notes |
+     | Disabled    |  Yes  |  Notes |  Yes  |  Notes |
+     | Unpublished |  Yes  | RNotes |   No  |   No   |
 
-		VISITED, DROPPED, NO_ACTION;
 
-		@Override
-		public String toString() {
-			switch (this) {
-			case VISITED:
-				return "Visited";
-			case DROPPED:
-				return "Was Dropped";
-			case NO_ACTION:
-				return "No Action";
-			default:
-				throw new IllegalArgumentException();
-			}
-		}
-	}
+     */
+    public enum Log_Type {
 
-	private User user = null;
-	private String log = "";
-	private String trackable = "";
-	private Trackable_State trackable_state = Trackable_State.NO_ACTION;
-	private GregorianCalendar date;
+        FOUND_IT, DNF, NEEDS_MAINTENANCE, REVIEWER_NOTE, NEEDS_ARCHIVING, NOTE, ARCHIVED, ENABLED, DISABLED;
 
-	// private Cache cache;
+        @Override
+        public String toString() {
+            switch (this) {
+                case FOUND_IT:
+                    return "Found it";
+                case DNF:
+                    return "Didn't find it";
+                case NEEDS_MAINTENANCE:
+                    return "Needs Maintenance";
+                case REVIEWER_NOTE:
+                    return "Reviewer Note";
+                case NEEDS_ARCHIVING:
+                    return "Needs Archiving";
+                case NOTE:
+                    return "Note";
+                case ARCHIVED: // Automatic Log
+                    return "Archived";
+                case DISABLED: // Automatic Log
+                    return "Disabled";
+                case ENABLED: // Automatic Log
+                    return "Enabled Listing";
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+    }
 
-	// Constructors
-	public Log(User user, String log, String trackable,
-			Trackable_State trackable_state, GregorianCalendar date) {
-		this.user = user;
-		this.log = log;
+    private UserAbstract user = null;
+    private String log = "";
+    private GregorianCalendar date;
+    private Log_Type logType;
 
-		this.trackable_state = trackable_state;
-		if (trackable_state == Trackable_State.NO_ACTION) // If the trackable
-															// has no action
-		{
-			this.trackable = ""; // Then none was referenced
-		} else {
-			this.trackable = trackable; // Else reference the Trackable
-		}
-		this.date = date;
-	}
+    // Constructors
+    public Log(UserAbstract user, String log, GregorianCalendar date, Log_Type logType) {
+        this.user = user;
+        this.log = log;
+        this.logType = logType;
+        this.date = date;
+    }
 
-	// Getters and Setters
-	public User getUser() {
-		return user;
-	}
+    public Log(String log, GregorianCalendar date, Log_Type logType) {
+        this.user = null;
+        this.log = log;
+        this.logType = logType;
+        this.date = date;
+    }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+    // Getters and Setters
+    public UserAbstract getUser() {
+        return user;
+    }
 
-	public String getLog() {
-		return log;
-	}
+    public void setUser(UserAbstract user) {
+        this.user = user;
+    }
 
-	public void setLog(String log) {
-		this.log = log;
-	}
+    public String getLog() {
+        return log;
+    }
 
-	public String getTrackable() {
-		return trackable;
-	}
+    public void setLog(String log) {
+        this.log = log;
+    }
 
-	public void setTrackable(String trackable) {
-		this.trackable = trackable;
-	}
+    public GregorianCalendar getDate() {
+        return date;
+    }
 
-	public GregorianCalendar getDate() {
-		return date;
-	}
+    public void setDate(GregorianCalendar date) {
+        this.date = date;
+    }
 
-	public void setDate(GregorianCalendar date) {
-		this.date = date;
-	}
+    public Log_Type getLogType() {
+        return logType;
+    }
 
-	public Trackable_State getTrackable_state() {
-		return trackable_state;
-	}
+    // toString
+    @Override
+    public String toString() {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        timeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String date_str = timeFormat.format(date);
+        return " "
+                + user
+                + "\nDate="
+                + date_str
+                + "\nLog = "
+                + log;
+    }
 
-	public void setTrackable_state(Trackable_State trackable_state) {
-		this.trackable_state = trackable_state;
-	}
+    @Override
+    public int compareTo(Object o) {
 
-	// toString
-	@Override
-	public String toString() {
-		return " "
-				+ user
-				+ "\nDate="
-				+ date
-				+ "\nLog = "
-				+ log
-				+ (trackable_state.NO_ACTION == this.trackable_state ? "\n"
-						: "\nTrackable='" + trackable + '\'' + " "
-								+ trackable_state);
-	}
+        // compareTo should return < 0 if this is supposed to be
+        // less than other, > 0 if this is supposed to be greater than
+        // other and 0 if they are supposed to be equal
+        return -((GregorianCalendar) o).compareTo(this.getDate()); // Minus because the more recent logs need to be the first to be shown
+    }
 
 }
