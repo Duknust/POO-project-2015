@@ -363,8 +363,7 @@ public class User extends UserAbstract implements Serializable {
                 + "\nPremium - " + super.isPremium()
                 + "\nTotal Found - " + super.getTotalFound()
                 + "\nTotal Owned Caches - " + this.caches.size()
-                + "\nFriends - " + this.friends.size() + "\n"
-                + this.friendsToString();
+                + "\nFriends - " + this.friends.size() + "\n";
     }
 
     // Increment by number the Number of Founds
