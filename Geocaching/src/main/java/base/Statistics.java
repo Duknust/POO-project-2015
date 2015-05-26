@@ -43,26 +43,32 @@ public class Statistics implements Serializable {
 	}
 
 	public void graphiCacheCreationByYear(Data data) {
-		graphic2D(getValuesForStatisticsInYears(data.getAllCaches()), 50);
+		graphic2D(getValuesForStatisticsInYears(data.getAllCaches()), null, 50,
+				100, "", "", false);
 	}
 
 	public void graphiCacheCreationByMonth(Data data) {
-		graphic2D(getValuesForStatisticsInMonths(data.getAllCaches()), 12);
+		graphic2D(getValuesForStatisticsInMonths(data.getAllCaches()), null,
+				12, 100, "", "", false);
 	}
 
 	public void graphiCacheCreationByDay(Data data) {
-		graphic2D(getValuesForStatisticsInDays(data.getAllCaches()), 31);
+		graphic2D(getValuesForStatisticsInDays(data.getAllCaches()), null, 31,
+				100, "", "", false);
 	}
 
-	public void graphic2D(ArrayList<Integer> points, int columns) {
+	public void graphic2D(ArrayList<Integer> points, ArrayList<String> listX,
+			int columns, int limit, String xcaption, String ycaption,
+			boolean graph) {
 		int i, j;
 		String matrix[][] = new String[10][columns];
 		int maximum = 0;
+		StringBuilder sb = null;
 
 		// init matrix
 		for (i = 0; i < 10; i++)
-			for (j = 0; j < 12; j++)
-				matrix[i][j] = "   ";
+			for (j = 0; j < columns; j++)
+				matrix[i][j] = "     ";
 
 		// find maximum
 		for (Integer numb : points) {
@@ -71,28 +77,76 @@ public class Statistics implements Serializable {
 		}
 
 		for (i = 0; i < columns; i++) {
-			if (points.get(i) == maximum) {
-				matrix[10 - (points.get(i) / 10)][i] = " x ";
+			if (!graph) {
+				if (points.get(i) == maximum) {
+					matrix[8 - (points.get(i) / (limit / 10)) + 1][i] = "  x  ";
+				} else {
+					matrix[8 - (points.get(i) / (limit / 10)) + 1][i] = "  .  ";
+				}
 			} else {
-				matrix[8 - (points.get(i) / 10) + 1][i] = " . ";
+				matrix[8 - (points.get(i) / (limit / 10)) + 1][i] = "  #  ";
+			}
+
+		}
+
+		if (graph) {
+			for (j = 0; j < columns; j++) {
+				boolean swit = false;
+				for (i = 0; i < 10; i++) {
+					if (matrix[i][j].equals("  #  "))
+						swit = true;
+					if (swit) {
+						matrix[i][j] = "  #  ";
+					}
+				}
 			}
 		}
 
 		System.out.println("used scale 1:10");
-		System.out.println("[x] maximum value (" + maximum + ")");
-		System.out.println("[.] other values\n");
-		System.out.println(" - - - - - - - - - - - - - - - - - - - - ");
+		if (!graph) {
+			System.out.println("[x] maximum value (" + maximum + ")");
+			System.out.println("[.] other values\n");
+		}
+		// System.out.println(" - - - - - - - - - - - - - - - - - - - - ");
 		for (i = 0; i < 10; i++) {
-			StringBuilder sb = new StringBuilder();
+			sb = new StringBuilder();
 			// sb.append((9 - i) * 10 + "\t" + "|");
 			sb.append("| ");
 			for (j = 0; j < columns; j++) {
 				sb.append(matrix[i][j]);
 			}
-			sb.append("  |");
+			sb.append("  | " + limit / 10 * (10 - i));
+			if (i == 0 && ycaption != null && !ycaption.isEmpty()) {
+				sb.append("  y: " + ycaption);
+			}
 			System.out.println(sb.toString());
 		}
-		System.out.println(" - - - - - - - - - - - - - - - - - - - - ");
+		// System.out.println(" - - - - - - - - - - - - - - - - - - - - ");
+
+		if (listX != null && !listX.isEmpty()) {
+			sb = new StringBuilder();
+			sb.append("  ");
+			for (i = 0; i < columns; i++) {
+				String tmp = listX.get(i) + "";
+				if (tmp.length() == 1) {
+					tmp = "  " + tmp + "  ";
+				} else if (tmp.length() == 2) {
+					tmp = "  " + tmp + " ";
+				} else if (tmp.length() == 3) {
+					tmp = " " + tmp + " ";
+				} else if (tmp.length() == 4) {
+					tmp = " " + tmp;
+				} else {
+					tmp = tmp.substring(0, 5);
+				}
+				sb.append(tmp);
+			}
+			System.out.println(sb.toString());
+		}
+
+		if (xcaption != null && !xcaption.isEmpty()) {
+			System.out.println("x: " + xcaption);
+		}
 	}
 
 	public ArrayList<Integer> getValuesForStatisticsInMonths(
