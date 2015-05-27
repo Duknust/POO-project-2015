@@ -29,6 +29,7 @@ import user.UserAbstract;
 import caches.Cache;
 import caches.Log;
 import caches.Traditional;
+import dataCreation.CountriesData;
 
 public class Geocaching {
 

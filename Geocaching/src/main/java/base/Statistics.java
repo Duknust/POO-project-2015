@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.TreeSet;
 
+import user.UserAbstract;
+import user.UserAbstract.Role;
 import caches.Cache;
 
 public class Statistics implements Serializable {
@@ -199,5 +202,34 @@ public class Statistics implements Serializable {
 		}
 
 		return years;
+	}
+
+	public TreeSet<ToTop> topTenCacheFinders(HashMap<String, UserAbstract> users) {
+		TreeSet<ToTop> top = new TreeSet<ToTop>();
+		for (UserAbstract user : users.values()) {
+			if (user.getRole() == Role.USER) {
+				ToTop toTop = new ToTop(user.getTotalFound(), user.getName());
+				top.add(toTop);
+			}
+		}
+		return top;
+	}
+
+	public TreeSet<ToTop> topTenCacheCreators(HashMap<String, Cache> caches) {
+		TreeSet<ToTop> top = new TreeSet<ToTop>();
+		HashMap<String, Integer> usersCount = new HashMap<String, Integer>();
+		for (Cache cache : caches.values()) {
+			String name = cache.getOwner().getName();
+			if (usersCount.containsKey(name)) {
+				usersCount.put(name, usersCount.get(name) + 1);
+			} else {
+				usersCount.put(name, 1);
+			}
+		}
+		for (String s : usersCount.keySet()) {
+			ToTop toTop = new ToTop(usersCount.get(s), s);
+			top.add(toTop);
+		}
+		return top;
 	}
 }
