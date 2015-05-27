@@ -376,4 +376,8 @@ public class User extends UserAbstract implements Serializable {
         return Role.USER;
     }
 
+    public boolean isFriendsWith(User friend) {
+        return this.friends.containsKey(friend.getEmail());
+    }
+
 }

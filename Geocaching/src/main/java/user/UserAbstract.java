@@ -144,8 +144,13 @@ public abstract class UserAbstract implements Serializable {
         return fmt.format(calendar.getTime());
     }
 
+    public void incTotalFound() {
+        this.totalFound++;
+    }
+
     // toString
     // Needs to be Overrided
+
     public Role getRole() {
         return Role.DEFAULT;
     }

@@ -3,7 +3,7 @@ package caches;
 import base.Position;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.TreeMap;
+import java.util.TreeSet;
 import user.Reviewer;
 import user.UserAbstract;
 
@@ -21,13 +21,13 @@ public class CITO extends Cache {
     HashMap<String, UserAbstract> participants;
 
     // Constructors
-    public CITO(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, Reviewer reviewer) {
+    public CITO(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer) {
         super(publishDate, creationDate, cacheID, premiumOnly, description, cacheState, cacheTitle, owner, cacheSize, difficulty, position, hint, cache_Logs, reviewer);
         this.date = date;
         this.participants = participants;
     }
 
-    public CITO(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, GregorianCalendar date, HashMap<String, UserAbstract> participants) {
+    public CITO(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, GregorianCalendar date, HashMap<String, UserAbstract> participants) {
         super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs);
         this.date = date;
         this.participants = participants;
