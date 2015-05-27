@@ -22,7 +22,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.SortedSet;
-import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import user.Admin;
@@ -63,7 +63,7 @@ public class Geocaching {
             try {
                 choice = Integer.parseInt(input.readLine());
             } catch (Exception ex) {
-                System.out.println("Error: Invalid Option");
+                //System.out.println("Error: Invalid Option");
                 choice = -1;
             }
 
@@ -111,7 +111,7 @@ public class Geocaching {
             try {
                 choice = Integer.parseInt(input.readLine());
             } catch (Exception ex) {
-                System.out.println("Error: Invalid Option");
+                //System.out.println("Error: Invalid Option");
                 choice = -1;
             }
 
@@ -146,6 +146,7 @@ public class Geocaching {
                     break;
                 default:
                     System.out.println("Error: Invalid Option");
+                    choice = -1;
                     break;
             }
         }
@@ -365,7 +366,7 @@ public class Geocaching {
             try {
                 choice = Integer.parseInt(input.readLine());
             } catch (Exception ex) {
-                System.out.println("Error: Invalid Option");
+                //System.out.println("Error: Invalid Option");
                 choice = -1;
             }
 
@@ -394,11 +395,11 @@ public class Geocaching {
 
     private static void mFriends() {
         int choice = -1;
-        String format = "\t[%3d] ";
+        ArrayList<User> arrayUser = ((User) userOnline).getFriendsArray();
+        String format = "\t[ %" + (arrayUser.size() + "").length() + "d ] ";
 
         while (choice == -1) {
             System.out.println("####### Friends #######\n");
-            ArrayList<User> arrayUser = ((User) userOnline).getFriendsArray();
 
             for (int i = 0; i < arrayUser.size(); i++)// For each Friend
             {
@@ -413,7 +414,7 @@ public class Geocaching {
             try {
                 choice = Integer.parseInt(input.readLine());
             } catch (Exception ex) {
-                System.out.println("Error: Invalid Option");
+                //System.out.println("Error: Invalid Option");
                 choice = -1;
             }
 
@@ -424,7 +425,7 @@ public class Geocaching {
                 default:
                     if (choice > 0 && choice <= arrayUser.size()) {
                         clearConsole();
-                        mViewFriend(arrayUser.get(choice - 1));
+                        mViewUser(arrayUser.get(choice - 1));
                         clearConsole();
                     } else {
                         System.out.println("Error: Invalid Option");
@@ -449,7 +450,7 @@ public class Geocaching {
             try {
                 choice = Integer.parseInt(input.readLine());
             } catch (Exception ex) {
-                System.out.println("Error: Invalid Option");
+                //System.out.println("Error: Invalid Option");
                 choice = -1;
             }
 
@@ -510,7 +511,7 @@ public class Geocaching {
             try {
                 choice = Integer.parseInt(input.readLine());
             } catch (Exception ex) {
-                System.out.println("Error: Invalid Option");
+                //System.out.println("Error: Invalid Option");
                 choice = -1;
             }
 
@@ -536,12 +537,19 @@ public class Geocaching {
     }
 
     // ------------------- FRIENDS MENU ------------------
-    private static void mViewFriend(User friend) {
+    private static void mViewUser(User user) {
         int choice = -1;
+        boolean friend = false;
         while (choice == -1) {
-            System.out.println("####### " + friend.getName() + " Profile #######\n");
-            System.out.println(friend.toStringFriend() + "\n");
-            System.out.println("-- [1] Remove Friend");
+            System.out.println("####### " + user.getName() + " Profile #######\n");
+            System.out.println(user.toStringFriend() + "\n");
+            if (((User) userOnline).isFriendsWith(user)) {
+                System.out.println("-- [1] Remove Friend");
+                friend = true;
+            } else {
+                System.out.println("-- [1] Add Friend");
+                friend = false;
+            }
             System.out.println("-- [2] View Activities");
             System.out.println("-- [3] View Statistics");
             System.out.println("-- [4] View Found Caches");
@@ -552,38 +560,46 @@ public class Geocaching {
             try {
                 choice = Integer.parseInt(input.readLine());
             } catch (Exception ex) {
-                System.out.println("Error: Invalid Option");
+                //System.out.println("Error: Invalid Option");
                 choice = -1;
             }
 
             switch (choice) {
                 case 1:
                     clearConsole();
-                    ((User) userOnline).removeFriendship(friend);
-                    System.out.println("Friendship with " + friend.getName() + " has been Removed!");
+                    if (friend) {
+                        ((User) userOnline).removeFriendship(user);
+                        System.out.println("You are no longer a Friend of " + user.getName() + ".");
+                    } else {
+                        ((User) userOnline).newFriendship(user);
+                        System.out.println("You are now a Friend of " + user.getName() + "!");
+                    }
+                    pressAnyKeyToContinue();
+                    clearConsole();
+                    choice = -1;
                     // Go Back
                     break;
                 case 2:
                     clearConsole();
-                    mViewActivities(friend);
+                    mViewActivities(user);
                     choice = -1;
                     clearConsole();
                     break;
                 case 3:
                     clearConsole();
-                    mViewStatistics(friend);
+                    mViewStatistics(user);
                     choice = -1;
                     clearConsole();
                     break;
                 case 4:
                     clearConsole();
-                    mViewFoundCaches(friend);
+                    mViewFoundCaches(user);
                     choice = -1;
                     clearConsole();
                     break;
                 case 5:
                     clearConsole();
-                    mViewOwnedCaches(friend);
+                    mViewOwnedCaches(user);
                     choice = -1;
                     clearConsole();
                     break;
@@ -601,11 +617,11 @@ public class Geocaching {
     private static void mViewOwnedCaches(User user) {
 
         int choice = -1;
-        String format = "\t[%4d] ";
-
+        ArrayList<Cache> arrayCaches = user.getCachesArrayPremiumCheck(user);
+        String format = "\t[ %" + (arrayCaches.size() + "").length() + "d ] ";
+        arrayCaches.sort(data.compareCachePubDate());
         while (choice == -1) {
             System.out.println("####### " + user.getName() + " Owned caches #######\n");
-            ArrayList<Cache> arrayCaches = user.getCachesArrayPremiumCheck(user);
 
             for (int i = 0; i < arrayCaches.size(); i++)// For each Cache
             {
@@ -620,7 +636,7 @@ public class Geocaching {
             try {
                 choice = Integer.parseInt(input.readLine());
             } catch (Exception ex) {
-                System.out.println("Error: Invalid Option");
+                //System.out.println("Error: Invalid Option");
                 choice = -1;
             }
 
@@ -644,16 +660,18 @@ public class Geocaching {
     }
 
     private static void mViewFoundCaches(User user) {
-        int choice = -1, i = 0;
-        String format = "\t[%4d] ";
+        int choice = -1;
+        SortedSet<Cache> arrayCaches = data.getCachesFoundFrom(user);
+        String format = "\t[ %" + (arrayCaches.size() + "").length() + "d ] ";
 
         while (choice == -1) {
+            int i = 1;
             System.out.println("####### " + userOnline.getName() + " Founds #######\n");
-            SortedSet<Cache> arrayCaches = data.getCachesFoundFrom(user);
 
+            System.out.println("\n-- Total Founds: " + arrayCaches.size() + "\n\n");
             for (Cache c : arrayCaches)// For each Friend
             {
-                System.out.format(format + c.toSimpleListing() + "\n", i + 1);
+                System.out.format(format + c.toSimpleListing() + "\n", i);
                 i++;
             }
             System.out.println("\n-- [X] View Cache");
@@ -664,7 +682,7 @@ public class Geocaching {
             try {
                 choice = Integer.parseInt(input.readLine());
             } catch (Exception ex) {
-                System.out.println("Error: Invalid Option");
+                //System.out.println("Error: Invalid Option");
                 choice = -1;
             }
 
@@ -696,31 +714,32 @@ public class Geocaching {
         }
     }
 
-    private static void mViewCache(Cache get) {
+    private static void mViewCache(Cache cache) {
 
         int choice = -1;
         while (choice == -1) {
             boolean user = false, publish = false, archive = false, disable = false, enable = false, edit = false, mystery = false;
-            System.out.println("####### " + get.getCacheTitle() + " #######\n");
-            System.out.println(get.toListing() + "\n");
+            System.out.println("####### " + cache.getCacheTitle() + " #######\n");
+            System.out.println(cache.toListing() + "\n");
             if (userOnline.getRole() == UserAbstract.Role.USER) { // Only Users can do these actions
                 System.out.println("-- [1] Log your visit");
-                System.out.println("-- [2] View My Logs");
-                System.out.println("-- [3] View Friends Logs");
-                if (get.getType() == Cache.Type.MYSTERY) {
-                    System.out.println("-- [4] Check Coordinates");
+                System.out.println("-- [2] View Logs");
+                System.out.println("-- [3] View My Logs");
+                System.out.println("-- [4] View Friends Logs");
+                if (cache.getType() == Cache.Type.MYSTERY) {
+                    System.out.println("-- [5] Check Coordinates");
                     mystery = true;
                 }
                 user = true;
             }
 
-            if (userOnline.equals(get.getOwner()) || userOnline.equals(get.getReviewer())) { // Only Owner or Reviewer can see this menu
+            if (userOnline.equals(cache.getOwner()) || userOnline.equals(cache.getReviewer())) { // Only Owner or Reviewer can see this menu
                 System.out.println("------- Admin Tools");
 
-                switch (get.getCacheStatus()) {
+                switch (cache.getCacheStatus()) {
 
                     case UNPUBLISHED:
-                        if (userOnline.equals(get.getReviewer())) {
+                        if (userOnline.equals(cache.getReviewer())) {
                             System.out.println("-- [6] Publish");
                             publish = true;
                             System.out.println("-- [7] Archive");
@@ -745,7 +764,7 @@ public class Geocaching {
                         break;
 
                     case ARCHIVED:
-                        if (get.getPublishDate() != null) {
+                        if (cache.getPublishDate() != null) {
                             // Only Enable if this Cache was already been Published
                             System.out.println("-- [8] Enable");
                             enable = true;
@@ -763,7 +782,7 @@ public class Geocaching {
             try {
                 choice = Integer.parseInt(input.readLine());
             } catch (Exception ex) {
-                System.out.println("Error: Invalid Option");
+                //System.out.println("Error: Invalid Option");
                 choice = -1;
             }
 
@@ -772,16 +791,15 @@ public class Geocaching {
                     if (user == true) {
 
                         clearConsole();
-                        mLogCache(get);
+                        mLogCache(cache);
                     }
                     choice = -1;
                     break;
                 case 2:
                     if (user == true) {
+
                         clearConsole();
-                        HashMap<String, User> userlist = new HashMap<>();
-                        userlist.put(userOnline.getEmail(), (User) userOnline);
-                        mViewUserLogs(userlist);
+                        mLogs(cache);
                         clearConsole();
                     }
                     choice = -1;
@@ -789,7 +807,9 @@ public class Geocaching {
                 case 3:
                     if (user == true) {
                         clearConsole();
-                        mViewUserLogs(((User) userOnline).getFriends());
+                        HashMap<String, User> userlist = new HashMap<>();
+                        userlist.put(userOnline.getEmail(), (User) userOnline);
+                        mLogs(userlist, cache);
                         clearConsole();
                     }
                     choice = -1;
@@ -797,10 +817,18 @@ public class Geocaching {
                 case 4:
                     if (user == true) {
                         clearConsole();
+                        mLogs(((User) userOnline).getFriends(), cache);
+                        clearConsole();
+                    }
+                    choice = -1;
+                    break;
+                case 5:
+                    if (user == true) {
+                        clearConsole();
                         Position p = mInputPosition(true);
-                        if (((Mystery) get).checkCoord(p)) {
+                        if (((Mystery) cache).checkCoord(p)) {
                             System.out.println("Coordinates are correct !");
-                            System.out.println(((Mystery) get).getFinalText());
+                            System.out.println(((Mystery) cache).getFinalText());
                         } else {
                             System.out.println("Coordinates are wrong !");
                         }
@@ -810,7 +838,7 @@ public class Geocaching {
                 case 6:
                     if (publish == true) {
                         clearConsole();
-                        ((Reviewer) userOnline).publishCache(get);
+                        ((Reviewer) userOnline).publishCache(cache);
                         clearConsole();
                     }
                     choice = -1;
@@ -818,7 +846,7 @@ public class Geocaching {
                 case 7:
                     if (archive == true) {
                         clearConsole();
-                        ((User) userOnline).archiveCache(get);
+                        ((User) userOnline).archiveCache(cache);
                         clearConsole();
                     }
                     choice = -1;
@@ -826,11 +854,11 @@ public class Geocaching {
                 case 8:
                     if (disable == true) {
                         clearConsole();
-                        ((User) userOnline).disableCache(get);
+                        ((User) userOnline).disableCache(cache);
                         clearConsole();
                     } else if (enable == true) {
                         clearConsole();
-                        ((User) userOnline).enableCache(get);
+                        ((User) userOnline).enableCache(cache);
                         clearConsole();
                     }
                     choice = -1;
@@ -838,7 +866,7 @@ public class Geocaching {
                 case 9:
                     if (edit == true) {
                         clearConsole();
-                        mEditCache(get);
+                        mEditCache(cache);
                         clearConsole();
                     }
                     choice = -1;
@@ -853,147 +881,125 @@ public class Geocaching {
         }
 
     }
-    // ------------------- ACTIVITES MENU ------------------
-
-    private static void mViewActivities(User friend) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    // ------------------- STATISTICS MENU ------------------
-    private static void mViewStatistics(User friend) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    // ------------------- OTHER STUFF ------------------
-    // Clear Console
-    public final static void clearConsole() {
-        try {
-            final String os = System.getProperty("os.name");
-
-            if (os.contains("Windows")) {
-                Runtime.getRuntime().exec("cls");
-            } else {
-                Runtime.getRuntime().exec("clear");
-            }
-        } catch (final Exception e) {
-            for (int clear = 0; clear < 50; clear++) {
-                System.out.println("\b");
-            }
-        }
-    }
-
-    // Load Data if it exists else create new one
-    public static Data getData() {
-
-        // Load Data
-        if (loadData()) {
-            return data;
-        } else {
-            return new Data();
-        }
-    }
-
-    // Load Data from File
-    private static boolean loadData() {
-        FileInputStream fin = null;
-        try {
-            fin = new FileInputStream("data.poo");
-            ObjectInputStream ois = new ObjectInputStream(fin);
-            data = (Data) ois.readObject();
-            fin.close();
-        } catch (FileNotFoundException ex) {
-            return false;
-        } catch (IOException | ClassNotFoundException ex) {
-            return false;
-        }
-        return true;
-    }
-
-    // Save Data to File
-    private static boolean saveData() {
-        FileOutputStream fout = null;
-        try {
-            fout = new FileOutputStream("data.poo");
-            ObjectOutputStream oos = new ObjectOutputStream(fout);
-            oos.writeObject(data);
-            fout.close();
-        } catch (FileNotFoundException ex) {
-            return false;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    // Pre-Made Dataset
-    private static void populateData(Data data) {
-
-        User u1 = new User("1", "1", "Ulisses", "M", "rua", new GregorianCalendar(), true, 0, null, null, data);
-        User u2 = new User("2", "2", "Uche Villareal", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
-        Reviewer r1 = new Reviewer("r", "r", "Rickon", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
-        Admin a1 = new Admin("a", "a", "Aemon", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
-
-        data.getAllUsers().put(u1.getEmail(), u1);
-        data.getAllUsers().put(u2.getEmail(), u2);
-        data.getAllUsers().put(r1.getEmail(), r1);
-        data.getAllUsers().put(a1.getEmail(), a1);
-
-        Position p1 = CountriesData.portugal;
-        Position p2 = new Position(41.57238, -8.47875, 1.5f);
-        Traditional tc1 = new Traditional(new GregorianCalendar(), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeMap<GregorianCalendar, Log>(), new ArrayList<>());
-        Traditional tc2 = new Traditional(new GregorianCalendar(), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeMap<GregorianCalendar, Log>(), new ArrayList<>());
-        Mystery mc1 = new Mystery(new GregorianCalendar(), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeMap<GregorianCalendar, Log>(), new Position(1.1f, 2.2f), "YOU SOLVED IT!");
-
-        u1.createCache(tc1);
-        u2.createCache(tc2);
-        u1.createCache(mc1);
-
-        r1.giveMeCache(tc1);
-        r1.giveMeCache(tc2);
-        r1.giveMeCache(mc1);
-
-        r1.publishCache(tc1);
-        r1.publishCache(tc2);
-        r1.publishCache(mc1);
-
-        u1.newFriendship(u2);
-
-    }
-
-    // Show GeoCaching Logo
-    private static void showLogo() {
-        System.out.println("..............................................");
-        System.out.println(".............00xxxxxxxxxxxxxx00...............");
-        System.out.println("..........0x@x00.........0xx@@@@@x00..........");
-        System.out.println("........0xx0..................0x@@@@@x0.......");
-        System.out.println(".......xx........0xx0.............0x@@@@x.....");
-        System.out.println(".....0x0..........@@x...............0x@@@x....");
-        System.out.println("....0x............0@@0................000.....");
-        System.out.println("...0@..............0@x........................");
-        System.out.println("...@0...............x@..........000xxxx@@@x...");
-        System.out.println("..x@.................xx..00xx@@@@@@@@@@@x@@0..");
-        System.out.println("..@@...............00x@@@x000............0@x..");
-        System.out.println(".0@x......00xxx@@xx00..@@0................@@..");
-        System.out.println("..@@...0@@@@@@x0........@@0...............@@0.");
-        System.out.println("..x@0...xxx00...........0@@..............0@@0.");
-        System.out.println("...@x....................@@x.............x@@..");
-        System.out.println("...0@x...................0@@0...........0@@x..");
-        System.out.println("....0@@0..................x@x..........0@@x...");
-        System.out.println("......0@x0.................0..........0@@x....");
-        System.out.println("........x@@x0.......................0x@@0.....");
-        System.out.println("..........0x@@xx0................00@@@0.......");
-        System.out.println("..............0xx@@xx000000000xx@@x00.........");
-        System.out.println(".................00000000000000000............");
-        System.out.println("..............................................");
-    }
 
     private static void mLogCache(Cache get) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private static void mViewUserLogs(HashMap<String, User> userlist) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private static void mLogs(HashMap<String, User> userlist, Cache cache) {
+        int choice = -1;
+        TreeSet<Log> setLogs = cache.getCache_Logs();
+        String format = "  [ %" + (setLogs.size() + "").length() + "d ]";
+        while (choice == -1) {
+            System.out.println("####### '" + cache.getCacheTitle() + "' - Friend's Logs #######\n");
+
+            int i = 1;
+            for (Log log : setLogs)// For each Friend
+            {
+                for (User friend : userlist.values()) {
+                    if (log.getUser().equals(friend)) {
+                        System.out.format(format + "\n" + log.toLogListing() + "\n", i);
+                        i++;
+                    }
+
+                }
+            }
+            if (i == 1) {
+                System.out.println("-- There are no Friend's Logs for this cache!");
+            } else {
+                System.out.println("\n-- [X] View Log Details");
+            }
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                default:
+                    if (choice > 0 && choice <= setLogs.size()) {
+                        clearConsole();
+                        Log log = null;
+                        Iterator<Log> iterator = setLogs.iterator();
+                        int count = 0;
+                        while (iterator.hasNext() && count < choice) {
+                            log = iterator.next();
+                            count++;
+                        }
+                        mViewLog(log, cache);
+                        clearConsole();
+                    } else {
+                        System.out.println("Error: Invalid Option");
+                    }
+                    choice = -1;
+                    break;
+            }
+        }
+    }
+
+    private static void mLogs(Cache cache) {
+        int choice = -1;
+        TreeSet<Log> setLogs = cache.getCache_Logs();
+        String format = "  [ %" + (setLogs.size() + "").length() + "d ]";
+        while (choice == -1) {
+            System.out.println("####### '" + cache.getCacheTitle() + "' - Logs #######\n");
+
+            int i = 1;
+            for (Log log : setLogs)// For each Log
+            {
+                System.out.format(format + "\n" + log.toLogListing() + "\n", i);
+                i++;
+            }
+
+            System.out.println("\n-- [X] View Log Details");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            if (i == 1) {
+                System.out.println("-- There are no Logs for this cache!");
+            } else {
+                System.out.println("\n-- [X] View Log Details");
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                default:
+                    if (choice > 0 && choice <= setLogs.size()) {
+                        clearConsole();
+                        Log log = null;
+                        Iterator<Log> iterator = setLogs.iterator();
+                        int count = 0;
+                        while (iterator.hasNext() && count < choice) {
+                            log = iterator.next();
+                            count++;
+                        }
+                        mViewLog(log, cache);
+                        clearConsole();
+                    } else {
+                        System.out.println("Error: Invalid Option");
+                    }
+                    choice = -1;
+                    break;
+            }
+        }
     }
 
     private static void mEditCache(Cache get) {
@@ -1071,7 +1077,7 @@ public class Geocaching {
             try {
                 choice = Integer.parseInt(input.readLine());
             } catch (Exception ex) {
-                System.out.println("Error: Invalid Option");
+                //System.out.println("Error: Invalid Option");
                 choice = -1;
             }
 
@@ -1149,6 +1155,261 @@ public class Geocaching {
         }
 
         return new Position(lati, longi, continent, country, city, diff);
+    }
+
+    private static void mViewLog(Log log, Cache cache) {
+        int choice = -1;
+        while (choice == -1) {
+            boolean user = false, delete = false, edit = false;
+            System.out.println("####### " + cache.getCacheTitle() + " #######\n");
+            System.out.println("\n" + log.toLogListing());
+
+            System.out.println("-- [1] View User");
+
+            if (userOnline.equals(cache.getOwner()) && log.getUser().equals(userOnline) || // If I am the Owner and I made this Log then I can Edit and Delete this Log
+                    log.getUser().equals(userOnline)) {  // OR If I am just the User who made this Log then I can Edit and Delete
+                System.out.println("------- Admin Tools");
+                System.out.println("-- [8] Edit Log");
+                System.out.println("-- [9] Delete Log");
+                edit = true;
+                delete = true;
+                /*} else if (log.getUser().equals(userOnline)) {
+                 System.out.println("------- Admin Tools");
+                 System.out.println("-- [8] Edit Log");
+                 System.out.println("-- [9] Delete Log");
+                 edit = true;*/
+            } else if (userOnline.equals(cache.getReviewer()) || // If I am the Reviewer then I can Edit and Delete this Log
+                    userOnline.equals(cache.getOwner())) { // If I am just the Owner then I can only Delete
+                System.out.println("------- Admin Tools");
+                System.out.println("-- [9] Delete Log");
+                delete = true;
+                /*} else if (userOnline.equals(cache.getOwner())) { // If I am just the Owner then I can only Delete
+                 System.out.println("------- Admin Tools");
+                 System.out.println("-- [9] Delete Log");
+                 edit = true;*/
+            }
+
+            System.out.println("-----");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 1:
+
+                    clearConsole();
+                    mViewUser((User) log.getUser());
+                    clearConsole();
+
+                    choice = -1;
+                    break;
+
+                case 8:
+                    if (edit == true) {
+                        clearConsole();
+                        mEditLog(log);
+                        clearConsole();
+                    }
+                    choice = -1;
+                    break;
+
+                case 9:
+                    if (delete == true) {
+                        clearConsole();
+                        boolean deleted = cache.deleteLog(log);
+                        if (deleted) {
+                            System.out.println("Log was successfully Deleted!");// Go Back
+                        } else {
+                            System.out.println("ERROR: Log wasn't Deleted");
+                            choice = -1; // NOT Go Back
+                        }
+                        pressAnyKeyToContinue();
+                        clearConsole();
+                    }
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Error: Option not available");
+                    choice = -1;
+                    break;
+            }
+        }
+    }
+
+// ------------------- ACTIVITES MENU ------------------
+    private static void mViewActivities(User friend) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    // ------------------- STATISTICS MENU ------------------
+    private static void mViewStatistics(User friend) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    // ------------------- OTHER STUFF ------------------
+    // Clear Console
+    public final static void clearConsole() {
+        try {
+            final String os = System.getProperty("os.name");
+
+            if (os.contains("Windows")) {
+                Runtime.getRuntime().exec("cls");
+            } else {
+                Runtime.getRuntime().exec("clear");
+            }
+        } catch (final Exception e) {
+            for (int clear = 0; clear < 50; clear++) {
+                System.out.println("\b");
+            }
+        }
+    }
+
+    // Load Data if it exists else create new one
+    public static Data getData() {
+
+        // Load Data
+        if (loadData()) {
+            return data;
+        } else {
+            return new Data();
+        }
+    }
+
+    // Load Data from File
+    private static boolean loadData() {
+        FileInputStream fin = null;
+        try {
+            fin = new FileInputStream("data.poo");
+            ObjectInputStream ois = new ObjectInputStream(fin);
+            data = (Data) ois.readObject();
+            fin.close();
+        } catch (FileNotFoundException ex) {
+            return false;
+        } catch (IOException | ClassNotFoundException ex) {
+            return false;
+        }
+        return true;
+    }
+
+    // Save Data to File
+    private static boolean saveData() {
+        FileOutputStream fout = null;
+        try {
+            fout = new FileOutputStream("data.poo");
+            ObjectOutputStream oos = new ObjectOutputStream(fout);
+            oos.writeObject(data);
+            fout.close();
+        } catch (FileNotFoundException ex) {
+            return false;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    // Pre-Made Dataset
+    private static void populateData(Data data) {
+
+        User u1 = new User("1", "1", "Ulisses", "M", "rua", new GregorianCalendar(2000, 1, 24, 11, 11, 11), true, 0, null, null, data);
+        User u2 = new User("2", "2", "Uche Villareal", "M", "rua", new GregorianCalendar(1982, 2, 2, 11, 11, 11), false, 0, null, null, data);
+        User u3 = new User("3", "3", "Ukra", "M", "rua", new GregorianCalendar(1992, 3, 29, 11, 11, 11), false, 0, null, null, data);
+        User u4 = new User("4", "4", "Uruguaio", "M", "rua", new GregorianCalendar(2001, 8, 13, 11, 11, 11), false, 0, null, null, data);
+        Reviewer r1 = new Reviewer("r", "r", "Rickon", "M", "rua", new GregorianCalendar(1968, 1, 24, 11, 11, 11), false, 0, null, null, data);
+        Admin a1 = new Admin("a", "a", "Aemon", "M", "rua", new GregorianCalendar(1987, 7, 14, 11, 11, 11), false, 0, null, null, data);
+
+        data.getAllUsers().put(u1.getEmail(), u1);
+        data.getAllUsers().put(u2.getEmail(), u2);
+        data.getAllUsers().put(u3.getEmail(), u3);
+        data.getAllUsers().put(u4.getEmail(), u4);
+        data.getAllUsers().put(r1.getEmail(), r1);
+        data.getAllUsers().put(a1.getEmail(), a1);
+
+        Position p1 = CountriesData.portugal;
+        Position p2 = new Position(41.57238, -8.47875, 1.5f);
+        Traditional tc1 = new Traditional(new GregorianCalendar(2015, 06, 24, 11, 11, 11), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), new ArrayList<>());
+        Traditional tc2 = new Traditional(new GregorianCalendar(2015, 06, 19, 9, 12, 47), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new ArrayList<>());
+        Mystery mc1 = new Mystery(new GregorianCalendar(2015, 06, 25, 2, 3, 4), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new Position(1.1f, 2.2f), "YOU SOLVED IT!");
+
+        u1.createCache(tc1);
+        u2.createCache(tc2);
+        u1.createCache(mc1);
+
+        r1.giveMeCache(tc1);
+        r1.giveMeCache(tc2);
+        r1.giveMeCache(mc1);
+
+        r1.publishCache(tc1);
+        r1.publishCache(tc2);
+        r1.publishCache(mc1);
+
+        tc1.setPublishDate(new GregorianCalendar(2015, 06, 24, 11, 22, 9));
+        tc1.setPublishDate(new GregorianCalendar(2015, 06, 20, 1, 2, 8));
+        tc1.setPublishDate(new GregorianCalendar(2015, 06, 26, 23, 34, 17));
+
+        Log log1 = new Log("FTF!", new GregorianCalendar(2015, 06, 26, 21, 00, 00), Log.Log_Type.FOUND_IT);
+        Log log2 = new Log("STF!", new GregorianCalendar(2015, 06, 26, 21, 11, 22), Log.Log_Type.FOUND_IT);
+        Log log3 = new Log("Found it, easy!", new GregorianCalendar(2015, 06, 19, 21, 05, 00), Log.Log_Type.FOUND_IT);
+        Log log4 = new Log("Just remove the top", new GregorianCalendar(2015, 06, 21, 10, 23, 47), Log.Log_Type.FOUND_IT);
+        Log log5 = new Log("Hard to solve tge Enigma but easier to find the cache", new GregorianCalendar(2015, 06, 25, 10, 23, 47), Log.Log_Type.FOUND_IT);
+
+        Log note1 = new Log("Watch out for muggles!", new GregorianCalendar(2015, 06, 26, 21, 00, 00), Log.Log_Type.NOTE);
+        tc1.logCache(u2, log1);
+        tc1.logCache(u1, note1);
+        tc1.logCache(u3, log2);
+        tc2.logCache(u4, log3);
+        tc2.logCache(u1, log4);
+        mc1.logCache(u2, log5);
+
+        u1.newFriendship(u2);
+        u2.newFriendship(u3);
+        u3.newFriendship(u4);
+
+    }
+
+    // Show GeoCaching Logo
+    private static void showLogo() {
+        System.out.println("..............................................");
+        System.out.println(".............00xxxxxxxxxxxxxx00...............");
+        System.out.println("..........0x@x00.........0xx@@@@@x00..........");
+        System.out.println("........0xx0..................0x@@@@@x0.......");
+        System.out.println(".......xx........0xx0.............0x@@@@x.....");
+        System.out.println(".....0x0..........@@x...............0x@@@x....");
+        System.out.println("....0x............0@@0................000.....");
+        System.out.println("...0@..............0@x........................");
+        System.out.println("...@0...............x@..........000xxxx@@@x...");
+        System.out.println("..x@.................xx..00xx@@@@@@@@@@@x@@0..");
+        System.out.println("..@@...............00x@@@x000............0@x..");
+        System.out.println(".0@x......00xxx@@xx00..@@0................@@..");
+        System.out.println("..@@...0@@@@@@x0........@@0...............@@0.");
+        System.out.println("..x@0...xxx00...........0@@..............0@@0.");
+        System.out.println("...@x....................@@x.............x@@..");
+        System.out.println("...0@x...................0@@0...........0@@x..");
+        System.out.println("....0@@0..................x@x..........0@@x...");
+        System.out.println("......0@x0.................0..........0@@x....");
+        System.out.println("........x@@x0.......................0x@@0.....");
+        System.out.println("..........0x@@xx0................00@@@0.......");
+        System.out.println("..............0xx@@xx000000000xx@@x00.........");
+        System.out.println(".................00000000000000000............");
+        System.out.println("..............................................");
+    }
+
+    private static void mEditLog(Log log) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static void pressAnyKeyToContinue() {
+        System.out.println("Press any key to continue...");
+        try {
+            System.in.read();
+        } catch (Exception e) {
+        }
     }
 
 }
