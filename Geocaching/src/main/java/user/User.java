@@ -13,7 +13,7 @@ public class User extends UserAbstract implements Serializable {
 
     private HashMap<String, Cache> caches = null;
     private HashMap<String, User> friends = null;
-    private Data data = new Data();
+    private Data data = null;
 
     // Constructors
     public User(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, HashMap<String, Cache> caches, HashMap<String, User> friends, Data data) {
