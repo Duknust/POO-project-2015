@@ -1,10 +1,13 @@
 package caches;
 
+import base.GeoTools;
 import base.Position;
 
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.TreeSet;
+
+import com.sun.javafx.css.CalculatedValue;
 
 import user.Reviewer;
 import user.User;
@@ -25,18 +28,10 @@ public class Event extends Cache {
     int maxParticipants;
 
     // Constructors
-    public Event(GregorianCalendar publishDate, GregorianCalendar creationDate, GregorianCalendar dateEndApp, GregorianCalendar dateEvent, String cacheID, String cacheTitle, String description, String hint, Position position, float difficulty, int maxParticipants, int cacheSize, boolean premiumOnly, Status cacheState, UserAbstract owner, TreeSet<Log> cache_Logs, HashMap<String, Cache> caches, Reviewer reviewer) {
-        super(publishDate, creationDate, cacheID, premiumOnly, description, cacheState, cacheTitle, owner, cacheSize, difficulty, position, hint, cache_Logs, reviewer);
+    public Event(GregorianCalendar creationDate, GregorianCalendar dateEndApp, GregorianCalendar dateEvent, String cacheTitle, String description, Position position, int maxParticipants, UserAbstract owner, HashMap<String, Cache> caches) {
+        super(creationDate, description, cacheTitle, position);
         this.maxParticipants = maxParticipants;
         this.caches = caches;
-        this.dateEndAplications = dateEndApp;
-        this.dateEvent = dateEvent;
-    }
-
-    public Event(GregorianCalendar creationDate, GregorianCalendar dateEndApp, GregorianCalendar dateEvent, String cacheTitle, String description, String hint, Position position, float difficulty, int maxParticipants, TreeSet<Log> cache_Logs) {
-        super(creationDate, description, cacheTitle, 0, difficulty, position, hint, cache_Logs);
-        this.maxParticipants = maxParticipants;
-        this.caches = new HashMap<String,Cache>();
         this.dateEndAplications = dateEndApp;
         this.dateEvent = dateEvent;
     }
@@ -129,7 +124,14 @@ public class Event extends Cache {
     	
     	
     	//Distance
-    	
+    	GeoTools calcD = new GeoTools();
+    	dist = (float)calcD.calcDistance(this.getPosition(), cache.getPosition());
+    	if(aux<7) //Near of base local
+    		time += 10;
+    	else if(aux < 15) //Medium 
+    		time += 15;
+    	else	//Far from base local
+    		time += 20;
     	
     	
     	
