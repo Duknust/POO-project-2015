@@ -1,9 +1,11 @@
 package base;
 
 import caches.Cache;
+import caches.Event;
 import caches.Log;
 import caches.Mystery;
 import caches.Traditional;
+
 import java.io.BufferedReader;
 import java.io.Console;
 import java.io.FileInputStream;
@@ -25,6 +27,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import user.Admin;
 import user.Reviewer;
 import user.User;
@@ -1011,7 +1014,108 @@ public class Geocaching {
     }
 
     private static void mCreateCache() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        GregorianCalendar dateEvent = new GregorianCalendar();
+        GregorianCalendar dateEndApplications = new GregorianCalendar();
+        String name="", description="", str="";
+        Position pos;
+        int maxP=0;
+        boolean status = false;
+        
+        // Name Event
+        System.out.println("-- Name of Event");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+				name = input.readLine();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            if(name.length()>4)
+                status = true;
+            else
+                System.out.println("Error: The name need at least 4 characters!");
+        }
+        status = false;
+        
+        // Description
+        System.out.println("-- Description of Event");
+        while (status == false) {
+            System.out.print("?> ");
+            
+            try {
+				description = input.readLine();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            if(description.length()>10)
+                status = true;
+            else
+                System.out.println("Error: The name need at least 10 characters!");
+        }
+        status = false;
+        
+        
+        System.out.println("-- Date Of Event:");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                str = input.readLine();
+            } catch (Exception ex) {
+                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            Date startDate;
+            try {
+                startDate = df.parse(str);
+                dateEvent.setTime(startDate);
+                status = true;
+            } catch (ParseException ex) {
+                System.out.println("Error with the Date Format, please use dd/MM/yyyy");
+            }
+        }
+        
+        System.out.println("-- Limit Date To Applications:");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                str = input.readLine();
+            } catch (Exception ex) {
+                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            Date startDate;
+            try {
+                startDate = df.parse(str);
+                dateEndApplications.setTime(startDate);
+                status = true;
+            } catch (ParseException ex) {
+                System.out.println("Error with the Date Format, please use dd/MM/yyyy");
+            }
+        }
+        
+        System.out.println("-- Max of Participants");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                str = input.readLine();
+                maxP = Integer.parseInt(str);
+                status = true;
+            } catch (Exception ex) {
+                System.out.println("Error: Number isn't in the correct format (12)");
+            }
+        }
+        status = false;
+        
+        //Positon of Event
+        pos = mInputPosition(true);
+        
+        HashMap<String, Cache> caches = data.getByPosition(pos, 5);
+        Event event = new Event(new GregorianCalendar(), dateEndApplications, dateEvent, name, description, pos, maxP, userOnline, caches);
+        
     }
 
     private static Position mInputPosition(boolean onlyCoords) {
