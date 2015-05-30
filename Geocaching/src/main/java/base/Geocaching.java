@@ -1,5 +1,6 @@
 package base;
 
+import activity.Activity;
 import caches.Cache;
 import caches.Log;
 import caches.Log.Log_Type;
@@ -613,6 +614,14 @@ public class Geocaching {
     }
 
     // ------------------- CACHES MENU ------------------
+    private static void mSearchCaches() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static void mCreateCache() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     private static void mViewOwnedCaches(User user) {
 
         int choice = -1;
@@ -891,18 +900,23 @@ public class Geocaching {
 
     private static void mLogCache(Cache cache) {
         int choice = -1;
+        boolean rev = false;
         Log_Type type;
         while (choice == -1) {
 
             System.out.println("####### Log your visit at " + cache.getCacheTitle() + " #######\n");
 
-            System.out.println(" [1] Found It\n");
-            System.out.println(" [2] DNF\n");
-            System.out.println(" [3] Needs Maintenance\n");
-            System.out.println(" [4] Needs Archiving\n");
-            System.out.println(" [5] Note\n");
-
             // Reviewer
+            if (userOnline.getRole() == UserAbstract.Role.REVIEWER) {
+                System.out.println(" [6] Reviewer Note\n");
+                rev = true;
+            } else {
+                System.out.println(" [1] Found It\n");
+                System.out.println(" [2] DNF\n");
+                System.out.println(" [3] Needs Maintenance\n");
+                System.out.println(" [4] Needs Archiving\n");
+                System.out.println(" [5] Note\n");
+            }
             System.out.println("-----");
             System.out.println("-- [0] Back");
 
@@ -917,28 +931,42 @@ public class Geocaching {
                     choice = -1;
                 }
 
-                switch (choice) {
-                    case 1:
-                        type = Log_Type.FOUND_IT;
-                        break;
-                    case 2:
-                        type = Log_Type.DNF;
-                        break;
-                    case 3:
-                        type = Log_Type.NEEDS_MAINTENANCE;
-                        break;
-                    case 4:
-                        type = Log_Type.NEEDS_ARCHIVING;
-                        break;
-                    case 5:
-                        type = Log_Type.NOTE;
-                        break;
-                    case 0:
-                        break;
-                    default:
-                        choice = -1;
-                        System.out.println("Error: Invalid Option");
-                        break;
+                if (rev) {
+                    switch (choice) {
+                        case 6:
+                            type = Log_Type.REVIEWER_NOTE;
+                            break;
+                        case 0:
+                            break;
+                        default:
+                            choice = -1;
+                            System.out.println("Error: Invalid Option");
+                            break;
+                    }
+                } else {
+                    switch (choice) {
+                        case 1:
+                            type = Log_Type.FOUND_IT;
+                            break;
+                        case 2:
+                            type = Log_Type.DNF;
+                            break;
+                        case 3:
+                            type = Log_Type.NEEDS_MAINTENANCE;
+                            break;
+                        case 4:
+                            type = Log_Type.NEEDS_ARCHIVING;
+                            break;
+                        case 5:
+                            type = Log_Type.NOTE;
+                            break;
+                        case 0:
+                            break;
+                        default:
+                            choice = -1;
+                            System.out.println("Error: Invalid Option");
+                            break;
+                    }
                 }
                 if (type != null) {
                     String text = "";
@@ -960,6 +988,7 @@ public class Geocaching {
                     cache.logCache((User) userOnline, newLog);
                     System.out.println("Cache Successfully Logged!");
                     pressAnyKeyToContinue();
+                    clearConsole();
                 }
             }
         }
@@ -1130,161 +1159,6 @@ public class Geocaching {
         }
     }
 
-    private static void mEditCache(Cache get) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private static void mSearchCaches() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private static void mCreateCache() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private static Position mInputPosition(boolean onlyCoords) {
-        int OK = 0;
-        String slati = "", slongi = "", sdiff = "";
-        float lati = 0.0f, longi = 0.0f, diff = 0.0f;
-        String continent = "", country = "", city = "";
-        boolean status = false;
-
-        System.out.println("####### Position Input #######\n");
-        System.out.println("----- Please insert the following fields");
-
-        // Lati
-        System.out.println("-- Latitude");
-        while (status == false) {
-            System.out.print("?> ");
-            try {
-                slati = input.readLine();
-                lati = Float.parseFloat(slati);
-                status = true;
-            } catch (Exception ex) {
-                System.out.println("Error: Number isn't in the correct format (12.345)");
-            }
-        }
-        status = false;
-
-        // Longi
-        System.out.println("-- Longitude");
-        while (status == false) {
-            System.out.print("?> ");
-            try {
-                slongi = input.readLine();
-                longi = Float.parseFloat(slongi);
-                status = true;
-            } catch (Exception ex) {
-                System.out.println("Error: Number isn't in the correct format (12.345)");
-            }
-        }
-        status = false;
-
-        if (onlyCoords) { // Only the Latitude and Longitude are necessary
-            return new Position(lati, longi);
-        }
-
-        // Continent
-        System.out.println("-- Continent");
-        int choice = -1;
-        while (choice == -1) {
-
-            System.out.println("Please choose:\n");
-
-            System.out.println("-- [1] Europe");
-            System.out.println("-- [2] Asia");
-            System.out.println("-- [3] Africa");
-            System.out.println("-- [4] Oceania");
-            System.out.println("-- [5] North America");
-            System.out.println("-- [6] South America");
-            System.out.println("-- [7] Antartica");
-
-            System.out.println("-----");
-            System.out.println("-- [0] Back");
-            System.out.print("?> ");
-            try {
-                choice = Integer.parseInt(input.readLine());
-            } catch (Exception ex) {
-                //System.out.println("Error: Invalid Option");
-                choice = -1;
-            }
-
-            switch (choice) {
-                case 1:
-                    continent = "Europe";
-                    break;
-                case 2:
-                    continent = "Asia";
-                    break;
-                case 3:
-                    continent = "Africa";
-                    break;
-                case 4:
-                    continent = "Oceania";
-                    break;
-                case 5:
-                    continent = "North America";
-                    break;
-                case 6:
-                    continent = "South America";
-                    break;
-                case 7:
-                    continent = "Antartica";
-                    break;
-                case 0:
-                    break;
-                default:
-                    System.out.println("Error: Option not available");
-                    choice = -1;
-                    break;
-            }
-        }
-
-        // Country
-        System.out.println("-- Country");
-        while (status == false) {
-            System.out.print("?> ");
-            try {
-                country = input.readLine();
-                status = true;
-            } catch (Exception ex) {
-                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        // City
-        System.out.println("-- City");
-        while (status == false) {
-            System.out.print("?> ");
-            try {
-                city = input.readLine();
-                status = true;
-            } catch (Exception ex) {
-                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        // Difficulty
-        System.out.println("-- Difficulty");
-        while (status == false) {
-            System.out.print("?> ");
-            try {
-                sdiff = input.readLine();
-                diff = Float.parseFloat(sdiff);
-            } catch (Exception ex) {
-                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            if (diff >= 1.0f && diff <= 5.0f) {
-                status = true;
-            } else {
-                System.out.println("Error: Number is between 1.0f and 5.0f");
-            }
-        }
-
-        return new Position(lati, longi, continent, country, city, diff);
-    }
-
     private static void mViewLog(Log log, Cache cache) {
         int choice = -1;
         while (choice == -1) {
@@ -1340,7 +1214,7 @@ public class Geocaching {
                 case 8:
                     if (edit == true) {
                         clearConsole();
-                        mEditLog(log);
+                        mEditLog(log, cache);
                         clearConsole();
                     }
                     choice = -1;
@@ -1370,7 +1244,7 @@ public class Geocaching {
         }
     }
 
-    private static void mEditLog(Log log) {
+    private static void mEditLog(Log log, Cache cache) {
         int choice = -1;
         while (choice == -1) {
 
@@ -1518,6 +1392,9 @@ public class Geocaching {
                         }
                         if (edited) {
                             System.out.println("Log Type edited successfully!");
+                            // Add Activity
+                            Activity act = new Activity(new GregorianCalendar(), Activity.Type.UPDATED_LOG_TYPE, cache, userOnline, log);
+                            data.addActivity(act);
                             pressAnyKeyToContinue();
                         }
 
@@ -1535,14 +1412,161 @@ public class Geocaching {
             }
         }
     }
-// ------------------- ACTIVITES MENU ------------------
 
-    private static void mViewActivities(User friend) {
+    private static void mEditCache(Cache get) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static Position mInputPosition(boolean onlyCoords) {
+        int OK = 0;
+        String slati = "", slongi = "", sdiff = "";
+        float lati = 0.0f, longi = 0.0f, diff = 0.0f;
+        String continent = "", country = "", city = "";
+        boolean status = false;
+
+        System.out.println("####### Position Input #######\n");
+        System.out.println("----- Please insert the following fields");
+
+        // Lati
+        System.out.println("-- Latitude");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                slati = input.readLine();
+                lati = Float.parseFloat(slati);
+                status = true;
+            } catch (Exception ex) {
+                System.out.println("Error: Number isn't in the correct format (12.345)");
+            }
+        }
+        status = false;
+
+        // Longi
+        System.out.println("-- Longitude");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                slongi = input.readLine();
+                longi = Float.parseFloat(slongi);
+                status = true;
+            } catch (Exception ex) {
+                System.out.println("Error: Number isn't in the correct format (12.345)");
+            }
+        }
+        status = false;
+
+        if (onlyCoords) { // Only the Latitude and Longitude are necessary
+            return new Position(lati, longi);
+        }
+
+        // Continent
+        System.out.println("-- Continent");
+        int choice = -1;
+        while (choice == -1) {
+
+            System.out.println("Please choose:\n");
+
+            System.out.println("-- [1] Europe");
+            System.out.println("-- [2] Asia");
+            System.out.println("-- [3] Africa");
+            System.out.println("-- [4] Oceania");
+            System.out.println("-- [5] North America");
+            System.out.println("-- [6] South America");
+            System.out.println("-- [7] Antartica");
+
+            System.out.println("-----");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 1:
+                    continent = "Europe";
+                    break;
+                case 2:
+                    continent = "Asia";
+                    break;
+                case 3:
+                    continent = "Africa";
+                    break;
+                case 4:
+                    continent = "Oceania";
+                    break;
+                case 5:
+                    continent = "North America";
+                    break;
+                case 6:
+                    continent = "South America";
+                    break;
+                case 7:
+                    continent = "Antartica";
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Error: Option not available");
+                    choice = -1;
+                    break;
+            }
+        }
+
+        // Country
+        System.out.println("-- Country");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                country = input.readLine();
+                status = true;
+            } catch (Exception ex) {
+                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        // City
+        System.out.println("-- City");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                city = input.readLine();
+                status = true;
+            } catch (Exception ex) {
+                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        // Difficulty
+        System.out.println("-- Difficulty");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                sdiff = input.readLine();
+                diff = Float.parseFloat(sdiff);
+            } catch (Exception ex) {
+                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            if (diff >= 1.0f && diff <= 5.0f) {
+                status = true;
+            } else {
+                System.out.println("Error: Number is between 1.0f and 5.0f");
+            }
+        }
+
+        return new Position(lati, longi, continent, country, city, diff);
+    }
+
+// ------------------- ACTIVITES MENU ------------------
+    private static void mViewActivities(User user) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     // ------------------- STATISTICS MENU ------------------
-    private static void mViewStatistics(User friend) {
+    private static void mViewStatistics(User user) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
