@@ -94,7 +94,7 @@ public class Position implements Serializable {
     }
 
     public String toListing() {
-        return "Terrain = " + this.difficulty + "\nPosition = " + lati + " , "
+        return "- Terrain = " + this.difficulty + "\n- Coordinates = " + lati + " , "
                 + longi;
     }
 

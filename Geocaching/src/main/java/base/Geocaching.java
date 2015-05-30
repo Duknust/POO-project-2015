@@ -2,6 +2,7 @@ package base;
 
 import caches.Cache;
 import caches.Log;
+import caches.Log.Log_Type;
 import caches.Mystery;
 import caches.Traditional;
 import java.io.BufferedReader;
@@ -19,7 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -38,9 +38,8 @@ public class Geocaching {
 
     public static void main(String[] args) {
 
-        data = getData();
-
-        populateData(data); // Use Pre-Made Database _ Atention, use with caution ! ---------------------------------------------
+        //data = startData();
+        data = populateData(); // Use Pre-Made Database _ Atention, use with caution ! ---------------------------------------------
         showLogo();
 
         System.out.println("----------------------------------------------");
@@ -661,11 +660,11 @@ public class Geocaching {
 
     private static void mViewFoundCaches(User user) {
         int choice = -1;
-        SortedSet<Cache> arrayCaches = data.getCachesFoundFrom(user);
-        String format = "\t[ %" + (arrayCaches.size() + "").length() + "d ] ";
 
         while (choice == -1) {
             int i = 1;
+            SortedSet<Cache> arrayCaches = data.getCachesFoundFrom(user);
+            String format = "\t[ %" + (arrayCaches.size() + "").length() + "d ] ";
             System.out.println("####### " + userOnline.getName() + " Founds #######\n");
 
             System.out.println("\n-- Total Founds: " + arrayCaches.size() + "\n\n");
@@ -720,17 +719,29 @@ public class Geocaching {
         while (choice == -1) {
             boolean user = false, publish = false, archive = false, disable = false, enable = false, edit = false, mystery = false;
             System.out.println("####### " + cache.getCacheTitle() + " #######\n");
-            System.out.println(cache.toListing() + "\n");
-            if (userOnline.getRole() == UserAbstract.Role.USER) { // Only Users can do these actions
-                System.out.println("-- [1] Log your visit");
-                System.out.println("-- [2] View Logs");
-                System.out.println("-- [3] View My Logs");
-                System.out.println("-- [4] View Friends Logs");
-                if (cache.getType() == Cache.Type.MYSTERY) {
-                    System.out.println("-- [5] Check Coordinates");
-                    mystery = true;
+            System.out.println(cache.toListing());
+
+            if (cache.getOwner() != (User) userOnline) {
+                Log_Type logt = cache.getFoundStatus((User) userOnline);
+                if (logt == null) {
+                    System.out.println("- Found Status = None\n");
+                } else {
+                    System.out.println("- Found Status = " + cache.getFoundStatus((User) userOnline) + "\n");
                 }
+            }
+
+            // Only Users can do these actions
+            System.out.println("-- [1] Log your visit");
+            System.out.println("-- [2] View Logs");
+            System.out.println("-- [3] View My Logs");
+            if (userOnline.getRole() == UserAbstract.Role.USER) { // Only User's have Friends
+                System.out.println("-- [4] View Friends Logs");
                 user = true;
+            }
+            System.out.println("-- [5] View Owner");
+            if (cache.getType() == Cache.Type.MYSTERY) {
+                System.out.println("-- [6] Check Enigma Coordinates");
+                mystery = true;
             }
 
             if (userOnline.equals(cache.getOwner()) || userOnline.equals(cache.getReviewer())) { // Only Owner or Reviewer can see this menu
@@ -740,26 +751,26 @@ public class Geocaching {
 
                     case UNPUBLISHED:
                         if (userOnline.equals(cache.getReviewer())) {
-                            System.out.println("-- [6] Publish");
+                            System.out.println("-- [10] Publish");
                             publish = true;
-                            System.out.println("-- [7] Archive");
+                            System.out.println("-- [11] Archive");
                             archive = true;
-                            System.out.println("-- [8] Disable");
+                            System.out.println("-- [12] Disable");
                             disable = true;
                         }
                         break;
 
                     case DISABLED:
-                        System.out.println("-- [7] Archive");
+                        System.out.println("-- [11] Archive");
                         archive = true;
-                        System.out.println("-- [8] Enable");
+                        System.out.println("-- [12] Enable");
                         enable = true;
                         break;
 
                     case ENABLED:
-                        System.out.println("-- [7] Archive");
+                        System.out.println("-- [11] Archive");
                         archive = true;
-                        System.out.println("-- [8] Disable");
+                        System.out.println("-- [12] Disable");
                         disable = true;
                         break;
 
@@ -772,7 +783,7 @@ public class Geocaching {
                         break;
                 }
 
-                System.out.println("-- [9] Edit Cache");
+                System.out.println("-- [13] Edit Cache");
                 edit = true;
             }
 
@@ -788,42 +799,38 @@ public class Geocaching {
 
             switch (choice) {
                 case 1:
-                    if (user == true) {
-
-                        clearConsole();
-                        mLogCache(cache);
-                    }
+                    clearConsole();
+                    mLogCache(cache);
                     choice = -1;
                     break;
                 case 2:
-                    if (user == true) {
-
-                        clearConsole();
-                        mLogs(cache);
-                        clearConsole();
-                    }
+                    clearConsole();
+                    mLogs(cache);
+                    clearConsole();
                     choice = -1;
                     break;
                 case 3:
-                    if (user == true) {
-                        clearConsole();
-                        HashMap<String, User> userlist = new HashMap<>();
-                        userlist.put(userOnline.getEmail(), (User) userOnline);
-                        mLogs(userlist, cache);
-                        clearConsole();
-                    }
+                    clearConsole();
+                    mLogs((User) userOnline, cache);
+                    clearConsole();
                     choice = -1;
                     break;
                 case 4:
                     if (user == true) {
                         clearConsole();
-                        mLogs(((User) userOnline).getFriends(), cache);
+                        mLogsFriends((User) userOnline, cache);
                         clearConsole();
                     }
                     choice = -1;
                     break;
                 case 5:
-                    if (user == true) {
+                    clearConsole();
+                    mViewUser((User) cache.getOwner());
+                    clearConsole();
+                    choice = -1;
+                    break;
+                case 6:
+                    if (mystery == true) {
                         clearConsole();
                         Position p = mInputPosition(true);
                         if (((Mystery) cache).checkCoord(p)) {
@@ -835,7 +842,7 @@ public class Geocaching {
                     }
                     choice = -1;
                     break;
-                case 6:
+                case 10:
                     if (publish == true) {
                         clearConsole();
                         ((Reviewer) userOnline).publishCache(cache);
@@ -843,7 +850,7 @@ public class Geocaching {
                     }
                     choice = -1;
                     break;
-                case 7:
+                case 11:
                     if (archive == true) {
                         clearConsole();
                         ((User) userOnline).archiveCache(cache);
@@ -851,7 +858,7 @@ public class Geocaching {
                     }
                     choice = -1;
                     break;
-                case 8:
+                case 12:
                     if (disable == true) {
                         clearConsole();
                         ((User) userOnline).disableCache(cache);
@@ -863,7 +870,7 @@ public class Geocaching {
                     }
                     choice = -1;
                     break;
-                case 9:
+                case 13:
                     if (edit == true) {
                         clearConsole();
                         mEditCache(cache);
@@ -886,26 +893,75 @@ public class Geocaching {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private static void mLogs(HashMap<String, User> userlist, Cache cache) {
+    private static void mLogsFriends(User user, Cache cache) {
         int choice = -1;
-        TreeSet<Log> setLogs = cache.getCache_Logs();
+        TreeSet<Log> setLogs = cache.getFriendsLogs(user);
         String format = "  [ %" + (setLogs.size() + "").length() + "d ]";
         while (choice == -1) {
             System.out.println("####### '" + cache.getCacheTitle() + "' - Friend's Logs #######\n");
 
             int i = 1;
-            for (Log log : setLogs)// For each Friend
+            for (Log log : setLogs)// For each Log
             {
-                for (User friend : userlist.values()) {
-                    if (log.getUser().equals(friend)) {
-                        System.out.format(format + "\n" + log.toLogListing() + "\n", i);
-                        i++;
-                    }
-
-                }
+                System.out.format(format + "\n" + log.toLogListing() + "\n", i);
+                i++;
             }
             if (i == 1) {
                 System.out.println("-- There are no Friend's Logs for this cache!");
+            } else {
+                System.out.println("\n-- [X] View Log Details");
+            }
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                default:
+                    if (choice > 0 && choice <= setLogs.size()) {
+                        clearConsole();
+                        Log log = null;
+                        Iterator<Log> iterator = setLogs.iterator();
+                        int count = 0;
+                        while (iterator.hasNext() && count < choice) {
+                            log = iterator.next();
+                            count++;
+                        }
+                        mViewLog(log, cache);
+                        clearConsole();
+                    } else {
+                        System.out.println("Error: Invalid Option");
+                    }
+                    choice = -1;
+                    break;
+            }
+        }
+    }
+
+    private static void mLogs(User user, Cache cache) {
+        int choice = -1;
+        TreeSet<Log> setLogs = cache.getLogs(user);
+        String format = "  [ %" + (setLogs.size() + "").length() + "d ]";
+        while (choice == -1) {
+            System.out.println("####### '" + cache.getCacheTitle() + "' - Logs #######\n");
+
+            int i = 1;
+            for (Log log : setLogs)// For each Log
+            {
+                System.out.format(format + "\n" + log.toLogListing() + "\n", i);
+                i++;
+            }
+            if (i == 1) {
+                System.out.println("-- You have no Logs for this cache!");
             } else {
                 System.out.println("\n-- [X] View Log Details");
             }
@@ -1166,7 +1222,7 @@ public class Geocaching {
 
             System.out.println("-- [1] View User");
 
-            if (userOnline.equals(cache.getOwner()) && log.getUser().equals(userOnline) || // If I am the Owner and I made this Log then I can Edit and Delete this Log
+            if ((userOnline.equals(cache.getOwner()) && log.getUser().equals(userOnline)) || // If I am the Owner and I made this Log then I can Edit and Delete this Log
                     log.getUser().equals(userOnline)) {  // OR If I am just the User who made this Log then I can Edit and Delete
                 System.out.println("------- Admin Tools");
                 System.out.println("-- [8] Edit Log");
@@ -1242,7 +1298,173 @@ public class Geocaching {
         }
     }
 
+    private static void mEditLog(Log log) {
+        int choice = -1;
+        while (choice == -1) {
+
+            System.out.println("####### Edit " + log.getUser().getName() + "'s Log #######\n");
+            System.out.println("\n" + log.toLogListing() + "\n");
+
+            System.out.println("-- [1] Edit Text");
+            System.out.println("-- [2] Edit Log Type");
+
+            System.out.println("-----");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+            boolean edited;
+            switch (choice) {
+                case 1:
+                    String text = null;
+                    edited = false;
+                    while (edited == false) {
+                        System.out.println("\n\n- Type the new Log Text:");
+                        System.out.print("?> ");
+                        try {
+                            text = input.readLine();
+                        } catch (Exception ex) {
+                            //System.out.println("Error: Invalid Option");
+                            text = null;
+                        }
+                        if (text != null) {
+                            log.setLog(text);
+                            System.out.println("Log Text edited successfully!");
+                            pressAnyKeyToContinue();
+                            edited = true;
+                        } else {
+                            System.out.println("ERROR: Please type again.");
+                            pressAnyKeyToContinue();
+                        }
+                    }
+                    clearConsole();
+
+                    choice = -1;
+                    break;
+                case 2:
+                    Log_Type type = log.getLogType();
+                    edited = false;
+                    boolean foundit = false,
+                     dnf = false,
+                     needm = false,
+                     needa = false,
+                     note = false;
+                    while (edited == false) {
+                        System.out.println("\n\n- Log Types:");
+
+                        // FOUND_IT, DNF, NEEDS_MAINTENANCE, NEEDS_ARCHIVING, NOTE, REVIEWER_NOTE, ARCHIVED, ENABLED, DISABLED;
+                        if (type != Log_Type.FOUND_IT) {
+                            System.out.println(" [1] Found It\n");
+                            foundit = true;
+                        }
+                        if (type != Log_Type.DNF) {
+                            System.out.println(" [2] DNF\n");
+                            dnf = true;
+                        }
+                        if (type != Log_Type.NEEDS_MAINTENANCE) {
+                            System.out.println(" [3] Needs Maintenance\n");
+                            needm = true;
+                        }
+                        if (type != Log_Type.NEEDS_ARCHIVING) {
+                            System.out.println(" [4] Needs Archiving\n");
+                            needa = true;
+                        }
+                        if (type != Log_Type.NOTE) {
+                            System.out.println(" [5] Note\n");
+                            note = true;
+                        }
+
+                        System.out.println("\n-- [X] Choose the new Log Type:");
+                        System.out.println("-----");
+                        System.out.println("-- [0] Back");
+                        int ntype;
+                        System.out.print("?> ");
+                        try {
+                            ntype = Integer.parseInt(input.readLine());
+                        } catch (Exception ex) {
+                            //System.out.println("Error: Invalid Option");
+                            ntype = 0;
+                        }
+
+                        switch (ntype) {
+                            case 1:
+                                if (foundit) {
+                                    log.setLogType(Log_Type.FOUND_IT);
+                                    edited = true;
+                                    // If now is a FOUND IT then increase user's total founds
+                                    log.getUser().incTotalFound();
+                                }
+                                break;
+                            case 2:
+                                if (dnf) {
+                                    if (type == Log_Type.FOUND_IT)// If it was a FOUND IT then decrease user's total founds
+                                    {
+                                        log.getUser().decTotalFound();
+                                    }
+                                    log.setLogType(Log_Type.DNF);
+                                    edited = true;
+                                }
+                                break;
+                            case 3:
+                                if (needm) {
+                                    if (type == Log_Type.FOUND_IT)// If it was a FOUND IT then decrease user's total founds
+                                    {
+                                        log.getUser().decTotalFound();
+                                    }
+                                    log.setLogType(Log_Type.NEEDS_MAINTENANCE);
+                                    edited = true;
+                                }
+                                break;
+                            case 4:
+                                if (needa) {
+                                    if (type == Log_Type.FOUND_IT)// If it was a FOUND IT then decrease user's total founds
+                                    {
+                                        log.getUser().decTotalFound();
+                                    }
+                                    log.setLogType(Log_Type.NEEDS_ARCHIVING);
+                                    edited = true;
+                                }
+                                break;
+                            case 5:
+                                if (note) {
+                                    if (type == Log_Type.FOUND_IT)// If it was a FOUND IT then decrease user's total founds
+                                    {
+                                        log.getUser().decTotalFound();
+                                    }
+                                    log.setLogType(Log_Type.NOTE);
+                                    edited = true;
+                                }
+                                break;
+                            default:
+                                System.out.println("ERROR: Please choose again.");
+                                pressAnyKeyToContinue();
+                                break;
+                        }
+                        if (edited) {
+                            System.out.println("Log Type edited successfully!");
+                            pressAnyKeyToContinue();
+                        }
+
+                    }
+                    clearConsole();
+
+                    choice = -1;
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Error: Option not available");
+                    choice = -1;
+                    break;
+            }
+        }
+    }
 // ------------------- ACTIVITES MENU ------------------
+
     private static void mViewActivities(User friend) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -1271,7 +1493,7 @@ public class Geocaching {
     }
 
     // Load Data if it exists else create new one
-    public static Data getData() {
+    public static Data startData() {
 
         // Load Data
         if (loadData()) {
@@ -1315,27 +1537,27 @@ public class Geocaching {
     }
 
     // Pre-Made Dataset
-    private static void populateData(Data data) {
+    private static Data populateData() {
+        Data newData = new Data();
+        User u1 = new User("1", "1", "Ulisses", "M", "rua", new GregorianCalendar(2000, 1, 24, 11, 11, 11), true, 0, null, null, newData);
+        User u2 = new User("2", "2", "Uche Villareal", "M", "rua", new GregorianCalendar(1982, 2, 2, 11, 11, 11), false, 0, null, null, newData);
+        User u3 = new User("3", "3", "Ukra", "M", "rua", new GregorianCalendar(1992, 3, 29, 11, 11, 11), false, 0, null, null, newData);
+        User u4 = new User("4", "4", "Uruguaio", "M", "rua", new GregorianCalendar(2001, 8, 13, 11, 11, 11), false, 0, null, null, newData);
+        Reviewer r1 = new Reviewer("r", "r", "Rickon", "M", "rua", new GregorianCalendar(1968, 1, 24, 11, 11, 11), false, 0, null, null, newData);
+        Admin a1 = new Admin("a", "a", "Aemon", "M", "rua", new GregorianCalendar(1987, 7, 14, 11, 11, 11), false, 0, null, null, newData);
 
-        User u1 = new User("1", "1", "Ulisses", "M", "rua", new GregorianCalendar(2000, 1, 24, 11, 11, 11), true, 0, null, null, data);
-        User u2 = new User("2", "2", "Uche Villareal", "M", "rua", new GregorianCalendar(1982, 2, 2, 11, 11, 11), false, 0, null, null, data);
-        User u3 = new User("3", "3", "Ukra", "M", "rua", new GregorianCalendar(1992, 3, 29, 11, 11, 11), false, 0, null, null, data);
-        User u4 = new User("4", "4", "Uruguaio", "M", "rua", new GregorianCalendar(2001, 8, 13, 11, 11, 11), false, 0, null, null, data);
-        Reviewer r1 = new Reviewer("r", "r", "Rickon", "M", "rua", new GregorianCalendar(1968, 1, 24, 11, 11, 11), false, 0, null, null, data);
-        Admin a1 = new Admin("a", "a", "Aemon", "M", "rua", new GregorianCalendar(1987, 7, 14, 11, 11, 11), false, 0, null, null, data);
-
-        data.getAllUsers().put(u1.getEmail(), u1);
-        data.getAllUsers().put(u2.getEmail(), u2);
-        data.getAllUsers().put(u3.getEmail(), u3);
-        data.getAllUsers().put(u4.getEmail(), u4);
-        data.getAllUsers().put(r1.getEmail(), r1);
-        data.getAllUsers().put(a1.getEmail(), a1);
+        newData.getAllUsers().put(u1.getEmail(), u1);
+        newData.getAllUsers().put(u2.getEmail(), u2);
+        newData.getAllUsers().put(u3.getEmail(), u3);
+        newData.getAllUsers().put(u4.getEmail(), u4);
+        newData.getAllUsers().put(r1.getEmail(), r1);
+        newData.getAllUsers().put(a1.getEmail(), a1);
 
         Position p1 = CountriesData.portugal;
         Position p2 = new Position(41.57238, -8.47875, 1.5f);
         Traditional tc1 = new Traditional(new GregorianCalendar(2015, 06, 24, 11, 11, 11), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), new ArrayList<>());
-        Traditional tc2 = new Traditional(new GregorianCalendar(2015, 06, 19, 9, 12, 47), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new ArrayList<>());
-        Mystery mc1 = new Mystery(new GregorianCalendar(2015, 06, 25, 2, 3, 4), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new Position(1.1f, 2.2f), "YOU SOLVED IT!");
+        Traditional tc2 = new Traditional(new GregorianCalendar(2015, 06, 19, 9, 12, 47), "more info", "Em Braga", 4, 1.0f, p2, "climb!", new TreeSet<Log>(), new ArrayList<>());
+        Mystery mc1 = new Mystery(new GregorianCalendar(2015, 06, 25, 2, 3, 4), "church", "Sameiro", 4, 1.0f, p2, "magnetic", new TreeSet<Log>(), new Position(1.1f, 2.2f), "YOU SOLVED IT!");
 
         u1.createCache(tc1);
         u2.createCache(tc2);
@@ -1370,7 +1592,7 @@ public class Geocaching {
         u1.newFriendship(u2);
         u2.newFriendship(u3);
         u3.newFriendship(u4);
-
+        return newData;
     }
 
     // Show GeoCaching Logo
@@ -1398,10 +1620,6 @@ public class Geocaching {
         System.out.println("..............0xx@@xx000000000xx@@x00.........");
         System.out.println(".................00000000000000000............");
         System.out.println("..............................................");
-    }
-
-    private static void mEditLog(Log log) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private static void pressAnyKeyToContinue() {

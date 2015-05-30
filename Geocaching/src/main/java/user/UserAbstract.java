@@ -148,9 +148,12 @@ public abstract class UserAbstract implements Serializable {
         this.totalFound++;
     }
 
+    public void decTotalFound() {
+        this.totalFound--;
+    }
+
     // toString
     // Needs to be Overrided
-
     public Role getRole() {
         return Role.DEFAULT;
     }

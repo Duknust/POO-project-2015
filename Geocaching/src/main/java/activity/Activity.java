@@ -1,6 +1,7 @@
 package activity;
 
 import caches.Cache;
+import caches.Log;
 import java.io.Serializable;
 import java.util.GregorianCalendar;
 import user.UserAbstract;
@@ -16,6 +17,15 @@ public class Activity implements Comparable<Activity>, Serializable {
     private Type type;
     private Cache cache;
     private UserAbstract user;
+    private Log log;
+
+    public Activity(GregorianCalendar date, Type type, Cache cache, UserAbstract user, Log log) {
+        this.date = date;
+        this.type = type;
+        this.cache = cache;
+        this.user = user;
+        this.log = log;
+    }
 
     public Activity(GregorianCalendar date, Type type, Cache cache, UserAbstract user) {
         this.date = date;
@@ -47,6 +57,14 @@ public class Activity implements Comparable<Activity>, Serializable {
 
     public Cache getCache() {
         return cache;
+    }
+
+    public UserAbstract getUser() {
+        return user;
+    }
+
+    public Log getLog() {
+        return log;
     }
 
     @Override
