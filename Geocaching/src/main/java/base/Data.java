@@ -2,13 +2,16 @@ package base;
 
 import activity.Activity;
 import caches.Cache;
+
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
 import user.User;
 import user.UserAbstract;
 
@@ -155,4 +158,38 @@ public class Data implements Serializable {
         };
     }
 
+    public Cache[] getByPosition(Position p, int nCaches){
+    	
+    	double dist[] = new double[nCaches];
+    	Cache auxCache, caches[] = new Cache[nCaches];
+    	GeoTools geo = new GeoTools();
+    	double auxDist, aux;
+    	int i, added=0;
+
+    	for(Cache c: this.enabledCaches.values()){
+    		auxDist = geo.calcDistance(p, c.getPosition());
+    		i=0;
+    		
+    		while(i<added){
+    			if(auxDist > dist[i]) break;
+    			i++;
+    		}
+    		
+    		if(i<nCaches){
+    			while(i<nCaches){
+    				aux = dist[i];
+    				dist[i] = auxDist;
+    				auxDist = aux;
+    				
+    				auxCache = caches[i];
+    				caches[i] = c;
+    				c = auxCache;
+    				
+    				i++;
+    			}
+    			if(added < nCaches) added++;
+    		}
+    	}
+    	return caches;
+    }
 }

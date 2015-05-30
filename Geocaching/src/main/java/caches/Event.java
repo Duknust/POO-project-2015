@@ -114,8 +114,9 @@ public class Event extends Cache {
     public float timeToFind(UserAbstract user, Cache cache){
     	
     	//Base time
-    	float time = 10; 
+    	float dist, time = 10; 
     	int aux;
+    	
     	
     	//Specialized in the type    	
     	aux = user.nFindFromType(cache.getType());
@@ -125,6 +126,10 @@ public class Event extends Cache {
     		time += 15;
     	else	//An expert
     		time += 10;
+    	
+    	
+    	//Distance
+    	
     	
     	
     	
