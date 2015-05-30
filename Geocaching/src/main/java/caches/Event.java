@@ -1,10 +1,13 @@
 package caches;
 
 import base.Position;
+
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.TreeSet;
+
 import user.Reviewer;
+import user.User;
 import user.UserAbstract;
 
 public class Event extends Cache {
@@ -16,6 +19,7 @@ public class Event extends Cache {
      * archived.
      */
     HashMap<String, UserAbstract> participants;
+    HashMap<String, Integer> points;
     HashMap<String, Cache> caches;
     GregorianCalendar dateEvent, dateEndAplications;
     int maxParticipants;
@@ -77,6 +81,7 @@ public class Event extends Cache {
     		return false;
     		
         this.participants.put(user.getName(), user);
+        this.points.put(user.getName(), 0);
     	return true;
     }
 
@@ -85,6 +90,7 @@ public class Event extends Cache {
     		return false;
     	
         this.participants.remove(user.getName());
+        this.points.remove(user.getName());
         return true;
     }
     
@@ -103,6 +109,31 @@ public class Event extends Cache {
         this.caches.remove(cacheID);
         return true;
     }
+    
+    
+    public float timeToFind(UserAbstract user, Cache cache){
+    	
+    	//Base time
+    	float time = 10; 
+    	int aux;
+    	
+    	//Specialized in the type    	
+    	aux = user.nFindFromType(cache.getType());
+    	if(aux<7) //He is new in the type
+    		time += 20;
+    	else if(aux < 15) //Some experience
+    		time += 15;
+    	else	//An expert
+    		time += 10;
+    	
+    	
+    	
+    	
+    	return time;
+    }
+    
+    
+    
 
 
     @Override

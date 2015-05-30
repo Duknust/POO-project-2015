@@ -379,5 +379,14 @@ public class User extends UserAbstract implements Serializable {
     public boolean isFriendsWith(User friend) {
         return this.friends.containsKey(friend.getEmail());
     }
+    
+    
+    public int nFindFromType(Cache.Type type){
+    	int res=0;
+    	for(Cache c: this.caches.values())
+    		if(c.getType() == type)
+    			res++;
+    	return res;
+    }
 
 }
