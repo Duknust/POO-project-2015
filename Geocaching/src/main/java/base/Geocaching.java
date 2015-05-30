@@ -889,8 +889,80 @@ public class Geocaching {
 
     }
 
-    private static void mLogCache(Cache get) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private static void mLogCache(Cache cache) {
+        int choice = -1;
+        Log_Type type;
+        while (choice == -1) {
+
+            System.out.println("####### Log your visit at " + cache.getCacheTitle() + " #######\n");
+
+            System.out.println(" [1] Found It\n");
+            System.out.println(" [2] DNF\n");
+            System.out.println(" [3] Needs Maintenance\n");
+            System.out.println(" [4] Needs Archiving\n");
+            System.out.println(" [5] Note\n");
+
+            // Reviewer
+            System.out.println("-----");
+            System.out.println("-- [0] Back");
+
+            System.out.println("-- Choose the Log Type:");
+            while (choice == -1) {
+                type = null;
+                System.out.print("?> ");
+                try {
+                    choice = Integer.parseInt(input.readLine());
+                } catch (Exception ex) {
+                    //System.out.println("Error: Invalid Option");
+                    choice = -1;
+                }
+
+                switch (choice) {
+                    case 1:
+                        type = Log_Type.FOUND_IT;
+                        break;
+                    case 2:
+                        type = Log_Type.DNF;
+                        break;
+                    case 3:
+                        type = Log_Type.NEEDS_MAINTENANCE;
+                        break;
+                    case 4:
+                        type = Log_Type.NEEDS_ARCHIVING;
+                        break;
+                    case 5:
+                        type = Log_Type.NOTE;
+                        break;
+                    case 0:
+                        break;
+                    default:
+                        choice = -1;
+                        System.out.println("Error: Invalid Option");
+                        break;
+                }
+                if (type != null) {
+                    String text = "";
+                    boolean bText = false;
+                    System.out.println("-- Type the Log");
+                    while (bText == false) {
+                        System.out.print("?> ");
+                        try {
+                            text = input.readLine();
+                            bText = true;
+                        } catch (Exception ex) {
+                            System.out.println("Error: Invalid Option");
+                        }
+                        if (text.trim().length() < 1) {
+                            System.out.println("Error: You have to type something!");
+                        }
+                    }
+                    Log newLog = new Log(text, new GregorianCalendar(), type);
+                    cache.logCache((User) userOnline, newLog);
+                    System.out.println("Cache Successfully Logged!");
+                    pressAnyKeyToContinue();
+                }
+            }
+        }
     }
 
     private static void mLogsFriends(User user, Cache cache) {
