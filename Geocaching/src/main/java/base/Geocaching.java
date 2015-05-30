@@ -107,6 +107,7 @@ public class Geocaching {
             System.out.println("-- [2] Caches");
             System.out.println("-- [3] Friends");
             System.out.println("-- [4] Statistics");
+            System.out.println("-- [5] Events");
             System.out.println("-----:");
             System.out.println("-- [0] Exit");
 
@@ -140,6 +141,12 @@ public class Geocaching {
                 case 4:
                     clearConsole();
                     mStats();
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 5:
+                    clearConsole();
+                    mEvents();
                     choice = -1;
                     clearConsole();
                     break;
@@ -1012,8 +1019,80 @@ public class Geocaching {
     private static void mSearchCaches() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     private static void mCreateCache() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static void mEvents() {
+    	int choice = -1;
+        while (choice == -1) { // REVIEWER IFS MISSING
+            System.out.println("####### Events Menu #######\n");
+            System.out.println("-- [1] Search Event");
+            System.out.println("-- [2] Create a Event");
+            System.out.println("-- [3] View Participated Events");
+            System.out.println("-- [4] View Owned Events");
+            System.out.println("-----");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 1:
+                    clearConsole();
+                    mSearchEvent();
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 2:
+                    clearConsole();
+                    mCreateEvent();
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 3:
+                    clearConsole();
+                    mParticipatedEvents(userOnline);
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 4:
+                    clearConsole();
+                    mViewOwedEvents(userOnline);
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Error: Option not available");
+                    choice = -1;
+                    break;
+            }
+        }
+    }
+    
+    private static void mViewOwedEvents(UserAbstract userOnline2) {
+    	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		
+	}
+
+	private static void mParticipatedEvents(UserAbstract user) {
+    	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		
+	}
+
+	private static void mSearchEvent() {
+    	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		
+	}
+
+	private static void mCreateEvent() {
         GregorianCalendar dateEvent = new GregorianCalendar();
         GregorianCalendar dateEndApplications = new GregorianCalendar();
         String name="", description="", str="";

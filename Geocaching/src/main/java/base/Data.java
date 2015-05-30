@@ -21,6 +21,9 @@ public class Data implements Serializable {
     HashMap<String, Cache> disabledCaches = null;
     HashMap<String, Cache> unpublishedCaches = null;
     HashMap<String, Cache> archivedCaches = null;
+    
+    HashMap<String, Cache> enabledEvents = null;
+    HashMap<String, Cache> pastEvents = null;
 
     HashMap<String, UserAbstract> allUsers = null;
     TreeMap<GregorianCalendar, Activity> allActivities = null;
@@ -35,9 +38,20 @@ public class Data implements Serializable {
         allUsers = new HashMap<>();
         allActivities = new TreeMap<>();
         allPositions = new TreeMap<>();
+        
+        enabledEvents = new HashMap<String, Cache>();
+        pastEvents = new HashMap<String, Cache>();
     }
 
     // Getters and Setters
+    public HashMap<String, Cache> getEnabledEvents() {
+        return enabledEvents;
+    }
+    
+    public HashMap<String, Cache> getPastEvents() {
+        return pastEvents;
+    }
+    
     public HashMap<String, Cache> getEnabledCaches() {
         return enabledCaches;
     }
