@@ -10,7 +10,7 @@ public class Activity implements Comparable<Activity>, Serializable {
 
     public enum Type {
 
-        NEW_CACHE, FOUND_CACHE, NOT_FOUND_CACHE, ARCHIVED_CACHE, DISABLED_CACHE, ENABLED_CACHE
+        NEW_CACHE, FOUND_CACHE, NOT_FOUND_CACHE, ARCHIVED_CACHE, DISABLED_CACHE, ENABLED_CACHE, UPDATED_LOG_TYPE
     }
 
     private GregorianCalendar date;
@@ -92,6 +92,9 @@ public class Activity implements Comparable<Activity>, Serializable {
                 break;
             case ENABLED_CACHE:
                 res = "\"" + this.cache.getCacheTitle() + "\" has been enabled by " + this.user.getName();
+                break;
+            case UPDATED_LOG_TYPE:
+                res = "The " + this.user.getName() + "'s log from \"" + this.cache.getCacheTitle() + "\" has been updated to " + this.log.getLogType();
                 break;
             default:
                 break;
