@@ -1319,32 +1319,36 @@ public class Geocaching {
 		int i, choice = -1;
 		Event ev = null;
 		
+		ArrayList<Event> list = new ArrayList<Event>(); 
+    	Iterator<Event> evEnable = data.enabledEvents.values().iterator();
+    	Iterator<Event> evPast = data.pastEvents.values().iterator();
+    	
+    	while(evEnable.hasNext()){
+    		ev = evEnable.next();
+    		if(user.equals(ev.getOwner()))
+    			list.add(ev);
+    	}
+    	
+    	while(evPast.hasNext()){
+    		ev = evPast.next();
+    		if(user.equals(ev.getOwner()))
+    			list.add(ev);
+    	}
+    	
+    	list.sort(data.compareEventDate());
+    	
 		while (choice == -1) {
-			System.out.println("\tID - Title");
-			ArrayList<Event> list = new ArrayList<Event>(); 
-        	Iterator<Event> evEnable = data.enabledEvents.values().iterator();
-        	Iterator<Event> evPast = data.pastEvents.values().iterator();
         	
-        	while(evEnable.hasNext()){
-        		ev = evEnable.next();
-        		if(user.equals(ev.getOwner()))
-        			list.add(ev);
-        	}
-        	
-        	while(evPast.hasNext()){
-        		ev = evPast.next();
-        		if(user.equals(ev.getOwner()))
-        			list.add(ev);
-        	}
-        	
-        	list.sort(data.compareEventDate());
-        	
-            for(i=0; i< list.size();i++){
-            	ev = list.get(i);
-            	System.out.format("\t[%d] - %s - %s - %s\n", i+1, ev.getCacheID(), ev.getCacheTitle(), ev.getDateEvent().getTime().toString());
-            }
+			if(list.size() != 0){
+				System.out.println("\tID - Title - Date of Event");
+	            for(i=0; i< list.size();i++){
+	            	ev = list.get(i);
+	            	System.out.format("\t[%d] - %s - %s - %s\n", i+1, ev.getCacheID(), ev.getCacheTitle(), ev.getDateEvent().getTime().toString());
+	            }
+			}else
+	    		System.out.println("\n\tError: You didn't organize events!! ");
             
-            System.out.println("\n-- [X] View Cache");
+            System.out.println("\n-- [X] View Event");
             System.out.println("-----:");
             System.out.println("-- [0] Back");
             System.out.print("?> ");
@@ -1361,7 +1365,7 @@ public class Geocaching {
 	            default:
 	            	if (choice > 0 && choice <= list.size()) {
 	            		clearConsole();
-	            		ev = list.get(i-1);
+	            		ev = list.get(choice-1);
                         mViewEvent(ev);
                     } else 
 	                        System.out.println("Error: Invalid Option");
@@ -1372,12 +1376,63 @@ public class Geocaching {
 	}
 
 	private static void mParticipatedEvents(UserAbstract user) {
-    	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		int i, choice = -1;
+		Event ev = null;
 		
-	}
+		ArrayList<Event> list = new ArrayList<Event>(); 
+    	Iterator<Event> evEnable = data.enabledEvents.values().iterator();
+    	Iterator<Event> evPast = data.pastEvents.values().iterator();
+    	
+    	while(evEnable.hasNext()){
+    		ev = evEnable.next();
+    		if(ev.checkParticipation(user))
+    			list.add(ev);
+    	}
+    	
+    	while(evPast.hasNext()){
+    		ev = evPast.next();
+    		if(ev.checkParticipation(user))
+    			list.add(ev);
+    	}
+    	
+    	list.sort(data.compareEventDate());
+		
+		while (choice == -1) {
 
-	private static void mSearchEvent() {
-    	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        	if(list.size() != 0){
+        		System.out.println("\tID - Title - Date of Event");
+        		for(i=0; i< list.size();i++){
+	            	ev = list.get(i);
+	            	System.out.format("\t[%d] - %s - %s - %s\n", i+1, ev.getCacheID(), ev.getCacheTitle(), ev.getDateEvent().getTime().toString());
+	            }
+        	}else
+        		System.out.println("\n\tError: You didn't participate in events!! ");
+            
+            System.out.println("\n-- [X] View Event");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+	        try {
+	            choice = Integer.parseInt(input.readLine());
+	        } catch (Exception ex) {
+	            choice = -1;
+	        }
+            
+            switch (choice) {
+	            case 0:
+	                clearConsole();
+	                break;
+	            default:
+	            	if (choice > 0 && choice <= list.size()) {
+	            		clearConsole();
+	            		ev = list.get(choice-1);
+                        mViewEvent(ev);
+                    } else 
+	                        System.out.println("Error: Invalid Option");
+	                choice = -1;
+	                break;
+            }
+		}
 		
 	}
 

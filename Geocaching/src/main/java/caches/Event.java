@@ -99,6 +99,13 @@ public class Event extends Cache {
         return true;
     }
     
+    public boolean checkParticipation(UserAbstract user){
+    	for(UserAbstract u: this.participants.values())
+    		if(user.equals(u))
+    			return true;
+    	return false;
+    }
+    
     public int getNRegistrations(){
     	return this.participants.size();
     }
