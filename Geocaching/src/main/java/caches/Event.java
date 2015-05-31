@@ -29,7 +29,9 @@ public class Event extends Cache {
 
     // Constructors
     public Event(GregorianCalendar creationDate, GregorianCalendar dateEndApp, GregorianCalendar dateEvent, String cacheTitle, String description, Position position, int maxParticipants, UserAbstract owner, HashMap<String, Cache> caches) {
-        super(creationDate, description, cacheTitle, position);
+        super(creationDate, description, cacheTitle, position, owner);
+        this.participants = new HashMap<String,UserAbstract>();
+        this.points = new HashMap<String,Integer>();
         this.maxParticipants = maxParticipants;
         this.caches = caches;
         this.dateEndAplications = dateEndApp;
@@ -69,24 +71,32 @@ public class Event extends Cache {
     	return this.maxParticipants;
     }
     
+    public int getPointsByUser(UserAbstract user){
+    	return  points.get(user.getEmail());
+    }
+    
 
     // Methods
     public boolean addParticipant(UserAbstract user) {
-    	if(this.participants.containsKey(user.getName()))
+    	if(this.participants.containsKey(user.getEmail()))
     		return false;
     		
-        this.participants.put(user.getName(), user);
-        this.points.put(user.getName(), 0);
+        this.participants.put(user.getEmail(), user);
+        this.points.put(user.getEmail(), 0);
     	return true;
     }
 
     public boolean remParticipant(UserAbstract user) {
-    	if(!this.participants.containsKey(user.getName()))
+    	if(!this.participants.containsKey(user.getEmail()))
     		return false;
     	
-        this.participants.remove(user.getName());
-        this.points.remove(user.getName());
+        this.participants.remove(user.getEmail());
+        this.points.remove(user.getEmail());
         return true;
+    }
+    
+    public int getNRegistrations(){
+    	return this.participants.size();
     }
     
     public boolean addCache(Cache cache) {

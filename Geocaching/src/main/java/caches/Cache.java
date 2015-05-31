@@ -127,8 +127,9 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
     }
     
  // w/o ID && Reviewer && Hint && Difficulty && CacheSize && Cache-Logs
-    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, Position position) {
+    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, Position position, UserAbstract owner) {
         this.creationDate = creationDate;
+        this.owner = owner;
         this.cacheTitle = cacheTitle;
         this.description = description;
         this.cacheState = Status.UNPUBLISHED;

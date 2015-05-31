@@ -2,8 +2,10 @@ package base;
 
 import activity.Activity;
 import caches.Cache;
+import caches.Event;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
@@ -22,8 +24,8 @@ public class Data implements Serializable {
     HashMap<String, Cache> unpublishedCaches = null;
     HashMap<String, Cache> archivedCaches = null;
     
-    HashMap<String, Cache> enabledEvents = null;
-    HashMap<String, Cache> pastEvents = null;
+    HashMap<String, Event> enabledEvents = null;
+    HashMap<String, Event> pastEvents = null;
 
     HashMap<String, UserAbstract> allUsers = null;
     TreeMap<GregorianCalendar, Activity> allActivities = null;
@@ -39,16 +41,16 @@ public class Data implements Serializable {
         allActivities = new TreeMap<>();
         allPositions = new TreeMap<>();
         
-        enabledEvents = new HashMap<String, Cache>();
-        pastEvents = new HashMap<String, Cache>();
+        enabledEvents = new HashMap<String, Event>();
+        pastEvents = new HashMap<String, Event>();
     }
 
     // Getters and Setters
-    public HashMap<String, Cache> getEnabledEvents() {
+    public HashMap<String, Event> getEnabledEvents() {
         return enabledEvents;
     }
     
-    public HashMap<String, Cache> getPastEvents() {
+    public HashMap<String, Event> getPastEvents() {
         return pastEvents;
     }
     
@@ -171,6 +173,18 @@ public class Data implements Serializable {
             }
         };
     }
+    
+    
+    public Comparator<Event> compareEventAppDate() {
+        return new Comparator<Event>() {
+            public int compare(Event o1, Event o2) {
+                return -1 * o1.getDateEndApplications().compareTo(o2.getDateEndApplications());
+            }
+        };
+    }
+    
+    
+    
 
     public HashMap<String, Cache> getByPosition(Position p, int nCaches){
     	

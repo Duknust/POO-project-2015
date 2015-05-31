@@ -19,11 +19,13 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -1028,10 +1030,11 @@ public class Geocaching {
     	int choice = -1;
         while (choice == -1) { // REVIEWER IFS MISSING
             System.out.println("####### Events Menu #######\n");
-            System.out.println("-- [1] Search Event");
-            System.out.println("-- [2] Create a Event");
-            System.out.println("-- [3] View Participated Events");
+            System.out.println("-- [1] Active Events");
+            System.out.println("-- [2] Happening Events");
+            System.out.println("-- [3] Create a Event");
             System.out.println("-- [4] View Owned Events");
+            System.out.println("-- [5] View Participated Events");
             System.out.println("-----");
             System.out.println("-- [0] Back");
             System.out.print("?> ");
@@ -1045,19 +1048,19 @@ public class Geocaching {
             switch (choice) {
                 case 1:
                     clearConsole();
-                    mSearchEvent();
+                    mActiveEvents();
                     choice = -1;
                     clearConsole();
                     break;
                 case 2:
                     clearConsole();
-                    mCreateEvent();
+                    mParticipatedEvents(userOnline);
                     choice = -1;
                     clearConsole();
                     break;
                 case 3:
                     clearConsole();
-                    mParticipatedEvents(userOnline);
+                    mCreateEvent();
                     choice = -1;
                     clearConsole();
                     break;
@@ -1077,7 +1080,129 @@ public class Geocaching {
         }
     }
     
-    private static void mViewOwedEvents(UserAbstract userOnline2) {
+    private static void mActiveEvents() {
+    	int choice = -1;
+    	HashMap<String, Event> events = data.getEnabledEvents();
+    	ArrayList<Event> list = new ArrayList<Event>();
+    	Calendar today = new GregorianCalendar();
+    	
+    	for(Event e: events.values())
+    		if(today.before(e.getDateEndApplications()))    			
+    			list.add(e);
+    		
+    	list.sort(data.compareEventAppDate());
+
+        while (choice == -1) {
+            int i = 1;
+            System.out.println("####### " + userOnline.getName() + " Founds #######\n");
+
+            System.out.println("\n-- Total Founds: " + list.size() + "\n\n");
+            for (Event e : list)// For each Friend
+            {
+            	Date dt = e.getDateEndApplications().getTime();
+                System.out.format("\t[%d] - %s - %s\n", i, e.getCacheTitle(), dt.toString());
+                i++;
+            }
+            System.out.println("\n-- [X] View Event");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                default:
+                    if (choice > 0 && choice <= list.size()) {
+                        clearConsole();
+                        Event ev = list.get(choice - 1);
+                        mViewEvent(ev);
+                        clearConsole();
+                    } else {
+                        System.out.println("Error: Invalid Option");
+                    }
+                    choice = -1;
+                     break;
+            }
+        }
+		
+	}
+
+	private static void mViewEvent(Event ev) {
+		int choice = -1;
+		
+		while (choice == -1) {
+			System.out.println("\n-- Event Details --\n");
+			System.out.println("\tOrganizer: "+ ev.getOwner().getName());
+			System.out.println("\tID: "+ ev.getCacheID());
+			System.out.println("\tTitle: "+ ev.getCacheTitle());
+			System.out.println("\tDescription: "+ ev.getDescription());
+			System.out.println("\tNº Regist: "+ ev.getNRegistrations() +"/"+ ev.getMaxP());
+			System.out.println("\tDate Creation: "+ ev.getCreationDate().getTime().toString());
+			System.out.println("\tDate End App:  "+ ev.getDateEndApplications().getTime().toString());
+			System.out.println("\tDate of Event: "+ ev.getDateEvent().getTime().toString());
+			
+			System.out.println("\n-- [1] See Participants");
+			System.out.println("-- [2] Send Application");
+	        System.out.println("-----:");
+	        System.out.println("-- [0] Back");
+	
+	        System.out.print("?> ");
+	        try {
+	            choice = Integer.parseInt(input.readLine());
+	        } catch (Exception ex) {
+	            choice = -1;
+	        }
+	
+	        switch (choice) {
+	            case 0:
+	                clearConsole();
+	                break;
+	            case 1:
+	            	clearConsole();
+	            	System.out.println("\tPoints - Username");
+	                for(UserAbstract u: ev.getParticipants().values())
+	                	System.out.println("\t" + ev.getPointsByUser(u) + " - " + u.getName());
+	                
+	                break;
+	            case 2:
+	                clearConsole();
+	                Calendar today = new GregorianCalendar();
+	            	if(today.after(ev.getDateEndApplications())){  
+	            		System.out.println("Error: The application date limit is expired!!");
+            			break;
+            		}
+	            	
+	            	if(userOnline.equals(ev.getOwner())){
+	            		System.out.println("Error: You are the owner!!");
+	            		break;
+	            	}
+
+	            	if(ev.getNRegistrations() < ev.getMaxP())
+	            		if(ev.addParticipant(userOnline))
+	            			System.out.println("Congratulations!! Now you are a participant!!");
+	            		else
+	            			System.out.println("Error: User is already registrated in event!!");
+	            	else
+	            		System.out.println("Error: The event is full!! Try later..");
+	            	choice = -1;
+	            	break;
+	            default:
+	                System.out.println("Error: Invalid Option");
+	                choice = -1;
+	                 break;
+	        }
+		}
+	}
+
+	private static void mViewOwedEvents(UserAbstract userOnline2) {
     	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		
 	}
@@ -1519,7 +1644,15 @@ public class Geocaching {
         Traditional tc1 = new Traditional(new GregorianCalendar(2015, 06, 24, 11, 11, 11), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), new ArrayList<String>());
         Traditional tc2 = new Traditional(new GregorianCalendar(2015, 06, 19, 9, 12, 47), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new ArrayList<String>());
         Mystery mc1 = new Mystery(new GregorianCalendar(2015, 06, 25, 2, 3, 4), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new Position(1.1f, 2.2f), "YOU SOLVED IT!");
-
+        
+        Event e1 = new Event(new GregorianCalendar(), new GregorianCalendar(2015,6,2), new GregorianCalendar(2015,6,4), "Evento All Star", "Está tudo a brilhar", new Position(42,51), 5, u1, null);
+        Event e2 = new Event(new GregorianCalendar(2015,5,2), new GregorianCalendar(2015,5,5), new GregorianCalendar(2015,5,31), "Evento Joker", "Um grande sorriso!!", new Position(82,322), 5, u2, null);
+        Event e3 = new Event(new GregorianCalendar(2015,5,4), new GregorianCalendar(2015,4,30), new GregorianCalendar(2015,5,31), "Evento Mais Bonito", "Um grandhe sorriso!!", new Position(82,322), 5, u1, null);
+        
+        data.getEnabledEvents().put(e1.getCacheID(), e1);
+        data.getEnabledEvents().put(e2.getCacheID(), e2);
+        data.getEnabledEvents().put(e3.getCacheID(), e3);
+        
         u1.createCache(tc1);
         u2.createCache(tc2);
         u1.createCache(mc1);
