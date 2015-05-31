@@ -75,6 +75,10 @@ public class Event extends Cache {
     	return  points.get(user.getEmail());
     }
     
+    public HashMap<String,Cache> getCaches(){
+    	return this.caches;
+    }
+    
 
     // Methods
     public boolean addParticipant(UserAbstract user) {

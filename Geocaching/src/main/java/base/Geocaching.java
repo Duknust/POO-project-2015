@@ -20,6 +20,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -1150,7 +1151,8 @@ public class Geocaching {
 			System.out.println("\tDate of Event: "+ ev.getDateEvent().getTime().toString());
 			
 			System.out.println("\n-- [1] See Participants");
-			System.out.println("-- [2] Send Application");
+			System.out.println("\n-- [2] See Caches");
+			System.out.println("-- [3] Send Application");
 	        System.out.println("-----:");
 	        System.out.println("-- [0] Back");
 	
@@ -1167,12 +1169,24 @@ public class Geocaching {
 	                break;
 	            case 1:
 	            	clearConsole();
-	            	System.out.println("\tPoints - Username");
-	                for(UserAbstract u: ev.getParticipants().values())
-	                	System.out.println("\t" + ev.getPointsByUser(u) + " - " + u.getName());
-	                
+	            	if(ev.getNRegistrations() != 0){
+		            	System.out.println("\tPoints - Username");
+		                for(UserAbstract u: ev.getParticipants().values())
+		                	System.out.println("\t" + ev.getPointsByUser(u) + " - " + u.getName());	            		
+	            	} else
+	            		System.out.println("Error: Event without users resgistrated!!");
+	            	choice = -1;
 	                break;
 	            case 2:
+	            	clearConsole();
+	                if(ev.getCaches().size() != 0){
+	                	mEventCaches(ev);	            		
+	            	} else
+	            		System.out.println("Error: Event without caches resgistrated!!");
+	                choice = -1;
+	                break;
+	            case 3:
+	            	choice = -1;
 	                clearConsole();
 	                Calendar today = new GregorianCalendar();
 	            	if(today.after(ev.getDateEndApplications())){  
@@ -1192,13 +1206,52 @@ public class Geocaching {
 	            			System.out.println("Error: User is already registrated in event!!");
 	            	else
 	            		System.out.println("Error: The event is full!! Try later..");
-	            	choice = -1;
 	            	break;
 	            default:
 	                System.out.println("Error: Invalid Option");
 	                choice = -1;
 	                 break;
 	        }
+		}
+	}
+
+	private static void mEventCaches(Event ev) {
+		int i, choice = -1;
+		Cache cache = null;
+		
+		while (choice == -1) {
+			System.out.println("\tID - Title");
+        	Object[] array = ev.getCaches().values().toArray();
+        	
+            for(i=0; i< array.length;i++){
+            	cache = (Cache)array[i];
+            	System.out.format("\t[%d] - %s - %s\n", i+1, cache.getCacheID(), cache.getCacheTitle());
+            }
+            
+            System.out.println("\n-- [X] View Cache");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+	        try {
+	            choice = Integer.parseInt(input.readLine());
+	        } catch (Exception ex) {
+	            choice = -1;
+	        }
+            
+            switch (choice) {
+	            case 0:
+	                clearConsole();
+	                break;
+	            default:
+	            	if (choice > 0 && choice <= array.length) {
+	            		clearConsole();
+	            		cache = (Cache)array[choice-1];
+                        mViewCache(cache);
+                    } else 
+	                        System.out.println("Error: Invalid Option");
+	                choice = -1;
+	                break;
+            }
 		}
 	}
 
@@ -1645,9 +1698,13 @@ public class Geocaching {
         Traditional tc2 = new Traditional(new GregorianCalendar(2015, 06, 19, 9, 12, 47), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new ArrayList<String>());
         Mystery mc1 = new Mystery(new GregorianCalendar(2015, 06, 25, 2, 3, 4), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new Position(1.1f, 2.2f), "YOU SOLVED IT!");
         
-        Event e1 = new Event(new GregorianCalendar(), new GregorianCalendar(2015,6,2), new GregorianCalendar(2015,6,4), "Evento All Star", "Está tudo a brilhar", new Position(42,51), 5, u1, null);
-        Event e2 = new Event(new GregorianCalendar(2015,5,2), new GregorianCalendar(2015,5,5), new GregorianCalendar(2015,5,31), "Evento Joker", "Um grande sorriso!!", new Position(82,322), 5, u2, null);
-        Event e3 = new Event(new GregorianCalendar(2015,5,4), new GregorianCalendar(2015,4,30), new GregorianCalendar(2015,5,31), "Evento Mais Bonito", "Um grandhe sorriso!!", new Position(82,322), 5, u1, null);
+        Event e1 = new Event(new GregorianCalendar(), new GregorianCalendar(2015,6,2), new GregorianCalendar(2015,6,4), "Evento All Star", "Está tudo a brilhar", new Position(42,51), 5, u1, new HashMap<String,Cache>());
+        Event e2 = new Event(new GregorianCalendar(2015,5,2), new GregorianCalendar(2015,5,5), new GregorianCalendar(2015,5,31), "Evento Joker", "Um grande sorriso!!", new Position(82,322), 5, u2, new HashMap<String,Cache>());
+        Event e3 = new Event(new GregorianCalendar(2015,5,4), new GregorianCalendar(2015,4,30), new GregorianCalendar(2015,5,31), "Evento Mais Bonito", "Um grandhe sorriso!!", new Position(82,322), 5, u1, new HashMap<String,Cache>());
+        
+        e1.addCache(tc1);
+        e1.addCache(tc2);
+        e1.addCache(mc1);
         
         data.getEnabledEvents().put(e1.getCacheID(), e1);
         data.getEnabledEvents().put(e2.getCacheID(), e2);

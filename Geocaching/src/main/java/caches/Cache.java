@@ -113,7 +113,7 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.reviewer = reviewer;
     }
 
-    // w/o ID and Reviewer
+    // w/o Reviewer
     public Cache(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs) {
         this.creationDate = creationDate;
         this.description = description;
@@ -124,9 +124,10 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.position = position;
         this.hint = hint;
         this.cache_Logs = cache_Logs;
+        this.cacheID = genID(6);
     }
     
- // w/o ID && Reviewer && Hint && Difficulty && CacheSize && Cache-Logs
+ // w/o Reviewer && Hint && Difficulty && CacheSize && Cache-Logs
     public Cache(GregorianCalendar creationDate, String description, String cacheTitle, Position position, UserAbstract owner) {
         this.creationDate = creationDate;
         this.owner = owner;
