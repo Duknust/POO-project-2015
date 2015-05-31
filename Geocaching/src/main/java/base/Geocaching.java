@@ -1315,9 +1315,60 @@ public class Geocaching {
 		}
 	}
 
-	private static void mViewOwedEvents(UserAbstract userOnline2) {
-    	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	private static void mViewOwedEvents(UserAbstract user) {
+		int i, choice = -1;
+		Event ev = null;
 		
+		while (choice == -1) {
+			System.out.println("\tID - Title");
+			ArrayList<Event> list = new ArrayList<Event>(); 
+        	Iterator<Event> evEnable = data.enabledEvents.values().iterator();
+        	Iterator<Event> evPast = data.pastEvents.values().iterator();
+        	
+        	while(evEnable.hasNext()){
+        		ev = evEnable.next();
+        		if(user.equals(ev.getOwner()))
+        			list.add(ev);
+        	}
+        	
+        	while(evPast.hasNext()){
+        		ev = evPast.next();
+        		if(user.equals(ev.getOwner()))
+        			list.add(ev);
+        	}
+        	
+        	list.sort(data.compareEventDate());
+        	
+            for(i=0; i< list.size();i++){
+            	ev = list.get(i);
+            	System.out.format("\t[%d] - %s - %s - %s\n", i+1, ev.getCacheID(), ev.getCacheTitle(), ev.getDateEvent().getTime().toString());
+            }
+            
+            System.out.println("\n-- [X] View Cache");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+	        try {
+	            choice = Integer.parseInt(input.readLine());
+	        } catch (Exception ex) {
+	            choice = -1;
+	        }
+            
+            switch (choice) {
+	            case 0:
+	                clearConsole();
+	                break;
+	            default:
+	            	if (choice > 0 && choice <= list.size()) {
+	            		clearConsole();
+	            		ev = list.get(i-1);
+                        mViewEvent(ev);
+                    } else 
+	                        System.out.println("Error: Invalid Option");
+	                choice = -1;
+	                break;
+            }
+		}
 	}
 
 	private static void mParticipatedEvents(UserAbstract user) {
@@ -1760,7 +1811,7 @@ public class Geocaching {
         
         Event e1 = new Event(new GregorianCalendar(), new GregorianCalendar(2015,6,2), new GregorianCalendar(2015,6,4), "Evento All Star", "Está tudo a brilhar", new Position(42,51), 5, u1, new HashMap<String,Cache>());
         Event e2 = new Event(new GregorianCalendar(2015,5,2), new GregorianCalendar(2015,5,5), new GregorianCalendar(2015,5,31), "Evento Joker", "Um grande sorriso!!", new Position(82,321), 5, u2, new HashMap<String,Cache>());
-        Event e3 = new Event(new GregorianCalendar(2015,5,4), new GregorianCalendar(2015,4,30), new GregorianCalendar(2015,5,31), "Evento Mais Bonito", "Um grandhe sorriso!!", new Position(282,322), 5, u1, new HashMap<String,Cache>());
+        Event e3 = new Event(new GregorianCalendar(2015,5,4), new GregorianCalendar(2015,4,30), new GregorianCalendar(2015,5,31), "Evento Mais Bonito", "Um grandhe sorriso!!", new Position(282,322), 5, u3, new HashMap<String,Cache>());
         Event e4 = new Event(new GregorianCalendar(2015,5,4), new GregorianCalendar(2015,3,30), new GregorianCalendar(2015,4,31), "Evento de Hoje", "Tudo a jogar!!", new Position(82,32), 5, u1, new HashMap<String,Cache>());
         
         e1.addCache(tc1);

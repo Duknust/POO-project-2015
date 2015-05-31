@@ -183,6 +183,14 @@ public class Data implements Serializable {
         };
     }
     
+    public Comparator<Event> compareEventDate() {
+        return new Comparator<Event>() {
+            public int compare(Event o1, Event o2) {
+                return -1 * o1.getDateEvent().compareTo(o2.getDateEvent());
+            }
+        };
+    }
+    
     
     
 
