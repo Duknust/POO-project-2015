@@ -1054,11 +1054,10 @@ public class Geocaching {
                     clearConsole();
                     break;
                 case 2:
-                    clearConsole();
-                    mParticipatedEvents(userOnline);
-                    choice = -1;
-                    clearConsole();
-                    break;
+                	clearConsole();
+                	mHappeningEvents();
+                	choice = -1;
+                	break;
                 case 3:
                     clearConsole();
                     mCreateEvent();
@@ -1068,6 +1067,12 @@ public class Geocaching {
                 case 4:
                     clearConsole();
                     mViewOwedEvents(userOnline);
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 5:
+                    clearConsole();
+                    mParticipatedEvents(userOnline);
                     choice = -1;
                     clearConsole();
                     break;
@@ -1081,7 +1086,62 @@ public class Geocaching {
         }
     }
     
-    private static void mActiveEvents() {
+    private static void mHappeningEvents() {
+    	int choice = -1;
+    	HashMap<String, Event> events = data.getEnabledEvents();
+    	ArrayList<Event> list = new ArrayList<Event>();
+    	Date today = new GregorianCalendar().getTime();
+    	SimpleDateFormat fmt = new SimpleDateFormat("ddMMyyyy");
+    	
+    	
+    	for(Event e: events.values())
+    		if(fmt.format(today).equals(fmt.format(e.getDateEvent().getTime())))
+    			list.add(e);
+    	
+        while (choice == -1) {
+            int i = 1;
+            System.out.println("####### " + userOnline.getName() + " Founds #######\n");
+
+            System.out.println("\n-- Total Founds: " + list.size() + "\n\n");
+            for (Event e : list)// For each Friend
+            {
+            	Date dt = e.getDateEndApplications().getTime();
+                System.out.format("\t[%d] - %s - %s\n", i, e.getCacheTitle(), dt.toString());
+                i++;
+            }
+            
+            System.out.println("\n-- [X] View Event");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                default:
+                    if (choice > 0 && choice <= list.size()) {
+                        clearConsole();
+                        Event ev = list.get(choice - 1);
+                        mViewEvent(ev);
+                        clearConsole();
+                    } else {
+                        System.out.println("Error: Invalid Option");
+                    }
+                    choice = -1;
+                     break;
+            }
+        }
+	}
+
+	private static void mActiveEvents() {
     	int choice = -1;
     	HashMap<String, Event> events = data.getEnabledEvents();
     	ArrayList<Event> list = new ArrayList<Event>();
@@ -1699,8 +1759,9 @@ public class Geocaching {
         Mystery mc1 = new Mystery(new GregorianCalendar(2015, 06, 25, 2, 3, 4), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new Position(1.1f, 2.2f), "YOU SOLVED IT!");
         
         Event e1 = new Event(new GregorianCalendar(), new GregorianCalendar(2015,6,2), new GregorianCalendar(2015,6,4), "Evento All Star", "Está tudo a brilhar", new Position(42,51), 5, u1, new HashMap<String,Cache>());
-        Event e2 = new Event(new GregorianCalendar(2015,5,2), new GregorianCalendar(2015,5,5), new GregorianCalendar(2015,5,31), "Evento Joker", "Um grande sorriso!!", new Position(82,322), 5, u2, new HashMap<String,Cache>());
-        Event e3 = new Event(new GregorianCalendar(2015,5,4), new GregorianCalendar(2015,4,30), new GregorianCalendar(2015,5,31), "Evento Mais Bonito", "Um grandhe sorriso!!", new Position(82,322), 5, u1, new HashMap<String,Cache>());
+        Event e2 = new Event(new GregorianCalendar(2015,5,2), new GregorianCalendar(2015,5,5), new GregorianCalendar(2015,5,31), "Evento Joker", "Um grande sorriso!!", new Position(82,321), 5, u2, new HashMap<String,Cache>());
+        Event e3 = new Event(new GregorianCalendar(2015,5,4), new GregorianCalendar(2015,4,30), new GregorianCalendar(2015,5,31), "Evento Mais Bonito", "Um grandhe sorriso!!", new Position(282,322), 5, u1, new HashMap<String,Cache>());
+        Event e4 = new Event(new GregorianCalendar(2015,5,4), new GregorianCalendar(2015,3,30), new GregorianCalendar(2015,4,31), "Evento de Hoje", "Tudo a jogar!!", new Position(82,32), 5, u1, new HashMap<String,Cache>());
         
         e1.addCache(tc1);
         e1.addCache(tc2);
@@ -1709,6 +1770,7 @@ public class Geocaching {
         data.getEnabledEvents().put(e1.getCacheID(), e1);
         data.getEnabledEvents().put(e2.getCacheID(), e2);
         data.getEnabledEvents().put(e3.getCacheID(), e3);
+        data.getEnabledEvents().put(e4.getCacheID(), e4);
         
         u1.createCache(tc1);
         u2.createCache(tc2);
