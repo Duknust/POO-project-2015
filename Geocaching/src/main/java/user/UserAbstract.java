@@ -8,175 +8,176 @@ import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
-public abstract class UserAbstract implements Serializable {
+public abstract class UserAbstract implements Serializable, UserInterface {
 
-    public enum Role {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8153459597153524555L;
 
-        ADMIN, REVIEWER, USER, DEFAULT;
+	public enum Role {
 
-        @Override
-        public String toString() {
-            switch (this) {
-                case ADMIN:
-                    return "Administrator";
-                case REVIEWER:
-                    return "Reviewer";
-                case USER:
-                    return "User";
-                case DEFAULT:
-                    return "";
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-    }
-    private final String email;
-    private byte[] password;
-    private String name;
-    private String gender;
-    private String address;
-    private GregorianCalendar birthDate;
-    private boolean premium;
-    private int totalFound;
+		ADMIN, REVIEWER, USER, DEFAULT;
 
-    // Constructors
-    public UserAbstract(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound) {
-        this.email = email;
-        this.password = getHash(password);
-        this.name = name;
-        this.gender = gender;
-        this.address = address;
-        this.birthDate = birthDate;
-        this.premium = premium;
-        this.totalFound = totalFound;
-    }
+		@Override
+		public String toString() {
+			switch (this) {
+			case ADMIN:
+				return "Administrator";
+			case REVIEWER:
+				return "Reviewer";
+			case USER:
+				return "User";
+			case DEFAULT:
+				return "";
+			default:
+				throw new IllegalArgumentException();
+			}
+		}
+	}
 
-    // Getters and Setters
-    public String getEmail() {
-        return email;
-    }
+	private final String email;
+	private byte[] password;
+	private String name;
+	private String gender;
+	private String address;
+	private GregorianCalendar birthDate;
+	private boolean premium;
+	private int totalFound;
 
-    /* // Should be Impossible to change email
-     public void setEmail(String email) {
-     this.email = email;
-     }*/
-    public byte[] getPassword() {
-        return password;
-    }
+	// Constructors
+	public UserAbstract(String email, String password, String name,
+			String gender, String address, GregorianCalendar birthDate,
+			boolean premium, int totalFound) {
+		this.email = email;
+		this.password = getHash(password);
+		this.name = name;
+		this.gender = gender;
+		this.address = address;
+		this.birthDate = birthDate;
+		this.premium = premium;
+		this.totalFound = totalFound;
+	}
 
-    public void setPassword(String password) {
-        this.password = getHash(password);
-    }
+	// Getters and Setters
+	public String getEmail() {
+		return email;
+	}
 
-    public String getName() {
-        return name;
-    }
+	/*
+	 * // Should be Impossible to change email public void setEmail(String
+	 * email) { this.email = email; }
+	 */
+	public byte[] getPassword() {
+		return password;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setPassword(String password) {
+		this.password = getHash(password);
+	}
 
-    public String getGender() {
-        return gender;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getAddress() {
-        return address;
-    }
+	public String getGender() {
+		return gender;
+	}
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
 
-    public GregorianCalendar getBirthDate() {
-        return birthDate;
-    }
+	public String getAddress() {
+		return address;
+	}
 
-    public void setBirthDate(GregorianCalendar birthDate) {
-        this.birthDate = birthDate;
-    }
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
-    public boolean isPremium() {
-        return premium;
-    }
+	public GregorianCalendar getBirthDate() {
+		return birthDate;
+	}
 
-    public void setPremium(boolean premium) {
-        this.premium = premium;
-    }
+	public void setBirthDate(GregorianCalendar birthDate) {
+		this.birthDate = birthDate;
+	}
 
-    public int getTotalFound() {
-        return totalFound;
-    }
+	public boolean isPremium() {
+		return premium;
+	}
 
-    public void setTotalFound(int totalFound) {
-        this.totalFound = totalFound;
-    }
+	public void setPremium(boolean premium) {
+		this.premium = premium;
+	}
 
-    // Methods
-    private byte[] getHash(String password) { //SHA-256
-        byte byteData[] = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(password.getBytes());
+	public int getTotalFound() {
+		return totalFound;
+	}
 
-            byteData = md.digest();
+	public void setTotalFound(int totalFound) {
+		this.totalFound = totalFound;
+	}
 
-        } catch (NoSuchAlgorithmException ex) {
-            return null;
-        }
-        return byteData;
-    }
+	// Methods
+	private byte[] getHash(String password) { // SHA-256
+		byte byteData[] = null;
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			md.update(password.getBytes());
 
-    public boolean login(String email, String password) {
-        return this.getEmail().equals(email) && Arrays.equals(this.getPassword(), getHash(password));
-    }
+			byteData = md.digest();
 
-    public static String formatDate(GregorianCalendar calendar) {
-        if (calendar == null) {
-            return "-/-/-";
-        }
-        SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
-        fmt.setCalendar(calendar);
-        return fmt.format(calendar.getTime());
-    }
+		} catch (NoSuchAlgorithmException ex) {
+			return null;
+		}
+		return byteData;
+	}
 
-    // toString
-    // Needs to be Overrided
-    public Role getRole() {
-        return Role.DEFAULT;
-    }
+	public boolean login(String email, String password) {
+		return this.getEmail().equals(email)
+				&& Arrays.equals(this.getPassword(), getHash(password));
+	}
 
-    public String toString() {
-        return name + " (" + totalFound + ")" + (premium ? " Premium" : "");
-    }
+	public static String formatDate(GregorianCalendar calendar) {
+		if (calendar == null) {
+			return "-/-/-";
+		}
+		SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
+		fmt.setCalendar(calendar);
+		return fmt.format(calendar.getTime());
+	}
 
-    public String toStringTotal() {
-        return "E-Mail - " + email
-                + "\nName - " + name
-                + "\nGender - " + gender
-                + "\nAddress - " + address
-                + "\nBirth Date - " + formatDate(birthDate)
-                + "\nPremium - " + premium
-                + "\nTotal Found - " + totalFound;
-    }
+	@Override
+	public String toString() {
+		return name + " (" + totalFound + ")" + (premium ? " Premium" : "");
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final UserAbstract other = (UserAbstract) obj;
-        if (!Objects.equals(this.email, other.email)) {
-            return false;
-        }
-        return true;
-    }
+	public String toStringTotal() {
+		return "E-Mail - " + email + "\nName - " + name + "\nGender - "
+				+ gender + "\nAddress - " + address + "\nBirth Date - "
+				+ formatDate(birthDate) + "\nPremium - " + premium
+				+ "\nTotal Found - " + totalFound;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final UserAbstract other = (UserAbstract) obj;
+		if (!Objects.equals(this.email, other.email)) {
+			return false;
+		}
+		return true;
+	}
 
 }

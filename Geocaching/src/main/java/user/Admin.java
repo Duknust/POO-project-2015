@@ -1,23 +1,34 @@
 package user;
 
-import base.Data;
-import caches.Cache;
-import caches.Log;
+import java.io.Serializable;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-public class Admin extends Reviewer {
+import base.Data;
+import caches.Cache;
+import caches.Log;
 
-    public Admin(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, HashMap<String, Cache> caches, HashMap<String, User> friends, Data data) {
-        super(email, password, name, gender, address, birthDate, premium, totalFound, caches, friends, data);
-    }
+public class Admin extends Reviewer implements Serializable, UserInterface {
 
-    void deleteLog(Log l, Cache c) {
-        c.getCache_Logs().remove(l.getDate(), l);
-    }
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8314417983224728083L;
 
-    @Override
-    public Role getRole() {
-        return Role.ADMIN;
-    }
+	public Admin(String email, String password, String name, String gender,
+			String address, GregorianCalendar birthDate, boolean premium,
+			int totalFound, HashMap<String, Cache> caches,
+			HashMap<String, User> friends, Data data) {
+		super(email, password, name, gender, address, birthDate, premium,
+				totalFound, caches, friends, data);
+	}
+
+	void deleteLog(Log l, Cache c) {
+		c.getCache_Logs().remove(l.getDate(), l);
+	}
+
+	@Override
+	public Role getRole() {
+		return Role.ADMIN;
+	}
 }
