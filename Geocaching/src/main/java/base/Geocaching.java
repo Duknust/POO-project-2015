@@ -1198,6 +1198,8 @@ public class Geocaching {
 
 	private static void mViewEvent(Event ev) {
 		int choice = -1;
+		boolean canSubs = new GregorianCalendar().getTime().before(ev.getDateEndApplications().getTime());
+		boolean participate = ev.checkParticipation(userOnline);
 		
 		while (choice == -1) {
 			System.out.println("\n-- Event Details --\n");
@@ -1211,8 +1213,13 @@ public class Geocaching {
 			System.out.println("\tDate of Event: "+ ev.getDateEvent().getTime().toString());
 			
 			System.out.println("\n-- [1] See Participants");
-			System.out.println("\n-- [2] See Caches");
-			System.out.println("-- [3] Send Application");
+			System.out.println("-- [2] See Caches");
+			if(canSubs){
+				if(!participate)
+					System.out.println("-- [3] Subscribe");
+				else
+					System.out.println("-- [3] Unsubscribe");
+			}
 	        System.out.println("-----:");
 	        System.out.println("-- [0] Back");
 	
@@ -1246,27 +1253,38 @@ public class Geocaching {
 	                choice = -1;
 	                break;
 	            case 3:
-	            	choice = -1;
-	                clearConsole();
-	                Calendar today = new GregorianCalendar();
-	            	if(today.after(ev.getDateEndApplications())){  
-	            		System.out.println("Error: The application date limit is expired!!");
-            			break;
-            		}
-	            	
-	            	if(userOnline.equals(ev.getOwner())){
-	            		System.out.println("Error: You are the owner!!");
-	            		break;
+	            	if(canSubs){
+	            		choice = -1;
+	            		clearConsole();
+	            		if(!participate){
+	            			
+			                Calendar today = new GregorianCalendar();
+			            	if(today.after(ev.getDateEndApplications())){  
+			            		System.out.println("Error: The application date limit is expired!!");
+		            			break;
+		            		}
+			            	
+			            	if(userOnline.equals(ev.getOwner())){
+			            		System.out.println("Error: You are the owner!!");
+			            		break;
+			            	}
+		
+			            	if(ev.getNRegistrations() < ev.getMaxP())
+			            		if(ev.addParticipant(userOnline)){
+			            			System.out.println("Congratulations!! Now you are a participant!!");
+			            			participate = true;
+			            		} else
+			            			System.out.println("Error: User is already registrated in event!!");
+			            	else
+			            		System.out.println("Error: The event is full!! Try later..");
+	            		}else{
+	            			if(ev.remParticipant(userOnline)){
+	            				System.out.println("Congratulations!! You Unsubscribe this event!!");
+	            				participate = false;
+	            			}
+	            		}
+			            break;
 	            	}
-
-	            	if(ev.getNRegistrations() < ev.getMaxP())
-	            		if(ev.addParticipant(userOnline))
-	            			System.out.println("Congratulations!! Now you are a participant!!");
-	            		else
-	            			System.out.println("Error: User is already registrated in event!!");
-	            	else
-	            		System.out.println("Error: The event is full!! Try later..");
-	            	break;
 	            default:
 	                System.out.println("Error: Invalid Option");
 	                choice = -1;
