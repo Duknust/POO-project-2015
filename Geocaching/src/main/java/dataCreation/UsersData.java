@@ -140,9 +140,6 @@ public final class UsersData {
 	private static ArrayList<String> thailandNamesM = new ArrayList<String>();
 	private static ArrayList<String> thailandNamesF = new ArrayList<String>();
 	private static ArrayList<String> thailandSurnames = new ArrayList<String>();
-	private static ArrayList<String> malaysiaNamesM = new ArrayList<String>();
-	private static ArrayList<String> malaysiaNamesF = new ArrayList<String>();
-	private static ArrayList<String> malaysiaSurnames = new ArrayList<String>();
 	private static ArrayList<String> japanNamesM = new ArrayList<String>();
 	private static ArrayList<String> japanNamesF = new ArrayList<String>();
 	private static ArrayList<String> japanSurnames = new ArrayList<String>();
@@ -168,7 +165,7 @@ public final class UsersData {
 	private static final int numbLocalizationsInNorthAmerica = 4;
 	private static final int numbLocalizationsInSouthAmerica = 7;
 	private static final int numbLocalizationsInAfrica = 8;
-	private static final int numbLocalizationsInAsia = 10;
+	private static final int numbLocalizationsInAsia = 9;
 	private static final int numbLocalizationsInOceanie = 3;
 
 	private static HashMap<String, ArrayList<ArrayList<String>>> countriesInEurope = null;
@@ -199,32 +196,32 @@ public final class UsersData {
 
 		// australia
 		// names male
-		australiaNamesM.add("");
-		australiaNamesM.add("");
-		australiaNamesM.add("");
-		australiaNamesM.add("");
-		australiaNamesM.add("");
-		australiaNamesM.add("");
-		australiaNamesM.add("");
-		australiaNamesM.add("");
+		australiaNamesM.add("William");
+		australiaNamesM.add("Lucas");
+		australiaNamesM.add("Oliver");
+		australiaNamesM.add("Noah");
+		australiaNamesM.add("Jack");
+		australiaNamesM.add("Ethan");
+		australiaNamesM.add("Thomas");
+		australiaNamesM.add("Lachlan");
 		// names female
-		australiaNamesF.add("");
-		australiaNamesF.add("");
-		australiaNamesF.add("");
-		australiaNamesF.add("");
-		australiaNamesF.add("");
-		australiaNamesF.add("");
-		australiaNamesF.add("");
-		australiaNamesF.add("");
+		australiaNamesF.add("Emily");
+		australiaNamesF.add("Emma");
+		australiaNamesF.add("Jessica");
+		australiaNamesF.add("Chloe");
+		australiaNamesF.add("Hannah");
+		australiaNamesF.add("Georgia");
+		australiaNamesF.add("Amy");
+		australiaNamesF.add("Lucy");
 		// surnames
-		australiaSurnames.add("");
-		australiaSurnames.add("");
-		australiaSurnames.add("");
-		australiaSurnames.add("");
-		australiaSurnames.add("");
-		australiaSurnames.add("");
-		australiaSurnames.add("");
-		australiaSurnames.add("");
+		australiaSurnames.add("Queen");
+		australiaSurnames.add("Smith");
+		australiaSurnames.add("Jones");
+		australiaSurnames.add("Williams");
+		australiaSurnames.add("Brown");
+		australiaSurnames.add("Wilson");
+		australiaSurnames.add("Taylor");
+		australiaSurnames.add("Nguyen");
 
 		CountryInContinent australia = new CountryInContinent("Australia",
 				australiaNamesM, australiaNamesF, australiaSurnames);
@@ -232,32 +229,32 @@ public final class UsersData {
 
 		// newZealand
 		// names male
-		newZealandNamesM.add("");
-		newZealandNamesM.add("");
-		newZealandNamesM.add("");
-		newZealandNamesM.add("");
-		newZealandNamesM.add("");
-		newZealandNamesM.add("");
-		newZealandNamesM.add("");
-		newZealandNamesM.add("");
+		newZealandNamesM.add("Cooper");
+		newZealandNamesM.add("Daniel");
+		newZealandNamesM.add("Blake");
+		newZealandNamesM.add("Benjamin");
+		newZealandNamesM.add("Joshua");
+		newZealandNamesM.add("Max");
+		newZealandNamesM.add("Ryan");
+		newZealandNamesM.add("Hunter");
 		// names female
-		newZealandNamesF.add("");
-		newZealandNamesF.add("");
-		newZealandNamesF.add("");
-		newZealandNamesF.add("");
-		newZealandNamesF.add("");
-		newZealandNamesF.add("");
-		newZealandNamesF.add("");
-		newZealandNamesF.add("");
+		newZealandNamesF.add("Charlotte");
+		newZealandNamesF.add("Olivia");
+		newZealandNamesF.add("Isla");
+		newZealandNamesF.add("Sophie");
+		newZealandNamesF.add("Amelia");
+		newZealandNamesF.add("Ruby");
+		newZealandNamesF.add("Harper");
+		newZealandNamesF.add("Ella");
 		// surnames
-		newZealandSurnames.add("");
-		newZealandSurnames.add("");
-		newZealandSurnames.add("");
-		newZealandSurnames.add("");
-		newZealandSurnames.add("");
-		newZealandSurnames.add("");
-		newZealandSurnames.add("");
-		newZealandSurnames.add("");
+		newZealandSurnames.add("Anderson");
+		newZealandSurnames.add("Thompson");
+		newZealandSurnames.add("Campbell");
+		newZealandSurnames.add("Johnson");
+		newZealandSurnames.add("King");
+		newZealandSurnames.add("Clark");
+		newZealandSurnames.add("Scott");
+		newZealandSurnames.add("Martin");
 
 		CountryInContinent newZealand = new CountryInContinent("NewZealand",
 				newZealandNamesM, newZealandNamesF, newZealandSurnames);
@@ -265,32 +262,32 @@ public final class UsersData {
 
 		// samoa
 		// names male
-		samoaNamesM.add("");
-		samoaNamesM.add("");
-		samoaNamesM.add("");
-		samoaNamesM.add("");
-		samoaNamesM.add("");
-		samoaNamesM.add("");
-		samoaNamesM.add("");
-		samoaNamesM.add("");
+		samoaNamesM.add("Afa");
+		samoaNamesM.add("Fata");
+		samoaNamesM.add("Gaugakao");
+		samoaNamesM.add("Iosefo");
+		samoaNamesM.add("Issac");
+		samoaNamesM.add("Jason");
+		samoaNamesM.add("Kalolo");
+		samoaNamesM.add("Kerisiano");
 		// names female
-		samoaNamesF.add("");
-		samoaNamesF.add("");
-		samoaNamesF.add("");
-		samoaNamesF.add("");
-		samoaNamesF.add("");
-		samoaNamesF.add("");
-		samoaNamesF.add("");
-		samoaNamesF.add("");
+		samoaNamesF.add("Teuila");
+		samoaNamesF.add("Lanuola");
+		samoaNamesF.add("Elei");
+		samoaNamesF.add("Natia");
+		samoaNamesF.add("La'ei");
+		samoaNamesF.add("Masina");
+		samoaNamesF.add("Manaia");
+		samoaNamesF.add("Tausa'afia");
 		// surnames
-		samoaSurnames.add("");
-		samoaSurnames.add("");
-		samoaSurnames.add("");
-		samoaSurnames.add("");
-		samoaSurnames.add("");
-		samoaSurnames.add("");
-		samoaSurnames.add("");
-		samoaSurnames.add("");
+		samoaSurnames.add("Savea");
+		samoaSurnames.add("Faamoana");
+		samoaSurnames.add("Tui");
+		samoaSurnames.add("Saluni");
+		samoaSurnames.add("Afamasaga");
+		samoaSurnames.add("Lotomau");
+		samoaSurnames.add("Stowers");
+		samoaSurnames.add("Leniu");
 
 		CountryInContinent samoa = new CountryInContinent("Samoa", samoaNamesM,
 				samoaNamesF, samoaSurnames);
@@ -302,32 +299,32 @@ public final class UsersData {
 
 		// iran
 		// names male
-		iranNamesM.add("");
-		iranNamesM.add("");
-		iranNamesM.add("");
-		iranNamesM.add("");
-		iranNamesM.add("");
-		iranNamesM.add("");
-		iranNamesM.add("");
-		iranNamesM.add("");
+		iranNamesM.add("Aapeli");
+		iranNamesM.add("Babajide");
+		iranNamesM.add("Cade");
+		iranNamesM.add("Da");
+		iranNamesM.add("Gabor");
+		iranNamesM.add("Hackett");
+		iranNamesM.add("Lachie");
+		iranNamesM.add("Obasi");
 		// names female
-		iranNamesF.add("");
-		iranNamesF.add("");
-		iranNamesF.add("");
-		iranNamesF.add("");
-		iranNamesF.add("");
-		iranNamesF.add("");
-		iranNamesF.add("");
-		iranNamesF.add("");
+		iranNamesF.add("Aaliyah");
+		iranNamesF.add("Babette");
+		iranNamesF.add("Cadence");
+		iranNamesF.add("Dabria");
+		iranNamesF.add("Ealasaid");
+		iranNamesF.add("Hadassah");
+		iranNamesF.add("Ladonna");
+		iranNamesF.add("Octavia");
 		// surnames
-		iranSurnames.add("");
-		iranSurnames.add("");
-		iranSurnames.add("");
-		iranSurnames.add("");
-		iranSurnames.add("");
-		iranSurnames.add("");
-		iranSurnames.add("");
-		iranSurnames.add("");
+		iranSurnames.add("Mohammadi");
+		iranSurnames.add("Akhtar");
+		iranSurnames.add("Balkhi");
+		iranSurnames.add("Darvish");
+		iranSurnames.add("Ghaznavi");
+		iranSurnames.add("Haghighi");
+		iranSurnames.add("Makhmalbaf");
+		iranSurnames.add("Rouhani");
 
 		CountryInContinent iran = new CountryInContinent("Iran", iranNamesM,
 				iranNamesF, iranSurnames);
@@ -335,32 +332,32 @@ public final class UsersData {
 
 		// iraq
 		// names male
-		iraqNamesM.add("");
-		iraqNamesM.add("");
-		iraqNamesM.add("");
-		iraqNamesM.add("");
-		iraqNamesM.add("");
-		iraqNamesM.add("");
-		iraqNamesM.add("");
-		iraqNamesM.add("");
+		iraqNamesM.add("Ali");
+		iraqNamesM.add("Akram");
+		iraqNamesM.add("Jahmir");
+		iraqNamesM.add("Mohammad");
+		iraqNamesM.add("Chakvan");
+		iraqNamesM.add("Middleeastman");
+		iraqNamesM.add("Anshu");
+		iraqNamesM.add("Zamanlabib");
 		// names female
-		iraqNamesF.add("");
-		iraqNamesF.add("");
-		iraqNamesF.add("");
-		iraqNamesF.add("");
-		iraqNamesF.add("");
-		iraqNamesF.add("");
-		iraqNamesF.add("");
-		iraqNamesF.add("");
+		iraqNamesF.add("Zainab");
+		iraqNamesF.add("Caroline");
+		iraqNamesF.add("Melody");
+		iraqNamesF.add("Rukia");
+		iraqNamesF.add("Dleen");
+		iraqNamesF.add("Estabraq");
+		iraqNamesF.add("Sham");
+		iraqNamesF.add("Allen");
 		// surnames
-		iraqSurnames.add("");
-		iraqSurnames.add("");
-		iraqSurnames.add("");
-		iraqSurnames.add("");
-		iraqSurnames.add("");
-		iraqSurnames.add("");
-		iraqSurnames.add("");
-		iraqSurnames.add("");
+		iraqSurnames.add("Ahmad");
+		iraqSurnames.add("Alghafari");
+		iraqSurnames.add("Hamade");
+		iraqSurnames.add("Husseini");
+		iraqSurnames.add("Jaffer");
+		iraqSurnames.add("Malaki");
+		iraqSurnames.add("Masri");
+		iraqSurnames.add("Mustafa");
 
 		CountryInContinent iraq = new CountryInContinent("Iraq", iraqNamesM,
 				iraqNamesF, iraqSurnames);
@@ -368,32 +365,32 @@ public final class UsersData {
 
 		// pakistan
 		// names male
-		pakistanNamesM.add("");
-		pakistanNamesM.add("");
-		pakistanNamesM.add("");
-		pakistanNamesM.add("");
-		pakistanNamesM.add("");
-		pakistanNamesM.add("");
-		pakistanNamesM.add("");
-		pakistanNamesM.add("");
+		pakistanNamesM.add("Ali");
+		pakistanNamesM.add("Bilal");
+		pakistanNamesM.add("Abdul");
+		pakistanNamesM.add("Mohammad");
+		pakistanNamesM.add("Tariq");
+		pakistanNamesM.add("Adnan");
+		pakistanNamesM.add("Waqas");
+		pakistanNamesM.add("Ibrahim");
 		// names female
-		pakistanNamesF.add("");
-		pakistanNamesF.add("");
-		pakistanNamesF.add("");
-		pakistanNamesF.add("");
-		pakistanNamesF.add("");
-		pakistanNamesF.add("");
-		pakistanNamesF.add("");
-		pakistanNamesF.add("");
+		pakistanNamesF.add("Noor");
+		pakistanNamesF.add("Anam");
+		pakistanNamesF.add("Mahnoor");
+		pakistanNamesF.add("Javeria");
+		pakistanNamesF.add("Sarah");
+		pakistanNamesF.add("Mariam");
+		pakistanNamesF.add("Faiza");
+		pakistanNamesF.add("Komal");
 		// surnames
-		pakistanSurnames.add("");
-		pakistanSurnames.add("");
-		pakistanSurnames.add("");
-		pakistanSurnames.add("");
-		pakistanSurnames.add("");
-		pakistanSurnames.add("");
-		pakistanSurnames.add("");
-		pakistanSurnames.add("");
+		pakistanSurnames.add("Ahmedani");
+		pakistanSurnames.add("Bahawalanzai");
+		pakistanSurnames.add("Chutani");
+		pakistanSurnames.add("Damanis");
+		pakistanSurnames.add("Dasti");
+		pakistanSurnames.add("Kenagzai");
+		pakistanSurnames.add("Qaisrani");
+		pakistanSurnames.add("Rind");
 
 		CountryInContinent pakistan = new CountryInContinent("Pakistan",
 				pakistanNamesM, pakistanNamesF, pakistanSurnames);
@@ -401,32 +398,32 @@ public final class UsersData {
 
 		// china
 		// names male
-		chinaNamesM.add("");
-		chinaNamesM.add("");
-		chinaNamesM.add("");
-		chinaNamesM.add("");
-		chinaNamesM.add("");
-		chinaNamesM.add("");
-		chinaNamesM.add("");
-		chinaNamesM.add("");
+		chinaNamesM.add("Chang");
+		chinaNamesM.add("Da");
+		chinaNamesM.add("Feng");
+		chinaNamesM.add("Ho");
+		chinaNamesM.add("Jiao-long");
+		chinaNamesM.add("Jing-sheng");
+		chinaNamesM.add("Kun");
+		chinaNamesM.add("Xiao-ping");
 		// names female
-		chinaNamesF.add("");
-		chinaNamesF.add("");
-		chinaNamesF.add("");
-		chinaNamesF.add("");
-		chinaNamesF.add("");
-		chinaNamesF.add("");
-		chinaNamesF.add("");
-		chinaNamesF.add("");
+		chinaNamesF.add("Ai");
+		chinaNamesF.add("Fen");
+		chinaNamesF.add("Hua");
+		chinaNamesF.add("Ju");
+		chinaNamesF.add("Liling");
+		chinaNamesF.add("Liang");
+		chinaNamesF.add("Mei");
+		chinaNamesF.add("Nuo");
 		// surnames
-		chinaSurnames.add("");
-		chinaSurnames.add("");
-		chinaSurnames.add("");
-		chinaSurnames.add("");
-		chinaSurnames.add("");
-		chinaSurnames.add("");
-		chinaSurnames.add("");
-		chinaSurnames.add("");
+		chinaSurnames.add("Wang");
+		chinaSurnames.add("Zhang");
+		chinaSurnames.add("Liú");
+		chinaSurnames.add("Chén");
+		chinaSurnames.add("Yang");
+		chinaSurnames.add("Huang");
+		chinaSurnames.add("Zhao");
+		chinaSurnames.add("Wu");
 
 		CountryInContinent china = new CountryInContinent("China", chinaNamesM,
 				chinaNamesF, chinaSurnames);
@@ -434,32 +431,32 @@ public final class UsersData {
 
 		// mongolia
 		// names male
-		mongoliaNamesM.add("");
-		mongoliaNamesM.add("");
-		mongoliaNamesM.add("");
-		mongoliaNamesM.add("");
-		mongoliaNamesM.add("");
-		mongoliaNamesM.add("");
-		mongoliaNamesM.add("");
-		mongoliaNamesM.add("");
+		mongoliaNamesM.add("Bat-Erdene");
+		mongoliaNamesM.add("Otgonbayar");
+		mongoliaNamesM.add("Batbayar");
+		mongoliaNamesM.add("Gantulga");
+		mongoliaNamesM.add("Ganbold");
+		mongoliaNamesM.add("Purevsuren");
+		mongoliaNamesM.add("Monkhbat");
+		mongoliaNamesM.add("Monkh-Erdene");
 		// names female
-		mongoliaNamesF.add("");
-		mongoliaNamesF.add("");
-		mongoliaNamesF.add("");
-		mongoliaNamesF.add("");
-		mongoliaNamesF.add("");
-		mongoliaNamesF.add("");
-		mongoliaNamesF.add("");
-		mongoliaNamesF.add("");
+		mongoliaNamesF.add("Balormaa");
+		mongoliaNamesF.add("Monkhtsetseg");
+		mongoliaNamesF.add("Erdenechimeg");
+		mongoliaNamesF.add("Lkhagvasuren");
+		mongoliaNamesF.add("Enkhtuyaa");
+		mongoliaNamesF.add("Purevsuren");
+		mongoliaNamesF.add("Nergui");
+		mongoliaNamesF.add("Oyuunchimeg");
 		// surnames
-		mongoliaSurnames.add("");
-		mongoliaSurnames.add("");
-		mongoliaSurnames.add("");
-		mongoliaSurnames.add("");
-		mongoliaSurnames.add("");
-		mongoliaSurnames.add("");
-		mongoliaSurnames.add("");
-		mongoliaSurnames.add("");
+		mongoliaSurnames.add("Zaya");
+		mongoliaSurnames.add("Mandukhai");
+		mongoliaSurnames.add("Chinbat");
+		mongoliaSurnames.add("Bilguun");
+		mongoliaSurnames.add("Temuujin");
+		mongoliaSurnames.add("Lkhagvasuren");
+		mongoliaSurnames.add("Gantumur");
+		mongoliaSurnames.add("Tsogt");
 
 		CountryInContinent mongolia = new CountryInContinent("Mongolia",
 				mongoliaNamesM, mongoliaNamesF, mongoliaSurnames);
@@ -467,98 +464,65 @@ public final class UsersData {
 
 		// thailand
 		// names male
-		thailandNamesM.add("");
-		thailandNamesM.add("");
-		thailandNamesM.add("");
-		thailandNamesM.add("");
-		thailandNamesM.add("");
-		thailandNamesM.add("");
-		thailandNamesM.add("");
-		thailandNamesM.add("");
+		thailandNamesM.add("Aat");
+		thailandNamesM.add("Boon-Mee");
+		thailandNamesM.add("Chai Son");
+		thailandNamesM.add("Decha");
+		thailandNamesM.add("Kamnan");
+		thailandNamesM.add("Lek");
+		thailandNamesM.add("Mee Noi");
+		thailandNamesM.add("Paitoon");
 		// names female
-		thailandNamesF.add("");
-		thailandNamesF.add("");
-		thailandNamesF.add("");
-		thailandNamesF.add("");
-		thailandNamesF.add("");
-		thailandNamesF.add("");
-		thailandNamesF.add("");
-		thailandNamesF.add("");
+		thailandNamesF.add("Aawut");
+		thailandNamesF.add("Benjakalyani");
+		thailandNamesF.add("Chaem Choi");
+		thailandNamesF.add("Dao");
+		thailandNamesF.add("Fa Ying");
+		thailandNamesF.add("Han");
+		thailandNamesF.add("Isra");
+		thailandNamesF.add("Kamlai");
 		// surnames
-		thailandSurnames.add("");
-		thailandSurnames.add("");
-		thailandSurnames.add("");
-		thailandSurnames.add("");
-		thailandSurnames.add("");
-		thailandSurnames.add("");
-		thailandSurnames.add("");
-		thailandSurnames.add("");
+		thailandSurnames.add("Metharom");
+		thailandSurnames.add("Boonliang");
+		thailandSurnames.add("Jainukul");
+		thailandSurnames.add("Suttikul");
+		thailandSurnames.add("Praphasirirat");
+		thailandSurnames.add("Santisakul");
+		thailandSurnames.add("Wattanapanit");
+		thailandSurnames.add("Mookjai");
 
 		CountryInContinent thailand = new CountryInContinent("Thailand",
 				thailandNamesM, thailandNamesF, thailandSurnames);
 		asia.put(thailand.getCountry(), thailand);
 
-		// malaysia
-		// names male
-		malaysiaNamesM.add("");
-		malaysiaNamesM.add("");
-		malaysiaNamesM.add("");
-		malaysiaNamesM.add("");
-		malaysiaNamesM.add("");
-		malaysiaNamesM.add("");
-		malaysiaNamesM.add("");
-		malaysiaNamesM.add("");
-		// names female
-		malaysiaNamesF.add("");
-		malaysiaNamesF.add("");
-		malaysiaNamesF.add("");
-		malaysiaNamesF.add("");
-		malaysiaNamesF.add("");
-		malaysiaNamesF.add("");
-		malaysiaNamesF.add("");
-		malaysiaNamesF.add("");
-		// surnames
-		malaysiaSurnames.add("");
-		malaysiaSurnames.add("");
-		malaysiaSurnames.add("");
-		malaysiaSurnames.add("");
-		malaysiaSurnames.add("");
-		malaysiaSurnames.add("");
-		malaysiaSurnames.add("");
-		malaysiaSurnames.add("");
-
-		CountryInContinent malaysia = new CountryInContinent("Malaysia",
-				malaysiaNamesM, malaysiaNamesF, malaysiaSurnames);
-		asia.put(malaysia.getCountry(), malaysia);
-
 		// japan
 		// names male
-		japanNamesM.add("");
-		japanNamesM.add("");
-		japanNamesM.add("");
-		japanNamesM.add("");
-		japanNamesM.add("");
-		japanNamesM.add("");
-		japanNamesM.add("");
-		japanNamesM.add("");
+		japanNamesM.add("Akihito");
+		japanNamesM.add("Daichi");
+		japanNamesM.add("Gaku");
+		japanNamesM.add("Mahito");
+		japanNamesM.add("Mitsuno");
+		japanNamesM.add("Riichi");
+		japanNamesM.add("Taiki");
+		japanNamesM.add("Yasuhiro");
 		// names female
-		japanNamesF.add("");
-		japanNamesF.add("");
-		japanNamesF.add("");
-		japanNamesF.add("");
-		japanNamesF.add("");
-		japanNamesF.add("");
-		japanNamesF.add("");
-		japanNamesF.add("");
+		japanNamesF.add("Benika");
+		japanNamesF.add("Ichie");
+		japanNamesF.add("June");
+		japanNamesF.add("Kae");
+		japanNamesF.add("Kasumi");
+		japanNamesF.add("Okimi");
+		japanNamesF.add("Saaya");
+		japanNamesF.add("Tae");
 		// surnames
-		japanSurnames.add("");
-		japanSurnames.add("");
-		japanSurnames.add("");
-		japanSurnames.add("");
-		japanSurnames.add("");
-		japanSurnames.add("");
-		japanSurnames.add("");
-		japanSurnames.add("");
+		japanSurnames.add("Sato");
+		japanSurnames.add("Suzuki");
+		japanSurnames.add("Takahashi");
+		japanSurnames.add("Tanaka");
+		japanSurnames.add("Watanabe");
+		japanSurnames.add("Ito");
+		japanSurnames.add("Nakamura");
+		japanSurnames.add("Kobyashi");
 
 		CountryInContinent japan = new CountryInContinent("Japan", japanNamesM,
 				japanNamesF, japanSurnames);
@@ -566,32 +530,32 @@ public final class UsersData {
 
 		// northKorea
 		// names male
-		northKoreaNamesM.add("");
-		northKoreaNamesM.add("");
-		northKoreaNamesM.add("");
-		northKoreaNamesM.add("");
-		northKoreaNamesM.add("");
-		northKoreaNamesM.add("");
-		northKoreaNamesM.add("");
-		northKoreaNamesM.add("");
+		northKoreaNamesM.add("Chul");
+		northKoreaNamesM.add("Eun");
+		northKoreaNamesM.add("Gun");
+		northKoreaNamesM.add("Haneul");
+		northKoreaNamesM.add("Hyuk");
+		northKoreaNamesM.add("Jae");
+		northKoreaNamesM.add("Joon");
+		northKoreaNamesM.add("Kwan");
 		// names female
-		northKoreaNamesF.add("");
-		northKoreaNamesF.add("");
-		northKoreaNamesF.add("");
-		northKoreaNamesF.add("");
-		northKoreaNamesF.add("");
-		northKoreaNamesF.add("");
-		northKoreaNamesF.add("");
-		northKoreaNamesF.add("");
+		northKoreaNamesF.add("Areum");
+		northKoreaNamesF.add("Gi");
+		northKoreaNamesF.add("Hye");
+		northKoreaNamesF.add("Jong");
+		northKoreaNamesF.add("Jung");
+		northKoreaNamesF.add("Iseul");
+		northKoreaNamesF.add("Nari");
+		northKoreaNamesF.add("Ok");
 		// surnames
-		northKoreaSurnames.add("");
-		northKoreaSurnames.add("");
-		northKoreaSurnames.add("");
-		northKoreaSurnames.add("");
-		northKoreaSurnames.add("");
-		northKoreaSurnames.add("");
-		northKoreaSurnames.add("");
-		northKoreaSurnames.add("");
+		northKoreaSurnames.add("Kim");
+		northKoreaSurnames.add("Lee");
+		northKoreaSurnames.add("Park");
+		northKoreaSurnames.add("Choi");
+		northKoreaSurnames.add("Jeong");
+		northKoreaSurnames.add("Kang");
+		northKoreaSurnames.add("Cho");
+		northKoreaSurnames.add("Yoon");
 
 		CountryInContinent northKorea = new CountryInContinent("NorthKorea",
 				northKoreaNamesM, northKoreaNamesF, northKoreaSurnames);
@@ -599,32 +563,32 @@ public final class UsersData {
 
 		// southKorea
 		// names male
-		southKoreaNamesM.add("");
-		southKoreaNamesM.add("");
-		southKoreaNamesM.add("");
-		southKoreaNamesM.add("");
-		southKoreaNamesM.add("");
-		southKoreaNamesM.add("");
-		southKoreaNamesM.add("");
-		southKoreaNamesM.add("");
+		southKoreaNamesM.add("Kwang");
+		southKoreaNamesM.add("Kyung");
+		southKoreaNamesM.add("Myung");
+		southKoreaNamesM.add("Suk");
+		southKoreaNamesM.add("Yeong");
+		southKoreaNamesM.add("Young");
+		southKoreaNamesM.add("Ki");
+		southKoreaNamesM.add("Myeong");
 		// names female
-		southKoreaNamesF.add("");
-		southKoreaNamesF.add("");
-		southKoreaNamesF.add("");
-		southKoreaNamesF.add("");
-		southKoreaNamesF.add("");
-		southKoreaNamesF.add("");
-		southKoreaNamesF.add("");
-		southKoreaNamesF.add("");
+		southKoreaNamesF.add("Seong");
+		southKoreaNamesF.add("Sung");
+		southKoreaNamesF.add("Wook");
+		southKoreaNamesF.add("Uk");
+		southKoreaNamesF.add("Myung");
+		southKoreaNamesF.add("Hyeon");
+		southKoreaNamesF.add("Iseul");
+		southKoreaNamesF.add("Jeong");
 		// surnames
-		southKoreaSurnames.add("");
-		southKoreaSurnames.add("");
-		southKoreaSurnames.add("");
-		southKoreaSurnames.add("");
-		southKoreaSurnames.add("");
-		southKoreaSurnames.add("");
-		southKoreaSurnames.add("");
-		southKoreaSurnames.add("");
+		southKoreaSurnames.add("Jang");
+		southKoreaSurnames.add("Lim");
+		southKoreaSurnames.add("Han");
+		southKoreaSurnames.add("O");
+		southKoreaSurnames.add("Shin");
+		southKoreaSurnames.add("Seo");
+		southKoreaSurnames.add("Kwon");
+		southKoreaSurnames.add("Song");
 
 		CountryInContinent southKorea = new CountryInContinent("SouthKorea",
 				southKoreaNamesM, southKoreaNamesF, southKoreaSurnames);
@@ -636,32 +600,32 @@ public final class UsersData {
 
 		// algeria
 		// names male
-		algeriaNamesM.add("");
-		algeriaNamesM.add("");
-		algeriaNamesM.add("");
-		algeriaNamesM.add("");
-		algeriaNamesM.add("");
-		algeriaNamesM.add("");
-		algeriaNamesM.add("");
-		algeriaNamesM.add("");
+		algeriaNamesM.add("Mohamed");
+		algeriaNamesM.add("Amine");
+		algeriaNamesM.add("Karim");
+		algeriaNamesM.add("Yacine");
+		algeriaNamesM.add("Ahmed");
+		algeriaNamesM.add("Mehdi");
+		algeriaNamesM.add("Hakim");
+		algeriaNamesM.add("Ali");
 		// names female
-		algeriaNamesF.add("");
-		algeriaNamesF.add("");
-		algeriaNamesF.add("");
-		algeriaNamesF.add("");
-		algeriaNamesF.add("");
-		algeriaNamesF.add("");
-		algeriaNamesF.add("");
-		algeriaNamesF.add("");
+		algeriaNamesF.add("Amina");
+		algeriaNamesF.add("Yasmine");
+		algeriaNamesF.add("Imene");
+		algeriaNamesF.add("Amel");
+		algeriaNamesF.add("Meriem");
+		algeriaNamesF.add("Amira");
+		algeriaNamesF.add("Lina");
+		algeriaNamesF.add("Rania");
 		// surnames
-		algeriaSurnames.add("");
-		algeriaSurnames.add("");
-		algeriaSurnames.add("");
-		algeriaSurnames.add("");
-		algeriaSurnames.add("");
-		algeriaSurnames.add("");
-		algeriaSurnames.add("");
-		algeriaSurnames.add("");
+		algeriaSurnames.add("Ben Bella");
+		algeriaSurnames.add("Hecini");
+		algeriaSurnames.add("Louahla");
+		algeriaSurnames.add("Bourrouag");
+		algeriaSurnames.add("Diop");
+		algeriaSurnames.add("Klouchi");
+		algeriaSurnames.add("Sahnine");
+		algeriaSurnames.add("Zidane");
 
 		CountryInContinent algeria = new CountryInContinent("Algeria",
 				algeriaNamesM, algeriaNamesF, algeriaSurnames);
@@ -669,32 +633,32 @@ public final class UsersData {
 
 		// libya
 		// names male
-		libyaNamesM.add("");
-		libyaNamesM.add("");
-		libyaNamesM.add("");
-		libyaNamesM.add("");
-		libyaNamesM.add("");
-		libyaNamesM.add("");
-		libyaNamesM.add("");
-		libyaNamesM.add("");
+		libyaNamesM.add("Abu");
+		libyaNamesM.add("Idris");
+		libyaNamesM.add("Minyar");
+		libyaNamesM.add("Mu'ammar");
+		libyaNamesM.add("Muhammed");
+		libyaNamesM.add("Ibn");
+		libyaNamesM.add("Ahmed");
+		libyaNamesM.add("Muhammad");
 		// names female
-		libyaNamesF.add("");
-		libyaNamesF.add("");
-		libyaNamesF.add("");
-		libyaNamesF.add("");
-		libyaNamesF.add("");
-		libyaNamesF.add("");
-		libyaNamesF.add("");
-		libyaNamesF.add("");
+		libyaNamesF.add("Sameea");
+		libyaNamesF.add("Najiyya");
+		libyaNamesF.add("Reem");
+		libyaNamesF.add("Aleisha");
+		libyaNamesF.add("Rania");
+		libyaNamesF.add("Aamira");
+		libyaNamesF.add("Fatin");
+		libyaNamesF.add("Inaya");
 		// surnames
-		libyaSurnames.add("");
-		libyaSurnames.add("");
-		libyaSurnames.add("");
-		libyaSurnames.add("");
-		libyaSurnames.add("");
-		libyaSurnames.add("");
-		libyaSurnames.add("");
-		libyaSurnames.add("");
+		libyaSurnames.add("al-Ajdabi");
+		libyaSurnames.add("al-Sanussi");
+		libyaSurnames.add("al-Qadhafi");
+		libyaSurnames.add("Shennib");
+		libyaSurnames.add("al-Bouri");
+		libyaSurnames.add("al-Muntasir");
+		libyaSurnames.add("al-Talhi");
+		libyaSurnames.add("Finiki");
 
 		CountryInContinent libya = new CountryInContinent("Libya", libyaNamesM,
 				libyaNamesF, libyaSurnames);
@@ -702,32 +666,32 @@ public final class UsersData {
 
 		// egypt
 		// names male
-		egyptNamesM.add("");
-		egyptNamesM.add("");
-		egyptNamesM.add("");
-		egyptNamesM.add("");
-		egyptNamesM.add("");
-		egyptNamesM.add("");
-		egyptNamesM.add("");
-		egyptNamesM.add("");
+		egyptNamesM.add("Alheib");
+		egyptNamesM.add("Gaballah");
+		egyptNamesM.add("Boutros");
+		egyptNamesM.add("Duridar");
+		egyptNamesM.add("Hosni");
+		egyptNamesM.add("Roushdy");
+		egyptNamesM.add("Omar");
+		egyptNamesM.add("Tewfik");
 		// names female
-		egyptNamesF.add("");
-		egyptNamesF.add("");
-		egyptNamesF.add("");
-		egyptNamesF.add("");
-		egyptNamesF.add("");
-		egyptNamesF.add("");
-		egyptNamesF.add("");
-		egyptNamesF.add("");
+		egyptNamesF.add("Halima");
+		egyptNamesF.add("Mahasin");
+		egyptNamesF.add("Maha");
+		egyptNamesF.add("Nadine");
+		egyptNamesF.add("Samira");
+		egyptNamesF.add("Rasha");
+		egyptNamesF.add("Shaheen");
+		egyptNamesF.add("Zabeya");
 		// surnames
-		egyptSurnames.add("");
-		egyptSurnames.add("");
-		egyptSurnames.add("");
-		egyptSurnames.add("");
-		egyptSurnames.add("");
-		egyptSurnames.add("");
-		egyptSurnames.add("");
-		egyptSurnames.add("");
+		egyptSurnames.add("Al-Sadat");
+		egyptSurnames.add("Fahim");
+		egyptSurnames.add("El Sayed");
+		egyptSurnames.add("Ghandour");
+		egyptSurnames.add("Nabih");
+		egyptSurnames.add("Saadauri");
+		egyptSurnames.add("Zein");
+		egyptSurnames.add("Tantawi");
 
 		CountryInContinent egypt = new CountryInContinent("Egypt", egyptNamesM,
 				egyptNamesF, egyptSurnames);
@@ -735,32 +699,32 @@ public final class UsersData {
 
 		// mali
 		// names male
-		maliNamesM.add("");
-		maliNamesM.add("");
-		maliNamesM.add("");
-		maliNamesM.add("");
-		maliNamesM.add("");
-		maliNamesM.add("");
-		maliNamesM.add("");
-		maliNamesM.add("");
+		maliNamesM.add("Alpha");
+		maliNamesM.add("Amadou");
+		maliNamesM.add("Modibo");
+		maliNamesM.add("Mossa");
+		maliNamesM.add("Moussa");
+		maliNamesM.add("Oumar");
+		maliNamesM.add("Ousmane");
+		maliNamesM.add("Toumani");
 		// names female
-		maliNamesF.add("");
-		maliNamesF.add("");
-		maliNamesF.add("");
-		maliNamesF.add("");
-		maliNamesF.add("");
-		maliNamesF.add("");
-		maliNamesF.add("");
-		maliNamesF.add("");
+		maliNamesF.add("Aminata");
+		maliNamesF.add("Fanta");
+		maliNamesF.add("Sara");
+		maliNamesF.add("Rokia");
+		maliNamesF.add("Sidi");
+		maliNamesF.add("Sakura");
+		maliNamesF.add("Gao");
+		maliNamesF.add("Maghan");
 		// surnames
-		maliSurnames.add("");
-		maliSurnames.add("");
-		maliSurnames.add("");
-		maliSurnames.add("");
-		maliSurnames.add("");
-		maliSurnames.add("");
-		maliSurnames.add("");
-		maliSurnames.add("");
+		maliSurnames.add("Deo");
+		maliSurnames.add("Diarra");
+		maliSurnames.add("Keita");
+		maliSurnames.add("Konare");
+		maliSurnames.add("Toure");
+		maliSurnames.add("Traoré");
+		maliSurnames.add("M'Bodji");
+		maliSurnames.add("et Mariam");
 
 		CountryInContinent mali = new CountryInContinent("Mali", maliNamesM,
 				maliNamesF, maliSurnames);
@@ -768,32 +732,32 @@ public final class UsersData {
 
 		// kenya
 		// names male
-		kenyaNamesM.add("");
-		kenyaNamesM.add("");
-		kenyaNamesM.add("");
-		kenyaNamesM.add("");
-		kenyaNamesM.add("");
-		kenyaNamesM.add("");
-		kenyaNamesM.add("");
-		kenyaNamesM.add("");
+		kenyaNamesM.add("Ajuma");
+		kenyaNamesM.add("Kinara");
+		kenyaNamesM.add("Lusala");
+		kenyaNamesM.add("Ndila");
+		kenyaNamesM.add("Osano");
+		kenyaNamesM.add("Wamochia");
+		kenyaNamesM.add("Yaw");
+		kenyaNamesM.add("Mwangi");
 		// names female
-		kenyaNamesF.add("");
-		kenyaNamesF.add("");
-		kenyaNamesF.add("");
-		kenyaNamesF.add("");
-		kenyaNamesF.add("");
-		kenyaNamesF.add("");
-		kenyaNamesF.add("");
-		kenyaNamesF.add("");
+		kenyaNamesF.add("Chanya");
+		kenyaNamesF.add("Kalititi");
+		kenyaNamesF.add("Modiba");
+		kenyaNamesF.add("Sundiata");
+		kenyaNamesF.add("Lelo");
+		kenyaNamesF.add("Guedado");
+		kenyaNamesF.add("Jebet");
+		kenyaNamesF.add("Meja");
 		// surnames
-		kenyaSurnames.add("");
-		kenyaSurnames.add("");
-		kenyaSurnames.add("");
-		kenyaSurnames.add("");
-		kenyaSurnames.add("");
-		kenyaSurnames.add("");
-		kenyaSurnames.add("");
-		kenyaSurnames.add("");
+		kenyaSurnames.add("Abol");
+		kenyaSurnames.add("Biwott");
+		kenyaSurnames.add("Gichonga");
+		kenyaSurnames.add("Kariuki");
+		kenyaSurnames.add("Lorupe");
+		kenyaSurnames.add("Ngotho");
+		kenyaSurnames.add("Semenya");
+		kenyaSurnames.add("Wekessa");
 
 		CountryInContinent kenya = new CountryInContinent("Kenya", kenyaNamesM,
 				kenyaNamesF, kenyaSurnames);
@@ -801,32 +765,32 @@ public final class UsersData {
 
 		// angola
 		// names male
-		angolaNamesM.add("");
-		angolaNamesM.add("");
-		angolaNamesM.add("");
-		angolaNamesM.add("");
-		angolaNamesM.add("");
-		angolaNamesM.add("");
-		angolaNamesM.add("");
-		angolaNamesM.add("");
+		angolaNamesM.add("Alioune");
+		angolaNamesM.add("Ari");
+		angolaNamesM.add("Lucala");
+		angolaNamesM.add("Adrien");
+		angolaNamesM.add("Helder");
+		angolaNamesM.add("Adriano");
+		angolaNamesM.add("Nelson");
+		angolaNamesM.add("Geraldo");
 		// names female
-		angolaNamesF.add("");
-		angolaNamesF.add("");
-		angolaNamesF.add("");
-		angolaNamesF.add("");
-		angolaNamesF.add("");
-		angolaNamesF.add("");
-		angolaNamesF.add("");
-		angolaNamesF.add("");
+		angolaNamesF.add("Jinga");
+		angolaNamesF.add("Kifunji");
+		angolaNamesF.add("Moena");
+		angolaNamesF.add("Monenga");
+		angolaNamesF.add("Mukumdu");
+		angolaNamesF.add("Zhinga");
+		angolaNamesF.add("Sakura");
+		angolaNamesF.add("Zulaika");
 		// surnames
-		angolaSurnames.add("");
-		angolaSurnames.add("");
-		angolaSurnames.add("");
-		angolaSurnames.add("");
-		angolaSurnames.add("");
-		angolaSurnames.add("");
-		angolaSurnames.add("");
-		angolaSurnames.add("");
+		angolaSurnames.add("Beye");
+		angolaSurnames.add("Jaga");
+		angolaSurnames.add("Kasanje");
+		angolaSurnames.add("Mbandi");
+		angolaSurnames.add("Savimbi");
+		angolaSurnames.add("Braga");
+		angolaSurnames.add("Bonga");
+		angolaSurnames.add("Flores");
 
 		CountryInContinent angola = new CountryInContinent("Angola",
 				angolaNamesM, angolaNamesF, angolaSurnames);
@@ -834,32 +798,32 @@ public final class UsersData {
 
 		// mozambique
 		// names male
-		mozambiqueNamesM.add("");
-		mozambiqueNamesM.add("");
-		mozambiqueNamesM.add("");
-		mozambiqueNamesM.add("");
-		mozambiqueNamesM.add("");
-		mozambiqueNamesM.add("");
-		mozambiqueNamesM.add("");
-		mozambiqueNamesM.add("");
+		mozambiqueNamesM.add("Maputo");
+		mozambiqueNamesM.add("Nuagobe");
+		mozambiqueNamesM.add("Samora");
+		mozambiqueNamesM.add("Yaya");
+		mozambiqueNamesM.add("Adney");
+		mozambiqueNamesM.add("Faizal");
+		mozambiqueNamesM.add("Halid");
+		mozambiqueNamesM.add("Ivania");
 		// names female
-		mozambiqueNamesF.add("");
-		mozambiqueNamesF.add("");
-		mozambiqueNamesF.add("");
-		mozambiqueNamesF.add("");
-		mozambiqueNamesF.add("");
-		mozambiqueNamesF.add("");
-		mozambiqueNamesF.add("");
-		mozambiqueNamesF.add("");
+		mozambiqueNamesF.add("Isaia");
+		mozambiqueNamesF.add("Leia");
+		mozambiqueNamesF.add("Abiba");
+		mozambiqueNamesF.add("Faiza");
+		mozambiqueNamesF.add("Hallyscha");
+		mozambiqueNamesF.add("Jannat");
+		mozambiqueNamesF.add("Kayleen");
+		mozambiqueNamesF.add("Laurene");
 		// surnames
-		mozambiqueSurnames.add("");
-		mozambiqueSurnames.add("");
-		mozambiqueSurnames.add("");
-		mozambiqueSurnames.add("");
-		mozambiqueSurnames.add("");
-		mozambiqueSurnames.add("");
-		mozambiqueSurnames.add("");
-		mozambiqueSurnames.add("");
+		mozambiqueSurnames.add("Chichuana");
+		mozambiqueSurnames.add("Chissano");
+		mozambiqueSurnames.add("Machel");
+		mozambiqueSurnames.add("Mbazia");
+		mozambiqueSurnames.add("Rusere");
+		mozambiqueSurnames.add("Sarea");
+		mozambiqueSurnames.add("Vashko");
+		mozambiqueSurnames.add("Zeca");
 
 		CountryInContinent mozambique = new CountryInContinent("Mozambique",
 				mozambiqueNamesM, mozambiqueNamesF, mozambiqueSurnames);
@@ -867,32 +831,32 @@ public final class UsersData {
 
 		// southAfrica
 		// names male
-		southAfricaNamesM.add("");
-		southAfricaNamesM.add("");
-		southAfricaNamesM.add("");
-		southAfricaNamesM.add("");
-		southAfricaNamesM.add("");
-		southAfricaNamesM.add("");
-		southAfricaNamesM.add("");
-		southAfricaNamesM.add("");
+		southAfricaNamesM.add("Anuiyelewa");
+		southAfricaNamesM.add("Es'kia");
+		southAfricaNamesM.add("Makhaya");
+		southAfricaNamesM.add("Mpilo");
+		southAfricaNamesM.add("Nyathi");
+		southAfricaNamesM.add("Simphiwe");
+		southAfricaNamesM.add("Thulani");
+		southAfricaNamesM.add("Vusumuzi");
 		// names female
-		southAfricaNamesF.add("");
-		southAfricaNamesF.add("");
-		southAfricaNamesF.add("");
-		southAfricaNamesF.add("");
-		southAfricaNamesF.add("");
-		southAfricaNamesF.add("");
-		southAfricaNamesF.add("");
-		southAfricaNamesF.add("");
+		southAfricaNamesF.add("Didi");
+		southAfricaNamesF.add("Inah");
+		southAfricaNamesF.add("Matlakala");
+		southAfricaNamesF.add("Moshidi");
+		southAfricaNamesF.add("Mpho");
+		southAfricaNamesF.add("Mphonyana");
+		southAfricaNamesF.add("Nolitha");
+		southAfricaNamesF.add("Nthati");
 		// surnames
-		southAfricaSurnames.add("");
-		southAfricaSurnames.add("");
-		southAfricaSurnames.add("");
-		southAfricaSurnames.add("");
-		southAfricaSurnames.add("");
-		southAfricaSurnames.add("");
-		southAfricaSurnames.add("");
-		southAfricaSurnames.add("");
+		southAfricaSurnames.add("Grumede");
+		southAfricaSurnames.add("Fazzie");
+		southAfricaSurnames.add("Dingake");
+		southAfricaSurnames.add("Madi");
+		southAfricaSurnames.add("Mahlambeni");
+		southAfricaSurnames.add("Ngidi");
+		southAfricaSurnames.add("Raptula");
+		southAfricaSurnames.add("Tyamzashe");
 
 		CountryInContinent southAfrica = new CountryInContinent("SouthAfrica",
 				southAfricaNamesM, southAfricaNamesF, southAfricaSurnames);
