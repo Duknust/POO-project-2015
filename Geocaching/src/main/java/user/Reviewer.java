@@ -1,98 +1,130 @@
 package user;
 
-import activity.Activity;
-import base.Data;
-import caches.Cache;
-import caches.Log;
+import java.io.Serializable;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeSet;
 
-public class Reviewer extends User {
+import activity.Activity;
+import base.Data;
+import caches.Cache;
+import caches.Log;
 
-    TreeSet<Cache> assignedCaches;
+public class Reviewer extends User implements Serializable, UserInterface {
 
-    // Constructors
-    public Reviewer(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, HashMap<String, Cache> caches, HashMap<String, User> friends, Data data) {
-        super(email, password, name, gender, address, birthDate, premium, totalFound, caches, friends, data);
-        this.assignedCaches = new TreeSet<>();
-    }
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2852570011268971404L;
+	TreeSet<Cache> assignedCaches;
 
-    public Reviewer(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, HashMap<String, Cache> caches, HashMap<String, User> friends, Data data, TreeSet<Cache> assignedCaches) {
-        super(email, password, name, gender, address, birthDate, premium, totalFound, caches, friends, data);
+	// Constructors
+	public Reviewer(String email, String password, String name, String gender,
+			String address, GregorianCalendar birthDate, boolean premium,
+			int totalFound, HashMap<String, Cache> caches,
+			HashMap<String, User> friends, Data data) {
+		super(email, password, name, gender, address, birthDate, premium,
+				totalFound, caches, friends, data);
+		this.assignedCaches = new TreeSet<>();
+	}
 
-        if (assignedCaches == null) {
-            this.assignedCaches = new TreeSet<>();
-        } else {
-            this.assignedCaches = assignedCaches;
-        }
-    }
+	public Reviewer(String email, String password, String name, String gender,
+			String address, GregorianCalendar birthDate, boolean premium,
+			int totalFound, HashMap<String, Cache> caches,
+			HashMap<String, User> friends, Data data,
+			TreeSet<Cache> assignedCaches) {
+		super(email, password, name, gender, address, birthDate, premium,
+				totalFound, caches, friends, data);
 
-    // Getters and Setters
-    public TreeSet<Cache> getAssignedCaches() {
-        return assignedCaches;
-    }
+		if (assignedCaches == null) {
+			this.assignedCaches = new TreeSet<>();
+		} else {
+			this.assignedCaches = assignedCaches;
+		}
+	}
 
-    // Methods
-    public Cache giveMeCache() {
-        Cache c = null;
-        Iterator<Cache> it = super.getData().getUnpublishedCaches().values().iterator();
+	// Getters and Setters
+	public TreeSet<Cache> getAssignedCaches() {
+		return assignedCaches;
+	}
 
-        while (it.hasNext()) {
-            c = it.next();
-            if (c.getReviewer() == null) {
-                c.setReviewer(this);
-                this.assignedCaches.add(c);
-                return c;
-            }
-        }
-        return c;
-    }
+	// Methods
+	public Cache giveMeCache() {
+		Cache c = null;
+		Iterator<Cache> it = super.getData().getUnpublishedCaches().values()
+				.iterator();
 
-    public Cache giveMeCache(Cache c) {
-        if (c == null) {
-            return c;
-        }
+		while (it.hasNext()) {
+			c = it.next();
+			if (c.getReviewer() == null) {
+				c.setReviewer(this);
+				this.assignedCaches.add(c);
+				return c;
+			}
+		}
+		return c;
+	}
 
-        if (super.getData().getUnpublishedCaches().values().contains(c)) {
-            c = super.getData().getUnpublishedCaches().get(c.getCacheID());
-            c.setReviewer(this);
-            this.assignedCaches.add(c);
-            return c;
-        } else {
-            return null;
-        }
-    }
+	public Cache giveMeCache(Cache c) {
+		if (c == null) {
+			return c;
+		}
 
-    public boolean publishCache(Cache c) {
+		if (super.getData().getUnpublishedCaches().values().contains(c)) {
+			c = super.getData().getUnpublishedCaches().get(c.getCacheID());
+			c.setReviewer(this);
+			this.assignedCaches.add(c);
+			return c;
+		} else {
+			return null;
+		}
+	}
 
-        if (c == null) {
-            return false;
-        }
+	public boolean publishCache(Cache c) {
 
-        if (c.getPublishDate() != null) {
-            return false; // Already Published
-        }
-        if (this instanceof Admin == false) { // If I am not Admin, and obviously not an User
-            if (c.getReviewer().equals(this) == false) { // and not the assigned reviewer
-                return false;
-            }
-        }
+		if (c == null) {
+			return false;
+		}
 
-        // Remove all the logs
-        c.clearLogs();
+		if (c.getPublishDate() != null) {
+			return false; // Already Published
+		}
+		if (this instanceof Admin == false) { // If I am not Admin, and
+												// obviously not an User
+			if (c.getReviewer() == null) {
+				return false;
+			} else if (c.getReviewer().equals(this) == false) { // and not the
+																// assigned
+																// reviewer
+				return false;
+			}
+		}
 
-        c.enable();
-        c.logCache(this, new Log("Enabled Listing", new GregorianCalendar(), Log.Log_Type.ENABLED));
+		// Remove all the logs
+		c.clearLogs();
 
-        c.setPublishDate(new GregorianCalendar()); // Set the Published Date
-        super.getData().getEnabledCaches().put(c.getCacheID(), c); // Move it from Unpublished to Published
-        super.getData().getUnpublishedCaches().remove(c.getCacheID(), c);
+		c.logCache(this, new Log("Enabled Listing", new GregorianCalendar(),
+				Log.Log_Type.ENABLED));
 
-        Activity act = new Activity(new GregorianCalendar(), Activity.Type.NEW_CACHE, c, c.getOwner()); // Create Activity
-        super.getData().addActivity(act);
-        return true;
-    }
+		c.setPublishDate(new GregorianCalendar()); // Set the Published Date
+		c.enable();
+		super.getData().getEnabledCaches().put(c.getCacheID(), c); // Move it
+																	// from
+																	// Unpublished
+																	// to
+																	// Published
+		super.getData().getUnpublishedCaches().remove(c.getCacheID(), c);
+
+		Activity act = new Activity(new GregorianCalendar(),
+				Activity.Type.NEW_CACHE, c, c.getOwner()); // Create Activity
+		super.getData().addActivity(act);
+		return true;
+	}
+
+	@Override
+	public Role getRole() {
+		return Role.REVIEWER;
+	}
 
 }

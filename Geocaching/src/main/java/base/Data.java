@@ -2,10 +2,19 @@ package base;
 
 import activity.Activity;
 import caches.Cache;
+import caches.Event;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
+
+import user.User;
 import user.UserAbstract;
 
 public class Data implements Serializable {
@@ -14,6 +23,9 @@ public class Data implements Serializable {
     HashMap<String, Cache> disabledCaches = null;
     HashMap<String, Cache> unpublishedCaches = null;
     HashMap<String, Cache> archivedCaches = null;
+    
+    HashMap<String, Event> enabledEvents = null;
+    HashMap<String, Event> pastEvents = null;
 
     HashMap<String, UserAbstract> allUsers = null;
     TreeMap<GregorianCalendar, Activity> allActivities = null;
@@ -28,9 +40,20 @@ public class Data implements Serializable {
         allUsers = new HashMap<>();
         allActivities = new TreeMap<>();
         allPositions = new TreeMap<>();
+        
+        enabledEvents = new HashMap<String, Event>();
+        pastEvents = new HashMap<String, Event>();
     }
 
     // Getters and Setters
+    public HashMap<String, Event> getEnabledEvents() {
+        return enabledEvents;
+    }
+    
+    public HashMap<String, Event> getPastEvents() {
+        return pastEvents;
+    }
+    
     public HashMap<String, Cache> getEnabledCaches() {
         return enabledCaches;
     }
@@ -95,6 +118,16 @@ public class Data implements Serializable {
         allCaches.putAll(archivedCaches);
         allCaches.putAll(enabledCaches);
         allCaches.putAll(disabledCaches);
+        return allCaches;
+    }
+
+    public HashMap<String, Cache> getAllCachesAndUnpublished() {
+
+        HashMap<String, Cache> allCaches = new HashMap<>();
+
+        allCaches.putAll(archivedCaches);
+        allCaches.putAll(enabledCaches);
+        allCaches.putAll(disabledCaches);
         allCaches.putAll(unpublishedCaches);
         return allCaches;
     }
@@ -103,4 +136,101 @@ public class Data implements Serializable {
         this.allActivities.put(act.getDate(), act);
     }
 
+    public SortedSet<Cache> getCachesFrom(User u) {
+
+        SortedSet<Cache> list = new TreeSet<>(compareCachePubDate());
+
+        HashMap<String, Cache> allCaches = getAllCaches();
+
+        for (Cache c : allCaches.values()) {
+            if (c.getOwner().equals(u)) {
+                list.add(c);
+            }
+        }
+
+        return list;
+    }
+
+    public SortedSet<Cache> getCachesFoundFrom(User u) {
+
+        SortedSet<Cache> list = new TreeSet<>(compareCachePubDate());
+
+        HashMap<String, Cache> allCaches = getAllCaches();
+
+        for (Cache c : allCaches.values()) {
+            if (c.hasFound(u)) {
+                list.add(c);
+            }
+        }
+
+        return list;
+    }
+
+    public Comparator<Cache> compareCachePubDate() {
+        return new Comparator<Cache>() {
+            public int compare(Cache o1, Cache o2) {
+                return -1 * o1.getPublishDate().compareTo(o2.getPublishDate());
+            }
+        };
+    }
+    
+    
+    public Comparator<Event> compareEventAppDate() {
+        return new Comparator<Event>() {
+            public int compare(Event o1, Event o2) {
+                return -1 * o1.getDateEndApplications().compareTo(o2.getDateEndApplications());
+            }
+        };
+    }
+    
+    public Comparator<Event> compareEventDate() {
+        return new Comparator<Event>() {
+            public int compare(Event o1, Event o2) {
+                return -1 * o1.getDateEvent().compareTo(o2.getDateEvent());
+            }
+        };
+    }
+    
+    
+    
+
+    public HashMap<String, Cache> getByPosition(Position p, int nCaches){
+    	
+    	double dist[] = new double[nCaches];
+    	Cache auxCache, caches[] = new Cache[nCaches];
+    	GeoTools geo = new GeoTools();
+    	double auxDist, aux;
+    	int i, added=0;
+
+    	for(Cache c: this.enabledCaches.values()){
+    		auxDist = geo.calcDistance(p, c.getPosition());
+    		i=0;
+    		
+    		while(i<added){
+    			if(auxDist > dist[i]) break;
+    			i++;
+    		}
+    		
+    		if(i<nCaches){
+    			while(i<nCaches){
+    				aux = dist[i];
+    				dist[i] = auxDist;
+    				auxDist = aux;
+    				
+    				auxCache = caches[i];
+    				caches[i] = c;
+    				c = auxCache;
+    				
+    				i++;
+    			}
+    			if(added < nCaches) added++;
+    		}
+    	}
+    	
+    	HashMap<String, Cache> inHash = new HashMap<String, Cache>();
+    	for(i=0; i<added; i++)
+    		inHash.put(caches[i].getCacheID(), caches[i]);
+    	
+    	return inHash;
+    }
 }

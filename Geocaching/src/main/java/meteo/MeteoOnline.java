@@ -13,6 +13,7 @@ public class MeteoOnline {
 		ForecastIO fio = new ForecastIO("35fdc1064d39b1f86a7c3ed9f0dea4c3");
 		fio.setUnits(ForecastIO.UNITS_SI);
 		fio.setExcludeURL("hourly,minutely");
+
 		boolean worked = fio.getForecast("" + position.getLati(),
 				"" + position.getLongi());
 		JsonObject response = fio.getCurrently();

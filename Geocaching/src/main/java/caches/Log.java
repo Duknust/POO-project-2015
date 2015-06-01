@@ -1,11 +1,12 @@
 package caches;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import user.UserAbstract;
 
-public class Log {
+public class Log implements Comparable, Serializable {
 
     /*
      Who can log ?
@@ -103,15 +104,34 @@ public class Log {
     // toString
     @Override
     public String toString() {
-        SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         timeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-        String date_str = timeFormat.format(date);
+        String date_str = timeFormat.format(date.getTime());
         return " "
                 + user
                 + "\nDate="
                 + date_str
                 + "\nLog = "
                 + log;
+    }
+
+    public String toLogListing() {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        timeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String date_str = timeFormat.format(this.date.getTime());
+        return " - Log Type: " + this.logType + "\n"
+                + " -     User: " + this.user.getName() + "\n"
+                + " -     Date: " + date_str + "\n"
+                + " -      Log: " + this.log;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+
+        // compareTo should return < 0 if this is supposed to be
+        // less than other, > 0 if this is supposed to be greater than
+        // other and 0 if they are supposed to be equal
+        return -((Log) o).getDate().compareTo(this.getDate()); // Minus because the more recent logs need to be the first to be shown
     }
 
 }

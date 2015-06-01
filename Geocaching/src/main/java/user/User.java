@@ -5,6 +5,7 @@ import base.Data;
 import caches.Cache;
 import caches.Log;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
@@ -12,7 +13,7 @@ public class User extends UserAbstract implements Serializable {
 
     private HashMap<String, Cache> caches = null;
     private HashMap<String, User> friends = null;
-    private Data data = new Data();
+    private Data data = null;
 
     // Constructors
     public User(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, HashMap<String, Cache> caches, HashMap<String, User> friends, Data data) {
@@ -124,7 +125,7 @@ public class User extends UserAbstract implements Serializable {
 
     // Methods
     public boolean createCache(Cache cache) {
-        HashMap<String, Cache> map = this.data.getAllCaches();
+        HashMap<String, Cache> map = this.data.getAllCachesAndUnpublished();
         if (map == null) {
             return false;
         }
@@ -285,14 +286,107 @@ public class User extends UserAbstract implements Serializable {
         return true;
     }
 
+    public void newFriendship(User u2) {
+        this.friends.put(u2.getEmail(), u2);
+        u2.friends.put(this.getEmail(), this);
+    }
+
+    public void removeFriendship(User u2) {
+        this.friends.remove(u2.getEmail(), u2);
+        u2.friends.remove(this.getEmail(), this);
+    }
+
     // toString
     @Override
     public String toString() {
-        return "User:\n" + super.toString();
+        return super.toString();
+    }
+
+    public String friendsToString() {
+        StringBuilder sb = new StringBuilder();
+        for (UserAbstract u : this.friends.values()) {
+            sb.append("\t" + u.toString() + "\n");
+        }
+        return sb.toString();
+    }
+
+    public ArrayList<User> getFriendsArray() {
+
+        ArrayList<User> array = new ArrayList<User>();
+
+        for (User u : this.getFriends().values()) {
+            array.add(u);
+        }
+        return array;
+    }
+
+    public ArrayList<Cache> getCachesArray() {
+
+        ArrayList<Cache> array = new ArrayList<Cache>();
+
+        for (Cache c : this.getCaches().values()) {
+            array.add(c);
+        }
+        return array;
+    }
+
+    public ArrayList<Cache> getCachesArrayPremiumCheck(UserAbstract userOnline) {
+        ArrayList<Cache> array = new ArrayList<Cache>();
+
+        for (Cache c : this.getCaches().values()) {
+            if (c.isPremiumOnly() == false || (c.isPremiumOnly() == true && userOnline.isPremium() == true)) // Check for Premium Only Caches
+            {
+                array.add(c);
+            }
+
+        }
+        return array;
+    }
+
+    @Override
+    public String toStringTotal() {
+        return "E-Mail - " + super.getEmail()
+                + "\nName - " + super.getName()
+                + "\nGender - " + super.getGender()
+                + "\nAddress - " + super.getAddress()
+                + "\nBirth Date - " + super.formatDate(super.getBirthDate())
+                + "\nPremium - " + super.isPremium()
+                + "\nTotal Found - " + super.getTotalFound()
+                + "\nTotal Owned Caches - " + this.caches.size()
+                + "\nFriends - " + this.friends.size() + "\n"
+                + this.friendsToString();
+    }
+
+    public String toStringFriend() {
+        return "Name - " + super.getName()
+                + "\nGender - " + super.getGender()
+                + "\nPremium - " + super.isPremium()
+                + "\nTotal Found - " + super.getTotalFound()
+                + "\nTotal Owned Caches - " + this.caches.size()
+                + "\nFriends - " + this.friends.size() + "\n";
     }
 
     // Increment by number the Number of Founds
     private void incFounds(int number) {
         this.setTotalFound(this.getTotalFound() + number);
     }
+
+    @Override
+    public Role getRole() {
+        return Role.USER;
+    }
+
+    public boolean isFriendsWith(User friend) {
+        return this.friends.containsKey(friend.getEmail());
+    }
+    
+    
+    public int nFindFromType(Cache.Type type){
+    	int res=0;
+    	for(Cache c: this.caches.values())
+    		if(c.getType() == type)
+    			res++;
+    	return res;
+    }
+
 }

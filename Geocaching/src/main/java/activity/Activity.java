@@ -67,13 +67,13 @@ public class Activity implements Comparable<Activity>, Serializable {
                         + this.cache.getCacheTitle() + "\"";
                 break;
             case ARCHIVED_CACHE:
-                res = "\"" + this.cache.getCacheTitle() + "\" has been archived";
+                res = "\"" + this.cache.getCacheTitle() + "\" has been archived by " + this.user.getName();
                 break;
             case DISABLED_CACHE:
-                res = "\"" + this.cache.getCacheTitle() + "\" has been disabled";
+                res = "\"" + this.cache.getCacheTitle() + "\" has been disabled by " + this.user.getName();
                 break;
             case ENABLED_CACHE:
-                res = "\"" + this.cache.getCacheTitle() + "\" has been enabled";
+                res = "\"" + this.cache.getCacheTitle() + "\" has been enabled by " + this.user.getName();
                 break;
             default:
                 break;

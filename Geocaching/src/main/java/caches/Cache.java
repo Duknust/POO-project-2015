@@ -1,10 +1,14 @@
 package caches;
 
 import base.Position;
+import caches.Log.Log_Type;
+
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Objects;
-import java.util.TreeMap;
+import java.util.TreeSet;
+
 import user.Admin;
 import user.Reviewer;
 import user.User;
@@ -33,6 +37,35 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         }
     }
 
+    public enum Type {
+
+        CITO, EARTH, EVENT, LETTERBOX, MYSTERY, MULTI, TRADITIONAL, DEFAULT;
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case CITO:
+                    return "CITO";
+                case EARTH:
+                    return "Earth";
+                case EVENT:
+                    return "Event";
+                case LETTERBOX:
+                    return "Letterbox";
+                case MYSTERY:
+                    return "Mystery";
+                case MULTI:
+                    return "Multi";
+                case TRADITIONAL:
+                    return "Traditional";
+                case DEFAULT:
+                    return "";
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+    }
+
     private GregorianCalendar publishDate; // Date cache was published
     private GregorianCalendar creationDate; // Date cache was created
     private String cacheID; // Cache ID number
@@ -45,11 +78,11 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
     private float difficulty; // How difficult is it to find the cache
     private Position position;
     private String hint; // Hints to find the cache
-    private TreeMap<GregorianCalendar, Log> cache_Logs; // Cache logs
+    private TreeSet<Log> cache_Logs; // Cache logs
     private Reviewer reviewer = null; // Reviewer responsible
 
     // Constructors
-    public Cache(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, Reviewer reviewer) {
+    public Cache(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer) {
         this.publishDate = publishDate;
         this.creationDate = creationDate;
         this.cacheID = cacheID;
@@ -67,7 +100,7 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
     }
 
     // w/o ID
-    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, Reviewer reviewer) {
+    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer) {
         this.creationDate = creationDate;
         this.description = description;
         this.cacheState = Status.UNPUBLISHED;
@@ -80,8 +113,8 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.reviewer = reviewer;
     }
 
-    // w/o ID and Reviewer
-    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs) {
+    // w/o Reviewer
+    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs) {
         this.creationDate = creationDate;
         this.description = description;
         this.cacheState = Status.UNPUBLISHED;
@@ -91,6 +124,23 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.position = position;
         this.hint = hint;
         this.cache_Logs = cache_Logs;
+        this.cacheID = genID(6);
+    }
+    
+ // w/o Reviewer && Hint && Difficulty && CacheSize && Cache-Logs
+    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, Position position, UserAbstract owner) {
+        this.creationDate = creationDate;
+        this.owner = owner;
+        this.cacheTitle = cacheTitle;
+        this.description = description;
+        this.cacheState = Status.UNPUBLISHED;
+        this.cacheSize = 0;
+        this.difficulty = 0;
+        this.position = position;
+        this.hint = "No Hint";
+        this.cache_Logs =  new TreeSet<Log>();
+        this.premiumOnly = false;
+        this.cacheID = genID(6);
     }
 
     // Getters and Setters
@@ -190,11 +240,11 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.hint = hint;
     }
 
-    public TreeMap<GregorianCalendar, Log> getCache_Logs() {
+    public TreeSet<Log> getCache_Logs() {
         return cache_Logs;
     }
 
-    public void setCache_Logs(TreeMap<GregorianCalendar, Log> cache_Logs) {
+    public void setCache_Logs(TreeSet<Log> cache_Logs) {
         this.cache_Logs = cache_Logs;
     }
 
@@ -212,7 +262,9 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
     }
 
     public void enable() {
-        this.cacheState = Status.ENABLED;
+        if (getPublishDate() != null) {// Only Enable if was Published before
+            this.cacheState = Status.ENABLED;
+        }
     }
 
     public boolean logCache(User user, Log log) {// CHECK THIS , STUFF MISSING !!!
@@ -280,22 +332,58 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
 
         }
 
-        this.cache_Logs.put(log.getDate(), log);
+        log.setUser(user);
+        if (log.getLogType() == Log_Type.FOUND_IT) {// If the User Found It
+            user.incTotalFound(); // Then increment by 1 the Total Founds
+        }
+        this.cache_Logs.add(log);
         return true;
     }
 
     public String genID(int size) {
-        return Long.toHexString(Double.doubleToLongBits(Math.random())).substring(15 - size, 15).toUpperCase();
+        return "GC" + Long.toHexString(Double.doubleToLongBits(Math.random())).substring(15 - size, 15).toUpperCase();
     }
 
     public void clearLogs() {
         this.cache_Logs.clear();
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        return hash;
+    public static String formatDateTime(GregorianCalendar calendar) {
+        if (calendar == null) {
+            return "-/-/-";
+        }
+        SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        fmt.setCalendar(calendar);
+        return fmt.format(calendar.getTime());
+    }
+
+    public boolean hasFound(User user) {
+        for (Log l : this.cache_Logs) {
+            if (l.getUser().equals(user) && l.getLogType() == Log.Log_Type.FOUND_IT) { // If User has a 'Found It' Log
+                return true; // Then he Found it !
+            }
+        }
+        return false;
+    }
+
+    public TreeSet<Log> getLogs(User user) {
+        TreeSet<Log> list = new TreeSet<>();
+        for (Log l : this.cache_Logs) {
+            if (l.getUser().equals(user)) {
+                list.add(l);
+            }
+        }
+        return list;
+    }
+
+    private int getTotalType(Log_Type type) {
+        int total = 0;
+        for (Log l : this.cache_Logs) {
+            if (l.getLogType() == type) {
+                total++;
+            }
+        }
+        return total;
     }
 
     @Override
@@ -313,6 +401,10 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         return true;
     }
 
+    public boolean deleteLog(Log log) {
+        return this.cache_Logs.remove(log);
+    }
+
     @Override
     public int compareTo(Cache other) {
         // compareTo should return < 0 if this is supposed to be
@@ -322,11 +414,16 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
 
     }
 
+    // Should be Overrided
+    public Type getType() {
+        return Type.DEFAULT;
+    }
+
     // ToString
     @Override
     public String toString() {
         return "Cache{"
-                + "publishDate=" + publishDate
+                + "publishDate=" + formatDateTime(publishDate)
                 + ", cacheID='" + cacheID + '\''
                 + ", description='" + description + '\''
                 + ", cacheState=" + cacheState
@@ -341,21 +438,40 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
                 + '}';
     }
 
-    public String toListing(String type) {
+    public String toListing() {
         return "\nTitle = '" + cacheTitle + '\''
-                + "\nType = " + type
-                + "\nPublishing Date = " + publishDate
+                + "\nType = " + getType()
+                + "\nCreation Date = " + formatDateTime(creationDate)
+                + "\nPublishing Date = " + formatDateTime(publishDate)
                 + "\nCache ID = '" + cacheID + '\''
                 + "\nCacheState = " + cacheState
                 + "\nOwner = " + owner
                 + "\nSize = " + cacheSize
-                + "\nDifficulty = " + difficulty
+                + "\nDifficulty = " + difficulty + "\n"
                 + position.toListing()
                 + "\nDescription = '" + description + '\''
-                + "\nHint = '" + hint + '\'';
+                + "\nHint = '" + hint + '\''
+                + "\nTotal Founds= " + getTotalType(Log_Type.FOUND_IT)
+                + "\nTotal Not Founds= " + getTotalType(Log_Type.DNF);
+    }
+
+    public String toSimpleListing() {
+        return cacheID
+                + " '" + cacheTitle + '\''
+                + " (" + getType() + ")"
+                + " D " + difficulty
+                + " / T " + position.getDifficulty()
+                + " (" + formatDateTime(publishDate) + ")";
     }
 
     public String toLogsListing() {
-        return "\nCache Log = " + cache_Logs;
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nCache Logs = \n");
+
+        for (Log log : cache_Logs) {
+            sb.append(log.toLogListing() + "\n\n");
+        }
+
+        return sb.toString();
     }
 }
