@@ -2,11 +2,13 @@ package caches;
 
 import base.Position;
 import caches.Log.Log_Type;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.TreeSet;
+
 import user.Admin;
 import user.Reviewer;
 import user.User;
@@ -111,7 +113,7 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.reviewer = reviewer;
     }
 
-    // w/o ID and Reviewer
+    // w/o Reviewer
     public Cache(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs) {
         this.creationDate = creationDate;
         this.description = description;
@@ -122,6 +124,23 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.position = position;
         this.hint = hint;
         this.cache_Logs = cache_Logs;
+        this.cacheID = genID(6);
+    }
+    
+ // w/o Reviewer && Hint && Difficulty && CacheSize && Cache-Logs
+    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, Position position, UserAbstract owner) {
+        this.creationDate = creationDate;
+        this.owner = owner;
+        this.cacheTitle = cacheTitle;
+        this.description = description;
+        this.cacheState = Status.UNPUBLISHED;
+        this.cacheSize = 0;
+        this.difficulty = 0;
+        this.position = position;
+        this.hint = "No Hint";
+        this.cache_Logs =  new TreeSet<Log>();
+        this.premiumOnly = false;
+        this.cacheID = genID(6);
     }
 
     // Getters and Setters
