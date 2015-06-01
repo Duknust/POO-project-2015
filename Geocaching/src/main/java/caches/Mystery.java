@@ -2,11 +2,11 @@ package caches;
 
 import base.Position;
 import java.util.GregorianCalendar;
-import java.util.TreeMap;
+import java.util.TreeSet;
 import user.Reviewer;
 import user.UserAbstract;
 
-public class Mistery extends Cache {
+public class Mystery extends Cache {
 
     /*
      * The "catch-all" of geocache types, this type may involve complicated
@@ -15,16 +15,24 @@ public class Mistery extends Cache {
      * new and unique geocaches that do not fit in another category.
      */
     private Position finalPos = null;
+    private String finalText = "";
 
     // Constructors
-    public Mistery(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, Reviewer reviewer) {
+    public Mystery(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer) {
         super(publishDate, creationDate, cacheID, premiumOnly, description, cacheState,
                 cacheTitle, owner, cacheSize, difficulty, position, hint, cache_Logs, reviewer);
     }
 
-    public Mistery(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeMap<GregorianCalendar, Log> cache_Logs, Position pos) {
+    public Mystery(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Position finalPos, String finalText) {
+        super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs);
+        this.finalPos = finalPos;
+        this.finalText = finalText;
+    }
+
+    public Mystery(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Position pos, String finalText) {
         super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs);
         this.finalPos = pos;
+        this.finalText = finalText;
     }
 
     // Getters and Setters
@@ -36,7 +44,19 @@ public class Mistery extends Cache {
         this.finalPos = finalPos;
     }
 
+    public String getFinalText() {
+        return finalText;
+    }
+
+    public void setFinalText(String finalText) {
+        this.finalText = finalText;
+    }
+
     // Methods
+    public boolean checkCoord(Position coord) {
+        return (this.getFinalPos().getLati() == coord.getLati() && this.getFinalPos().getLongi() == coord.getLongi());
+    }
+
     // toString
     @Override
     public String toString() {
