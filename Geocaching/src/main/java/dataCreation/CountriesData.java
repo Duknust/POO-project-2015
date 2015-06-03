@@ -1,7 +1,10 @@
-package base;
+package dataCreation;
 
 import java.util.HashMap;
 import java.util.Random;
+
+import base.Position;
+import base.Utilities;
 
 public final class CountriesData {
 

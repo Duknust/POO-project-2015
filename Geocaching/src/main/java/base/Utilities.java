@@ -12,4 +12,15 @@ public class Utilities {
 
 		return result;
 	}
+
+	public static String fromNameToEmail(String name, String emailDomain) {
+		StringBuilder sb = new StringBuilder();
+		String[] pieces = name.split(" ");
+		for (String s : pieces) {
+			sb.append(s.toLowerCase());
+		}
+		sb.append("@");
+		sb.append(emailDomain);
+		return sb.toString();
+	}
 }

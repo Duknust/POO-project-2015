@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
+import caches.Cache;
+
 public abstract class UserAbstract implements Serializable {
 
     public enum Role {
@@ -191,4 +193,5 @@ public abstract class UserAbstract implements Serializable {
         return true;
     }
 
+    public abstract int nFindFromType(Cache.Type type);
 }
