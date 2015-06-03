@@ -533,7 +533,218 @@ public class Geocaching {
     }
 
     private static void mEditProfile() {
+        int choice = -1;
+        boolean edited;
+        while (choice == -1) {
+            System.out.println("####### Edit Profile #######\n");
+            System.out.println(userOnline.toStringTotal() + "\n");
+            System.out.println("---- I want to edit :");
+            System.out.println("-- [1] Name");
+            System.out.println("-- [2] Gender");
+            System.out.println("-- [3] Address");
+            System.out.println("-- [4] Birth Date");
+            System.out.println("-- [5] Password");
+            System.out.println("-----");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+            edited = false;
+            String text = null;
+            switch (choice) {
+                case 1:
+                    text = null;
+                    edited = false;
+                    while (edited == false) {
+                        System.out.println("\n\n- Type the new Name:");
+                        System.out.print("?> ");
+                        try {
+                            text = input.readLine();
+                        } catch (Exception ex) {
+                            //System.out.println("Error: Invalid Option");
+                            text = null;
+                        }
+                        if (text != null) {
+                            userOnline.setName(text);
+                            System.out.println("User's Name edited successfully!");
+                            pressAnyKeyToContinue();
+                            edited = true;
+                        } else {
+                            System.out.println("ERROR: Please type again.");
+                            pressAnyKeyToContinue();
+                        }
+                    }
+                    clearConsole();
 
+                    choice = -1;
+                    break;
+                case 2:
+                    int cgender = 0;
+                    edited = false;
+                    while (cgender == 0) {
+                        System.out.println("\n\n- Choose the new Gender:");
+                        System.out.println("-- [1] Male");
+                        System.out.println("-- [2] Female");
+                        System.out.print("?> ");
+                        try {
+                            cgender = Integer.parseInt(input.readLine());
+                        } catch (Exception ex) {
+                            //System.out.println("Error: Invalid Option");
+                            cgender = 0;
+                        }
+                        if (cgender == 1 || cgender == 2) {
+                            if (cgender == 1) {
+                                userOnline.setGender("Male");
+                            } else {
+                                userOnline.setGender("Female");
+                            }
+                            System.out.println("User's Gender edited successfully!");
+                            pressAnyKeyToContinue();
+                            edited = true;
+                        } else {
+                            System.out.println("ERROR: Please type again.");
+                            pressAnyKeyToContinue();
+                        }
+                    }
+                    clearConsole();
+                    choice = -1;
+                    break;
+                case 3:
+                    text = null;
+                    edited = false;
+                    while (edited == false) {
+                        System.out.println("\n\n- Type the new Address:");
+                        System.out.print("?> ");
+                        try {
+                            text = input.readLine();
+                        } catch (Exception ex) {
+                            //System.out.println("Error: Invalid Option");
+                            text = null;
+                        }
+                        if (text != null) {
+                            userOnline.setAddress(text);
+                            System.out.println("User's Address edited successfully!");
+                            pressAnyKeyToContinue();
+                            edited = true;
+                        } else {
+                            System.out.println("ERROR: Please type again.");
+                            pressAnyKeyToContinue();
+                        }
+                    }
+                    clearConsole();
+
+                    choice = -1;
+                    break;
+                case 4:
+                    text = null;
+                    edited = false;
+                    String bdate = null;
+                    GregorianCalendar gcDate = new GregorianCalendar();
+                    while (edited == false) {
+                        System.out.println("\n\n- Type the new Birth Date:");
+                        System.out.print("?> ");
+                        try {
+                            bdate = input.readLine();
+                        } catch (Exception ex) {
+                            Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                        Date startDate;
+                        try {
+                            startDate = df.parse(bdate);
+                            gcDate.setTime(startDate);
+                            userOnline.setBirthDate(gcDate);
+                            System.out.println("User's Birth Date edited successfully!");
+                            edited = true;
+                        } catch (ParseException ex) {
+                            System.out.println("Error with the Date Format, please use dd/MM/yyyy");
+                        }
+
+                    }
+                    clearConsole();
+
+                    choice = -1;
+                    break;
+                case 5:
+                    text = null;
+                    String password = null;
+                    edited = false;
+                    boolean pwok = false;
+                    while (edited == false) {
+
+                        while (pwok == false) {
+                            System.out.println("\n\n- Type the current Password:");
+                            System.out.print("?> ");
+                            Console console = System.console();
+                            if (console == null) {
+                                try {
+                                    text = input.readLine();
+                                } catch (Exception ex) {
+                                    Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            } else {
+                                text = new String(console.readPassword()); // No echo
+                            }
+                            pwok = userOnline.checkPassword(text);
+                            if (pwok == false) {
+                                System.out.println("Error: Password is wrong!");
+                            }
+
+                        }
+
+                        System.out.println("\n- Type the new Password:");
+                        System.out.print("?> ");
+                        Console console = System.console();
+                        if (console == null) {
+                            try {
+                                text = input.readLine();
+                            } catch (Exception ex) {
+                                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        } else {
+                            text = new String(console.readPassword()); // No echo
+                        }
+
+                        System.out.println("\n- Repeat the new Password:");
+                        System.out.print("?> ");
+                        if (console == null) {
+                            try {
+                                password = input.readLine();
+                            } catch (Exception ex) {
+                                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        } else {
+                            password = new String(console.readPassword()); // No echo
+                        }
+
+                        if (password.equals(text) == false) {
+                            System.out.println("Error: New Password don't match");
+                        } else if (password.length() < 5) {
+                            System.out.println("Error: Password must have at least 5 characters of length");
+                        } else {
+                            edited = true;
+                            userOnline.setPassword(password);
+                            System.out.println("User's Password edited successfully!");
+                        }
+                        pressAnyKeyToContinue();
+                    }
+                    clearConsole();
+
+                    choice = -1;
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Error: Option not available");
+                    choice = -1;
+                    break;
+            }
+        }
     }
 
     // ------------------- FRIENDS MENU ------------------

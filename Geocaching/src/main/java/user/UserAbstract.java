@@ -135,6 +135,10 @@ public abstract class UserAbstract implements Serializable {
         return this.getEmail().equals(email) && Arrays.equals(this.getPassword(), getHash(password));
     }
 
+    public boolean checkPassword(String text) {
+        return Arrays.equals(this.getPassword(), getHash(text));
+    }
+
     public static String formatDate(GregorianCalendar calendar) {
         if (calendar == null) {
             return "-/-/-";
