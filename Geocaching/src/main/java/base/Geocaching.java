@@ -2293,7 +2293,7 @@ public class Geocaching {
                 System.out.println("Error with the Date Format, please use dd/MM/yyyy");
             }
         }
-
+        status = false;
         System.out.println("-- Limit Date To Applications:");
         while (status == false) {
             System.out.print("?> ");
@@ -2313,7 +2313,7 @@ public class Geocaching {
                 System.out.println("Error with the Date Format, please use dd/MM/yyyy");
             }
         }
-
+        status = false;
         System.out.println("-- Max of Participants");
         while (status == false) {
             System.out.print("?> ");
@@ -2439,10 +2439,10 @@ public class Geocaching {
         e1.addCache(tc2);
         e1.addCache(mc1);
 
-        data.getEnabledEvents().put(e1.getCacheID(), e1);
-        data.getEnabledEvents().put(e2.getCacheID(), e2);
-        data.getEnabledEvents().put(e3.getCacheID(), e3);
-        data.getEnabledEvents().put(e4.getCacheID(), e4);
+        newData.getEnabledEvents().put(e1.getCacheID(), e1);
+        newData.getEnabledEvents().put(e2.getCacheID(), e2);
+        newData.getEnabledEvents().put(e3.getCacheID(), e3);
+        newData.getEnabledEvents().put(e4.getCacheID(), e4);
 
         u1.createCache(tc1);
         u2.createCache(tc2);
