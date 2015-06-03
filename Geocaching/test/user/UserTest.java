@@ -5,12 +5,12 @@
  */
 package user;
 
-import base.CountriesData;
 import base.Data;
 import base.Position;
 import caches.Cache;
 import caches.Log;
 import caches.Traditional;
+import dataCreation.CountriesData;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.TreeSet;
