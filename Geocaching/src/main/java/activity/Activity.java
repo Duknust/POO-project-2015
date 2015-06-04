@@ -1,6 +1,7 @@
 package activity;
 
 import caches.Cache;
+import caches.Log;
 import java.io.Serializable;
 import java.util.GregorianCalendar;
 import user.UserAbstract;
@@ -9,13 +10,22 @@ public class Activity implements Comparable<Activity>, Serializable {
 
     public enum Type {
 
-        NEW_CACHE, FOUND_CACHE, NOT_FOUND_CACHE, ARCHIVED_CACHE, DISABLED_CACHE, ENABLED_CACHE
+        NEW_CACHE, FOUND_CACHE, NOT_FOUND_CACHE, ARCHIVED_CACHE, DISABLED_CACHE, ENABLED_CACHE, UPDATED_LOG_TYPE
     }
 
     private GregorianCalendar date;
     private Type type;
     private Cache cache;
     private UserAbstract user;
+    private Log log;
+
+    public Activity(GregorianCalendar date, Type type, Cache cache, UserAbstract user, Log log) {
+        this.date = date;
+        this.type = type;
+        this.cache = cache;
+        this.user = user;
+        this.log = log;
+    }
 
     public Activity(GregorianCalendar date, Type type, Cache cache, UserAbstract user) {
         this.date = date;
@@ -49,6 +59,14 @@ public class Activity implements Comparable<Activity>, Serializable {
         return cache;
     }
 
+    public UserAbstract getUser() {
+        return user;
+    }
+
+    public Log getLog() {
+        return log;
+    }
+
     @Override
     public String toString() {
         String res = "";
@@ -74,6 +92,9 @@ public class Activity implements Comparable<Activity>, Serializable {
                 break;
             case ENABLED_CACHE:
                 res = "\"" + this.cache.getCacheTitle() + "\" has been enabled by " + this.user.getName();
+                break;
+            case UPDATED_LOG_TYPE:
+                res = "The " + this.user.getName() + "'s log from \"" + this.cache.getCacheTitle() + "\" has been updated to " + this.log.getLogType();
                 break;
             default:
                 break;
