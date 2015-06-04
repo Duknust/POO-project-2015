@@ -4,11 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
+import user.User;
 import user.UserAbstract;
 import user.UserAbstract.Role;
 import caches.Cache;
+import caches.Log;
 
 public class Statistics implements Serializable {
 
@@ -231,5 +234,262 @@ public class Statistics implements Serializable {
 			top.add(toTop);
 		}
 		return top;
+	}
+
+	public void monthStatistics(Data data, User user,
+			GregorianCalendar dateFinnish, boolean withGraph) {
+		GregorianCalendar dateInit;
+		if (dateFinnish.get(GregorianCalendar.MONTH) == 0) {
+			dateInit = new GregorianCalendar(
+					dateFinnish.get(GregorianCalendar.YEAR) - 1, 11,
+					dateFinnish.get(GregorianCalendar.DAY_OF_MONTH));
+		} else {
+			dateInit = new GregorianCalendar(
+					dateFinnish.get(GregorianCalendar.YEAR),
+					dateFinnish.get(GregorianCalendar.MONTH) - 1,
+					dateFinnish.get(GregorianCalendar.DAY_OF_MONTH));
+		}
+
+		int max = -1;
+
+		ArrayList<Cache> cachesCreatedInDate = new ArrayList<Cache>();
+
+		for (Cache c : user.getCaches().values()) {
+			if (c.getCreationDate().before(dateFinnish)
+					&& c.getCreationDate().after(dateInit)) {
+				cachesCreatedInDate.add(c);
+			}
+		}
+
+		SortedSet<Cache> ss = data.getCachesFoundFrom(user);
+		ArrayList<Cache> cachesFoundInDate = new ArrayList<Cache>();
+		for (Cache c : ss) {
+			TreeSet<Log> ts = c.getLogs(user);
+			for (Log log : ts) {
+				if (log.getDate().before(dateFinnish)
+						&& log.getDate().after(dateInit))
+					cachesFoundInDate.add(c);
+			}
+		}
+
+		System.out.println(user.getName() + " created "
+				+ cachesCreatedInDate.size() + " in last year");
+
+		for (Cache c : cachesCreatedInDate) {
+			System.out.println(c.toSimpleListing());
+		}
+
+		if (withGraph) {
+			ArrayList<Integer> points = new ArrayList<Integer>();
+			ArrayList<String> days = new ArrayList<String>();
+			days.add("1");
+			days.add("2");
+			days.add("3");
+			days.add("4");
+			days.add("5");
+			days.add("6");
+			days.add("7");
+			days.add("8");
+			days.add("9");
+			days.add("10");
+			days.add("11");
+			days.add("12");
+			days.add("13");
+			days.add("14");
+			days.add("15");
+			days.add("16");
+			days.add("17");
+			days.add("18");
+			days.add("19");
+			days.add("20");
+			days.add("21");
+			days.add("22");
+			days.add("23");
+			days.add("24");
+			days.add("25");
+			days.add("26");
+			days.add("27");
+			days.add("28");
+			days.add("29");
+			days.add("30");
+			days.add("31");
+			for (int i = 0; i < 31; i++) {
+				points.add(0);
+			}
+
+			for (Cache c : cachesCreatedInDate) {
+				int toSum = points.get(c.getCreationDate().get(
+						GregorianCalendar.MONTH));
+				points.add(c.getCreationDate().get(GregorianCalendar.MONTH),
+						toSum + 1);
+			}
+			for (int x : points) {
+				if (x > max)
+					max = x;
+			}
+			graphic2D(points, days, 31, max, "months", "created couchs", true);
+
+		}
+		System.out.println(user.getName() + " found "
+				+ cachesFoundInDate.size() + " in last month");
+
+		for (Cache c : cachesFoundInDate) {
+			System.out.println(c.toSimpleListing());
+		}
+
+		if (withGraph) {
+			ArrayList<Integer> points = new ArrayList<Integer>();
+			ArrayList<String> days = new ArrayList<String>();
+			days.add("1");
+			days.add("2");
+			days.add("3");
+			days.add("4");
+			days.add("5");
+			days.add("6");
+			days.add("7");
+			days.add("8");
+			days.add("9");
+			days.add("10");
+			days.add("11");
+			days.add("12");
+			days.add("13");
+			days.add("14");
+			days.add("15");
+			days.add("16");
+			days.add("17");
+			days.add("18");
+			days.add("19");
+			days.add("20");
+			days.add("21");
+			days.add("22");
+			days.add("23");
+			days.add("24");
+			days.add("25");
+			days.add("26");
+			days.add("27");
+			days.add("28");
+			days.add("29");
+			days.add("30");
+			days.add("31");
+			for (int i = 0; i < 31; i++) {
+				points.add(0);
+			}
+
+			for (Cache c : cachesFoundInDate) {
+				int toSum = points.get(c.getCreationDate().get(
+						GregorianCalendar.MONTH));
+				points.add(c.getCreationDate().get(GregorianCalendar.MONTH),
+						toSum + 1);
+			}
+			for (int x : points) {
+				if (x > max)
+					max = x;
+			}
+			graphic2D(points, days, 31, max, "days", "found caches", true);
+
+		}
+
+	}
+
+	public void yearStatistics(Data data, User user,
+			GregorianCalendar dateFinnish, boolean withGraph) {
+		GregorianCalendar dateInit = new GregorianCalendar(
+				dateFinnish.get(GregorianCalendar.YEAR) - 1,
+				dateFinnish.get(GregorianCalendar.MONTH),
+				dateFinnish.get(GregorianCalendar.DAY_OF_MONTH));
+
+		int max = -1;
+
+		ArrayList<Cache> cachesCreatedInDate = new ArrayList<Cache>();
+
+		for (Cache c : user.getCaches().values()) {
+			if (c.getCreationDate().before(dateFinnish)
+					&& c.getCreationDate().after(dateInit)) {
+				cachesCreatedInDate.add(c);
+			}
+		}
+
+		SortedSet<Cache> ss = data.getCachesFoundFrom(user);
+		ArrayList<Cache> cachesFoundInDate = new ArrayList<Cache>();
+		for (Cache c : ss) {
+			TreeSet<Log> ts = c.getLogs(user);
+			for (Log log : ts) {
+				if (log.getDate().before(dateFinnish)
+						&& log.getDate().after(dateInit))
+					cachesFoundInDate.add(c);
+			}
+		}
+
+		System.out.println(user.getName() + " created "
+				+ cachesCreatedInDate.size() + " in last month");
+
+		for (Cache c : cachesCreatedInDate) {
+			System.out.println(c.toSimpleListing());
+		}
+
+		if (withGraph) {
+			ArrayList<Integer> points = new ArrayList<Integer>();
+			ArrayList<String> months = new ArrayList<String>();
+			months.add("Jan");
+			months.add("Feb");
+			months.add("Mar");
+			months.add("Apr");
+			months.add("May");
+			months.add("Jun");
+			months.add("Jul");
+			months.add("Aug");
+			months.add("Sep");
+			months.add("Oct");
+			months.add("Nov");
+			months.add("Dec");
+			for (Cache c : cachesCreatedInDate) {
+				int toSum = points.get(c.getCreationDate().get(
+						GregorianCalendar.MONTH));
+				points.add(c.getCreationDate().get(GregorianCalendar.MONTH),
+						toSum + 1);
+			}
+			for (int x : points) {
+				if (x > max)
+					max = x;
+			}
+			graphic2D(points, months, 12, max, "months", "created couchs", true);
+
+		}
+		System.out.println(user.getName() + " found "
+				+ cachesFoundInDate.size() + " in last month");
+
+		for (Cache c : cachesFoundInDate) {
+			System.out.println(c.toSimpleListing());
+		}
+
+		if (withGraph) {
+			ArrayList<Integer> points = new ArrayList<Integer>();
+			ArrayList<String> months = new ArrayList<String>();
+			months.add("Jan");
+			months.add("Feb");
+			months.add("Mar");
+			months.add("Apr");
+			months.add("May");
+			months.add("Jun");
+			months.add("Jul");
+			months.add("Aug");
+			months.add("Sep");
+			months.add("Oct");
+			months.add("Nov");
+			months.add("Dec");
+			for (Cache c : cachesFoundInDate) {
+				int toSum = points.get(c.getCreationDate().get(
+						GregorianCalendar.MONTH));
+				points.add(c.getCreationDate().get(GregorianCalendar.MONTH),
+						toSum + 1);
+			}
+			for (int x : points) {
+				if (x > max)
+					max = x;
+			}
+			graphic2D(points, months, 12, max, "months", "found couchs", true);
+
+		}
+
 	}
 }

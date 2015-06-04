@@ -23,4 +23,13 @@ public class Utilities {
 		sb.append(emailDomain);
 		return sb.toString();
 	}
+
+	public static String firstLetterCapital(String continent) {
+		String res = "";
+		if (continent != null && continent.length() > 0) {
+			res = Character.toUpperCase(continent.charAt(0)) + "";
+			res = res + continent.substring(1, continent.length());
+		}
+		return res;
+	}
 }
