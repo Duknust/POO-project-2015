@@ -1,11 +1,10 @@
 package caches;
 
+import base.Data;
 import base.GeoTools;
 import base.Position;
-
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-
 import user.UserAbstract;
 
 public class Event extends Cache {
@@ -23,10 +22,10 @@ public class Event extends Cache {
     int maxParticipants;
 
     // Constructors
-    public Event(GregorianCalendar creationDate, GregorianCalendar dateEndApp, GregorianCalendar dateEvent, String cacheTitle, String description, Position position, int maxParticipants, UserAbstract owner, HashMap<String, Cache> caches) {
-        super(creationDate, description, cacheTitle, position, owner);
-        this.participants = new HashMap<String,UserAbstract>();
-        this.points = new HashMap<String,Integer>();
+    public Event(GregorianCalendar creationDate, GregorianCalendar dateEndApp, GregorianCalendar dateEvent, String cacheTitle, String description, Position position, int maxParticipants, UserAbstract owner, HashMap<String, Cache> caches, Data data) {
+        super(creationDate, description, cacheTitle, position, owner, data);
+        this.participants = new HashMap<String, UserAbstract>();
+        this.points = new HashMap<String, Integer>();
         this.maxParticipants = maxParticipants;
         this.caches = caches;
         this.dateEndAplications = dateEndApp;
@@ -41,123 +40,126 @@ public class Event extends Cache {
     public void setParticipants(HashMap<String, UserAbstract> participants) {
         this.participants = participants;
     }
-    
-    public void setDateEvent(GregorianCalendar date){
-    	this.dateEvent = date;
+
+    public void setDateEvent(GregorianCalendar date) {
+        this.dateEvent = date;
     }
-    
-    public GregorianCalendar getDateEvent(){
-    	return this.dateEvent;
+
+    public GregorianCalendar getDateEvent() {
+        return this.dateEvent;
     }
-    
-    public void setDateEndApplications(GregorianCalendar date){
-    	this.dateEndAplications = date;
+
+    public void setDateEndApplications(GregorianCalendar date) {
+        this.dateEndAplications = date;
     }
-    
-    public GregorianCalendar getDateEndApplications(){
-    	return this.dateEndAplications;
+
+    public GregorianCalendar getDateEndApplications() {
+        return this.dateEndAplications;
     }
-    
-    public void setMaxP(int  max){
-    	this.maxParticipants = max;
+
+    public void setMaxP(int max) {
+        this.maxParticipants = max;
     }
-    
-    public int getMaxP(){
-    	return this.maxParticipants;
+
+    public int getMaxP() {
+        return this.maxParticipants;
     }
-    
-    public int getPointsByUser(UserAbstract user){
-    	return  points.get(user.getEmail());
+
+    public int getPointsByUser(UserAbstract user) {
+        return points.get(user.getEmail());
     }
-    
-    public HashMap<String,Cache> getCaches(){
-    	return this.caches;
+
+    public HashMap<String, Cache> getCaches() {
+        return this.caches;
     }
-    
 
     // Methods
     public boolean addParticipant(UserAbstract user) {
-    	if(this.participants.containsKey(user.getEmail()))
-    		return false;
-    		
+        if (this.participants.containsKey(user.getEmail())) {
+            return false;
+        }
+
         this.participants.put(user.getEmail(), user);
         this.points.put(user.getEmail(), 0);
-    	return true;
+        return true;
     }
 
     public boolean remParticipant(UserAbstract user) {
-    	if(!this.participants.containsKey(user.getEmail()))
-    		return false;
-    	
+        if (!this.participants.containsKey(user.getEmail())) {
+            return false;
+        }
+
         this.participants.remove(user.getEmail());
         this.points.remove(user.getEmail());
         return true;
     }
-    
-    public boolean checkParticipation(UserAbstract user){
-    	for(UserAbstract u: this.participants.values())
-    		if(user.equals(u))
-    			return true;
-    	return false;
+
+    public boolean checkParticipation(UserAbstract user) {
+        for (UserAbstract u : this.participants.values()) {
+            if (user.equals(u)) {
+                return true;
+            }
+        }
+        return false;
     }
-    
-    public int getNRegistrations(){
-    	return this.participants.size();
+
+    public int getNRegistrations() {
+        return this.participants.size();
     }
-    
+
     public boolean addCache(Cache cache) {
-    	if(this.caches.containsKey(cache.getCacheID()))
-    		return false;
-    		
+        if (this.caches.containsKey(cache.getCacheID())) {
+            return false;
+        }
+
         this.caches.put(cache.getCacheID(), cache);
-    	return true;
+        return true;
     }
 
     public boolean remCache(String cacheID) {
-    	if(!this.caches.containsKey(cacheID))
-    		return false;
-    	
+        if (!this.caches.containsKey(cacheID)) {
+            return false;
+        }
+
         this.caches.remove(cacheID);
         return true;
     }
-    
-    
-    public float timeToFind(UserAbstract user, Cache cache){
-    	
-    	//Base time
-    	float dist, time = 10; 
-    	int aux;
-    	
-    	
-    	//Specialized in the type    	
-    	aux = user.nFindFromType(cache.getType());
-    	if(aux<7) //He is new in the type
-    		time += 20;
-    	else if(aux < 15) //Some experience
-    		time += 15;
-    	else	//An expert
-    		time += 10;
-    	
-    	
-    	//Distance
-    	GeoTools calcD = new GeoTools();
-    	dist = (float)calcD.calcDistance(this.getPosition(), cache.getPosition());
-    	if(aux<7) //Near of base local
-    		time += 10;
-    	else if(aux < 15) //Medium 
-    		time += 15;
-    	else	//Far from base local
-    		time += 20;
-    	
-    	
-    	
-    	
-    	return time;
-    }
-    
-    
-    
 
+    public float timeToFind(UserAbstract user, Cache cache) {
+
+        //Base time
+        float dist, time = 10;
+        int aux;
+
+        //Specialized in the type
+        aux = user.nFindFromType(cache.getType());
+        if (aux < 7) //He is new in the type
+        {
+            time += 20;
+        } else if (aux < 15) //Some experience
+        {
+            time += 15;
+        } else //An expert
+        {
+            time += 10;
+        }
+
+        //Distance
+        GeoTools calcD = new GeoTools();
+        dist = (float) calcD.calcDistance(this.getPosition(), cache.getPosition());
+        if (aux < 7) //Near of base local
+        {
+            time += 10;
+        } else if (aux < 15) //Medium
+        {
+            time += 15;
+        } else //Far from base local
+        {
+            time += 20;
+        }
+
+        return time;
+    }
 
     @Override
     public Type getType() {

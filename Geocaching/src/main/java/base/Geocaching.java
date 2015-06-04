@@ -369,8 +369,9 @@ public class Geocaching {
         while (choice == -1) {
             System.out.println("####### My Profile #######\n");
             System.out.println(userOnline.toStringTotal() + "\n");
-            System.out.println("-- [1] Edit Profile");
-            System.out.println("-- [2] Premium Membership");
+            System.out.println("-- [1] Activities");
+            System.out.println("-- [2] Edit Profile");
+            System.out.println("-- [3] Premium Membership");
             System.out.println("-----");
             System.out.println("-- [0] Back");
             System.out.print("?> ");
@@ -384,11 +385,17 @@ public class Geocaching {
             switch (choice) {
                 case 1:
                     clearConsole();
-                    mEditProfile();
+                    mActivities((User) userOnline);
                     choice = -1;
                     clearConsole();
                     break;
                 case 2:
+                    clearConsole();
+                    mEditProfile();
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 3:
                     clearConsole();
                     mPremium();
                     choice = -1;
@@ -703,6 +710,13 @@ public class Geocaching {
 
     // ------------------- FRIENDS MENU ------------------
     private static void mViewUser(User user) {
+
+        // If the user is the Online User than go to Profile for more complete info
+        if (user.equals(userOnline)) {
+            mProfile();
+            return;
+        }
+
         int choice = -1;
         boolean friend = false;
         while (choice == -1) {
@@ -746,7 +760,7 @@ public class Geocaching {
                     break;
                 case 2:
                     clearConsole();
-                    mViewActivities(user);
+                    mActivities(user);
                     choice = -1;
                     clearConsole();
                     break;
@@ -1779,8 +1793,222 @@ public class Geocaching {
     }
 
 // ------------------- ACTIVITIES MENU ------------------
-    private static void mViewActivities(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private static void mActivities(User user) {
+        int choice = -1;
+
+        //arrayActivities.sort(data.compareCachePubDate());
+        while (choice == -1) {
+            ArrayList<Activity> arrayActivities = data.getActivitiesFriendsArray(user, 10);
+            String format = "\t[ %" + (arrayActivities.size() + "").length() + "d ] ";
+
+            System.out.println("####### " + user.getName() + " and Friends' Activities Timeline #######\n");
+
+            for (int i = 0; i < arrayActivities.size(); i++)// For each Cache
+            {
+                Activity c = arrayActivities.get(i);
+                System.out.format(format + c.toString() + "\n", i + 1);
+            }
+            System.out.println("\n-- [X] View Activity");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                default:
+                    if (choice > 0 && choice <= arrayActivities.size()) {
+                        clearConsole();
+                        mViewActivity(arrayActivities.get(choice - 1));
+                        clearConsole();
+                    } else {
+                        System.out.println("Error: Invalid Option");
+                        pressAnyKeyToContinue();
+                        clearConsole();
+                    }
+                    choice = -1;
+                    break;
+            }
+        }
+    }
+
+    private static void mViewActivity(Activity act) {
+        int choice = -1;
+        boolean delete = false;
+
+        while (choice == -1) {
+            System.out.println("####### Activity Details #######\n");
+            System.out.println(act.toString());
+
+            switch (act.getType()) {
+                case ARCHIVED_CACHE:
+                case DISABLED_CACHE:
+                case ENABLED_CACHE:
+                case NEW_CACHE:
+                    System.out.println("-- [1] View Cache");
+                    System.out.println("-- [2] View Owner");
+                    break;
+
+                case FOUND_CACHE:
+                case NOT_FOUND_CACHE:
+                case UPDATED_LOG_TYPE:
+                    System.out.println("-- [1] View Cache");
+                    System.out.println("-- [2] View User");
+                    System.out.println("-- [3] View Log");
+                    break;
+                case FRIENDS_WITH:
+                case NOT_FRIENDS_WITH:
+                    System.out.println("-- [1] View " + act.getUser1().getName() + "'s Profile");
+                    System.out.println("-- [2] View " + act.getUser2().getName() + "'s Profile");
+                    break;
+            }
+            System.out.println("-----");
+            if (act.getUser1().equals(userOnline)) { // If is about him, he can delete it
+                System.out.println("-- [9] Delete");
+                delete = true;
+            }
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (act.getType()) {
+                case ARCHIVED_CACHE:
+                case DISABLED_CACHE:
+                case ENABLED_CACHE:
+                case NEW_CACHE:
+                    switch (choice) {
+                        case 1:
+                            clearConsole();
+                            mViewCache(act.getCache());
+                            clearConsole();
+                            choice = -1;
+                            break;
+                        case 2:
+                            clearConsole();
+                            mViewUser((User) act.getCache().getOwner());
+                            clearConsole();
+                            choice = -1;
+                            break;
+                        case 9:
+                            if (delete) {
+                                data.allActivities.remove(act.getDate());
+                                System.out.println("Activity successfully deleted!");
+                                pressAnyKeyToContinue();
+                                clearConsole();
+                                choice = 0;
+                            } else {
+                                System.out.println("Error: Option not available");
+                                choice = -1;
+                            }
+
+                            break;
+                        case 0:
+                            break;
+                        default:
+                            System.out.println("Error: Option not available");
+                            choice = -1;
+                            break;
+                    }
+                case FOUND_CACHE:
+                case NOT_FOUND_CACHE:
+                case UPDATED_LOG_TYPE:
+                    switch (choice) {
+                        case 1:
+                            clearConsole();
+                            mViewCache(act.getCache());
+                            clearConsole();
+                            choice = -1;
+                            break;
+                        case 2:
+                            clearConsole();
+                            mViewUser((User) act.getUser1());
+                            clearConsole();
+                            choice = -1;
+                            break;
+                        case 3:
+                            clearConsole();
+                            mViewLog(act.getLog(), act.getCache());
+                            clearConsole();
+                            choice = -1;
+                            break;
+                        case 9:
+                            if (delete) {
+                                data.allActivities.remove(act.getDate());
+                                System.out.println("Activity successfully deleted!");
+                                pressAnyKeyToContinue();
+                                clearConsole();
+                                choice = 0;
+                            } else {
+                                System.out.println("Error: Option not available");
+                                pressAnyKeyToContinue();
+                                clearConsole();
+                                choice = -1;
+                            }
+                            break;
+                        case 0:
+                            break;
+                        default:
+                            System.out.println("Error: Option not available");
+                            pressAnyKeyToContinue();
+                            choice = -1;
+                            break;
+                    }
+                    break;
+                case FRIENDS_WITH:
+                case NOT_FRIENDS_WITH:
+                    switch (choice) {
+                        case 1:
+                            clearConsole();
+                            mViewUser((User) act.getUser1());
+                            clearConsole();
+                            choice = -1;
+                            break;
+                        case 2:
+                            clearConsole();
+                            mViewUser((User) act.getUser2());
+                            clearConsole();
+                            choice = -1;
+                            break;
+                        case 9:
+                            if (delete) {
+                                data.allActivities.remove(act.getDate());
+                                System.out.println("Activity successfully deleted!");
+                                pressAnyKeyToContinue();
+                                clearConsole();
+                                choice = 0;
+                            } else {
+                                System.out.println("Error: Option not available");
+                                pressAnyKeyToContinue();
+                                clearConsole();
+                                choice = -1;
+                            }
+                            break;
+                        case 0:
+                            break;
+                        default:
+                            System.out.println("Error: Option not available");
+                            pressAnyKeyToContinue();
+                            clearConsole();
+                            choice = -1;
+                            break;
+                    }
+                    break;
+            }
+
+        }
     }
 
     // ------------------- EVENTS MENU ------------------
@@ -2331,7 +2559,7 @@ public class Geocaching {
         pos = mInputPosition(true);
 
         HashMap<String, Cache> caches = data.getByPosition(pos, 5);
-        Event event = new Event(new GregorianCalendar(), dateEndApplications, dateEvent, name, description, pos, maxP, userOnline, caches);
+        Event event = new Event(new GregorianCalendar(), dateEndApplications, dateEvent, name, description, pos, maxP, userOnline, caches, data);
 
     }
 
@@ -2426,14 +2654,15 @@ public class Geocaching {
         Position p1 = CountriesData.portugal;
         Position p2 = new Position(41.57238, -8.47875, 1.5f);
 
-        Traditional tc1 = new Traditional(new GregorianCalendar(2015, 06, 24, 11, 11, 11), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), new ArrayList<String>());
-        Traditional tc2 = new Traditional(new GregorianCalendar(2015, 06, 19, 9, 12, 47), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new ArrayList<String>());
-        Mystery mc1 = new Mystery(new GregorianCalendar(2015, 06, 25, 2, 3, 4), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new Position(1.1f, 2.2f), "YOU SOLVED IT!");
+        Traditional tc1 = new Traditional(new GregorianCalendar(2015, 06, 24, 11, 11, 11), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), new ArrayList<String>(), newData);
+        Traditional tc2 = new Traditional(new GregorianCalendar(2015, 06, 19, 9, 12, 47), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new ArrayList<String>(), newData);
+        Traditional tc3 = new Traditional(new GregorianCalendar(2015, 06, 17, 2, 12, 47), "more info", "Gualtar - A Primeira", 4, 1.0f, p2, "magnetic", new TreeSet<Log>(), new ArrayList<String>(), newData);
+        Mystery mc1 = new Mystery(new GregorianCalendar(2015, 06, 25, 2, 3, 4), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new Position(1.1f, 2.2f), "YOU SOLVED IT!", newData);
 
-        Event e1 = new Event(new GregorianCalendar(), new GregorianCalendar(2015, 6, 2), new GregorianCalendar(2015, 6, 4), "Evento All Star", "Está tudo a brilhar", new Position(42, 51), 5, u1, new HashMap<String, Cache>());
-        Event e2 = new Event(new GregorianCalendar(2015, 5, 2), new GregorianCalendar(2015, 5, 5), new GregorianCalendar(2015, 5, 31), "Evento Joker", "Um grande sorriso!!", new Position(82, 321), 5, u2, new HashMap<String, Cache>());
-        Event e3 = new Event(new GregorianCalendar(2015, 5, 4), new GregorianCalendar(2015, 4, 30), new GregorianCalendar(2015, 5, 31), "Evento Mais Bonito", "Um grandhe sorriso!!", new Position(282, 322), 5, u3, new HashMap<String, Cache>());
-        Event e4 = new Event(new GregorianCalendar(2015, 5, 4), new GregorianCalendar(2015, 3, 30), new GregorianCalendar(2015, 4, 31), "Evento de Hoje", "Tudo a jogar!!", new Position(82, 32), 5, u1, new HashMap<String, Cache>());
+        Event e1 = new Event(new GregorianCalendar(), new GregorianCalendar(2015, 6, 2), new GregorianCalendar(2015, 6, 4), "Evento All Star", "Está tudo a brilhar", new Position(42, 51), 5, u1, new HashMap<String, Cache>(), newData);
+        Event e2 = new Event(new GregorianCalendar(2015, 5, 2), new GregorianCalendar(2015, 5, 5), new GregorianCalendar(2015, 5, 31), "Evento Joker", "Um grande sorriso!!", new Position(82, 321), 5, u2, new HashMap<String, Cache>(), newData);
+        Event e3 = new Event(new GregorianCalendar(2015, 5, 4), new GregorianCalendar(2015, 4, 30), new GregorianCalendar(2015, 5, 31), "Evento Mais Bonito", "Um grandhe sorriso!!", new Position(282, 322), 5, u3, new HashMap<String, Cache>(), newData);
+        Event e4 = new Event(new GregorianCalendar(2015, 5, 4), new GregorianCalendar(2015, 3, 30), new GregorianCalendar(2015, 4, 31), "Evento de Hoje", "Tudo a jogar!!", new Position(82, 32), 5, u1, new HashMap<String, Cache>(), newData);
 
         e1.addCache(tc1);
         e1.addCache(tc2);
@@ -2447,32 +2676,42 @@ public class Geocaching {
         u1.createCache(tc1);
         u2.createCache(tc2);
         u1.createCache(mc1);
+        u3.createCache(tc3);
 
         r1.giveMeCache(tc1);
         r1.giveMeCache(tc2);
         r1.giveMeCache(mc1);
+        r1.giveMeCache(tc3);
 
         r1.publishCache(tc1);
         r1.publishCache(tc2);
         r1.publishCache(mc1);
+        r1.publishCache(tc3);
 
-        tc1.setPublishDate(new GregorianCalendar(2015, 06, 24, 11, 22, 9));
-        tc1.setPublishDate(new GregorianCalendar(2015, 06, 20, 1, 2, 8));
-        tc1.setPublishDate(new GregorianCalendar(2015, 06, 26, 23, 34, 17));
+        // Force different days for sorting
+        tc1.setPublishDate(new GregorianCalendar(2015, 05, 24, 11, 22, 9));
+        tc2.setPublishDate(new GregorianCalendar(2015, 06, 1, 1, 2, 8));
+        tc3.setPublishDate(new GregorianCalendar(2015, 06, 2, 23, 34, 17));
+        mc1.setPublishDate(new GregorianCalendar(2015, 06, 4, 10, 3, 01));
 
         Log log1 = new Log("FTF!", new GregorianCalendar(2015, 06, 26, 21, 00, 00), Log.Log_Type.FOUND_IT);
         Log log2 = new Log("STF!", new GregorianCalendar(2015, 06, 26, 21, 11, 22), Log.Log_Type.FOUND_IT);
         Log log3 = new Log("Found it, easy!", new GregorianCalendar(2015, 06, 19, 21, 05, 00), Log.Log_Type.FOUND_IT);
         Log log4 = new Log("Just remove the top", new GregorianCalendar(2015, 06, 21, 10, 23, 47), Log.Log_Type.FOUND_IT);
-        Log log5 = new Log("Hard to solve tge Enigma but easier to find the cache", new GregorianCalendar(2015, 06, 25, 10, 23, 47), Log.Log_Type.FOUND_IT);
+        Log log5 = new Log("Hard to solve the Enigma but easier to find the cache", new GregorianCalendar(2015, 06, 25, 10, 23, 47), Log.Log_Type.FOUND_IT);
+        Log log6 = new Log("Not there", new GregorianCalendar(2015, 06, 25, 10, 23, 47), Log.Log_Type.DNF);
+        Log log7 = new Log("Damn that was easy!", new GregorianCalendar(2015, 06, 4, 12, 22, 58), Log.Log_Type.FOUND_IT);
 
         Log note1 = new Log("Watch out for muggles!", new GregorianCalendar(2015, 06, 26, 21, 00, 00), Log.Log_Type.NOTE);
+
         tc1.logCache(u2, log1);
         tc1.logCache(u1, note1);
         tc1.logCache(u3, log2);
         tc2.logCache(u4, log3);
         tc2.logCache(u1, log4);
         mc1.logCache(u2, log5);
+        mc1.logCache(u1, log6);
+        tc3.logCache(u1, log7);
 
         u1.newFriendship(u2);
         u2.newFriendship(u3);

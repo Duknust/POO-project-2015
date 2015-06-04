@@ -3,17 +3,14 @@ package base;
 import activity.Activity;
 import caches.Cache;
 import caches.Event;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
 import user.User;
 import user.UserAbstract;
 
@@ -23,7 +20,7 @@ public class Data implements Serializable {
     HashMap<String, Cache> disabledCaches = null;
     HashMap<String, Cache> unpublishedCaches = null;
     HashMap<String, Cache> archivedCaches = null;
-    
+
     HashMap<String, Event> enabledEvents = null;
     HashMap<String, Event> pastEvents = null;
 
@@ -38,9 +35,9 @@ public class Data implements Serializable {
         unpublishedCaches = new HashMap<>();
         archivedCaches = new HashMap<>();
         allUsers = new HashMap<>();
-        allActivities = new TreeMap<>();
+        allActivities = new TreeMap<>(new ComparatorActivity());
         allPositions = new TreeMap<>();
-        
+
         enabledEvents = new HashMap<String, Event>();
         pastEvents = new HashMap<String, Event>();
     }
@@ -49,11 +46,11 @@ public class Data implements Serializable {
     public HashMap<String, Event> getEnabledEvents() {
         return enabledEvents;
     }
-    
+
     public HashMap<String, Event> getPastEvents() {
         return pastEvents;
     }
-    
+
     public HashMap<String, Cache> getEnabledCaches() {
         return enabledCaches;
     }
@@ -133,6 +130,10 @@ public class Data implements Serializable {
     }
 
     public void addActivity(Activity act) {
+        while (this.allActivities.containsKey(act.getDate()) == true) {
+            act.incMs();
+        }
+
         this.allActivities.put(act.getDate(), act);
     }
 
@@ -173,8 +174,7 @@ public class Data implements Serializable {
             }
         };
     }
-    
-    
+
     public Comparator<Event> compareEventAppDate() {
         return new Comparator<Event>() {
             public int compare(Event o1, Event o2) {
@@ -182,7 +182,7 @@ public class Data implements Serializable {
             }
         };
     }
-    
+
     public Comparator<Event> compareEventDate() {
         return new Comparator<Event>() {
             public int compare(Event o1, Event o2) {
@@ -190,47 +190,101 @@ public class Data implements Serializable {
             }
         };
     }
-    
-    
-    
 
-    public HashMap<String, Cache> getByPosition(Position p, int nCaches){
-    	
-    	double dist[] = new double[nCaches];
-    	Cache auxCache, caches[] = new Cache[nCaches];
-    	GeoTools geo = new GeoTools();
-    	double auxDist, aux;
-    	int i, added=0;
+    public HashMap<String, Cache> getByPosition(Position p, int nCaches) {
 
-    	for(Cache c: this.enabledCaches.values()){
-    		auxDist = geo.calcDistance(p, c.getPosition());
-    		i=0;
-    		
-    		while(i<added){
-    			if(auxDist > dist[i]) break;
-    			i++;
-    		}
-    		
-    		if(i<nCaches){
-    			while(i<nCaches){
-    				aux = dist[i];
-    				dist[i] = auxDist;
-    				auxDist = aux;
-    				
-    				auxCache = caches[i];
-    				caches[i] = c;
-    				c = auxCache;
-    				
-    				i++;
-    			}
-    			if(added < nCaches) added++;
-    		}
-    	}
-    	
-    	HashMap<String, Cache> inHash = new HashMap<String, Cache>();
-    	for(i=0; i<added; i++)
-    		inHash.put(caches[i].getCacheID(), caches[i]);
-    	
-    	return inHash;
+        double dist[] = new double[nCaches];
+        Cache auxCache, caches[] = new Cache[nCaches];
+        GeoTools geo = new GeoTools();
+        double auxDist, aux;
+        int i, added = 0;
+
+        for (Cache c : this.enabledCaches.values()) {
+            auxDist = geo.calcDistance(p, c.getPosition());
+            i = 0;
+
+            while (i < added) {
+                if (auxDist > dist[i]) {
+                    break;
+                }
+                i++;
+            }
+
+            if (i < nCaches) {
+                while (i < nCaches) {
+                    aux = dist[i];
+                    dist[i] = auxDist;
+                    auxDist = aux;
+
+                    auxCache = caches[i];
+                    caches[i] = c;
+                    c = auxCache;
+
+                    i++;
+                }
+                if (added < nCaches) {
+                    added++;
+                }
+            }
+        }
+
+        HashMap<String, Cache> inHash = new HashMap<String, Cache>();
+        for (i = 0; i < added; i++) {
+            inHash.put(caches[i].getCacheID(), caches[i]);
+        }
+
+        return inHash;
+    }
+
+    ArrayList<Activity> getActivitiesArray(UserAbstract user, int total) {
+        int i = 0;
+        ArrayList<Activity> array = new ArrayList<Activity>();
+
+        for (Activity c : this.getAllActivities().values()) {
+            if (c.about(user)) {
+                array.add(c);
+                i++;
+                if (i >= total) {
+                    break;
+                }
+            }
+        }
+        return array;
+    }
+
+    // Timeline with myself
+    ArrayList<Activity> getActivitiesFriendsArray(User user, int total) {
+        int i = 0;
+        ArrayList<Activity> array = new ArrayList<>();
+        ArrayList<User> userlist = user.getFriendsArray();
+        userlist.add(user); // add the user to the list
+        for (Activity c : this.getAllActivities().values()) {
+            for (User f : userlist) {
+                if (c.about(f)) {
+                    if (array.contains(c) == false) { // Check Duplicates like 'friends with'
+                        array.add(c);
+                        i++;
+                        if (i >= total) {
+                            return array;
+                        }
+                    }
+                }
+            }
+        }
+        return array;
+    }
+
+    // Has to be a class in order to be serializable with TreeMap
+    private class ComparatorActivity implements Serializable, Comparator<GregorianCalendar> {
+
+        @Override
+        public int compare(GregorianCalendar a1, GregorianCalendar a2) {
+            if (a1.before(a2)) {
+                return 1;
+            } else if (a1.after(a2)) {
+                return -1;
+            }
+            return 0;
+        }
     }
 }
