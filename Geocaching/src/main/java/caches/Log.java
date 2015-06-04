@@ -47,7 +47,7 @@ public class Log implements Comparable, Serializable {
                 case ENABLED: // Automatic Log
                     return "Enabled Listing";
                 default:
-                    throw new IllegalArgumentException();
+                    return "";
             }
         }
     }
@@ -99,6 +99,10 @@ public class Log implements Comparable, Serializable {
 
     public Log_Type getLogType() {
         return logType;
+    }
+
+    public void setLogType(Log_Type logType) {
+        this.logType = logType;
     }
 
     // toString

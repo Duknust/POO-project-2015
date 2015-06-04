@@ -1,11 +1,13 @@
 package base;
 
+import activity.Activity;
 import caches.Cache;
 import caches.Event;
 import caches.Log;
+import caches.Log.Log_Type;
 import caches.Mystery;
 import caches.Traditional;
-
+import dataCreation.CountriesData;
 import java.io.BufferedReader;
 import java.io.Console;
 import java.io.FileInputStream;
@@ -20,17 +22,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.SortedSet;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import user.Admin;
 import user.Reviewer;
 import user.User;
@@ -44,9 +43,8 @@ public class Geocaching {
 
     public static void main(String[] args) {
 
-        data = getData();
-
-        populateData(data); // Use Pre-Made Database _ Atention, use with caution ! ---------------------------------------------
+        data = startData();
+        data = populateData(); // Use Pre-Made Database _ Atention, use with caution ! ---------------------------------------------
         showLogo();
 
         System.out.println("----------------------------------------------");
@@ -449,63 +447,6 @@ public class Geocaching {
         }
     }
 
-    private static void mCaches() {
-        int choice = -1;
-        while (choice == -1) { // REVIEWER IFS MISSING
-            System.out.println("####### Caches Menu #######\n");
-            System.out.println("-- [1] Search Caches");
-            System.out.println("-- [2] Create a Cache");
-            System.out.println("-- [3] View Found Caches");
-            System.out.println("-- [4] View Owned Caches");
-            System.out.println("-----");
-            System.out.println("-- [0] Back");
-            System.out.print("?> ");
-            try {
-                choice = Integer.parseInt(input.readLine());
-            } catch (Exception ex) {
-                //System.out.println("Error: Invalid Option");
-                choice = -1;
-            }
-
-            switch (choice) {
-                case 1:
-                    clearConsole();
-                    mSearchCaches();
-                    choice = -1;
-                    clearConsole();
-                    break;
-                case 2:
-                    clearConsole();
-                    mCreateCache();
-                    choice = -1;
-                    clearConsole();
-                    break;
-                case 3:
-                    clearConsole();
-                    mViewFoundCaches((User) userOnline);
-                    choice = -1;
-                    clearConsole();
-                    break;
-                case 4:
-                    clearConsole();
-                    mViewOwnedCaches((User) userOnline);
-                    choice = -1;
-                    clearConsole();
-                    break;
-                case 0:
-                    break;
-                default:
-                    System.out.println("Error: Option not available");
-                    choice = -1;
-                    break;
-            }
-        }
-    }
-
-    private static void mStats() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     private static void mPremium() {
         int choice = -1;
         while (choice == -1) {
@@ -546,7 +487,218 @@ public class Geocaching {
     }
 
     private static void mEditProfile() {
+        int choice = -1;
+        boolean edited;
+        while (choice == -1) {
+            System.out.println("####### Edit Profile #######\n");
+            System.out.println(userOnline.toStringTotal() + "\n");
+            System.out.println("---- I want to edit :");
+            System.out.println("-- [1] Name");
+            System.out.println("-- [2] Gender");
+            System.out.println("-- [3] Address");
+            System.out.println("-- [4] Birth Date");
+            System.out.println("-- [5] Password");
+            System.out.println("-----");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+            edited = false;
+            String text = null;
+            switch (choice) {
+                case 1:
+                    text = null;
+                    edited = false;
+                    while (edited == false) {
+                        System.out.println("\n\n- Type the new Name:");
+                        System.out.print("?> ");
+                        try {
+                            text = input.readLine();
+                        } catch (Exception ex) {
+                            //System.out.println("Error: Invalid Option");
+                            text = null;
+                        }
+                        if (text != null) {
+                            userOnline.setName(text);
+                            System.out.println("User's Name edited successfully!");
+                            pressAnyKeyToContinue();
+                            edited = true;
+                        } else {
+                            System.out.println("ERROR: Please type again.");
+                            pressAnyKeyToContinue();
+                        }
+                    }
+                    clearConsole();
 
+                    choice = -1;
+                    break;
+                case 2:
+                    int cgender = 0;
+                    edited = false;
+                    while (cgender == 0) {
+                        System.out.println("\n\n- Choose the new Gender:");
+                        System.out.println("-- [1] Male");
+                        System.out.println("-- [2] Female");
+                        System.out.print("?> ");
+                        try {
+                            cgender = Integer.parseInt(input.readLine());
+                        } catch (Exception ex) {
+                            //System.out.println("Error: Invalid Option");
+                            cgender = 0;
+                        }
+                        if (cgender == 1 || cgender == 2) {
+                            if (cgender == 1) {
+                                userOnline.setGender("Male");
+                            } else {
+                                userOnline.setGender("Female");
+                            }
+                            System.out.println("User's Gender edited successfully!");
+                            pressAnyKeyToContinue();
+                            edited = true;
+                        } else {
+                            System.out.println("ERROR: Please type again.");
+                            pressAnyKeyToContinue();
+                        }
+                    }
+                    clearConsole();
+                    choice = -1;
+                    break;
+                case 3:
+                    text = null;
+                    edited = false;
+                    while (edited == false) {
+                        System.out.println("\n\n- Type the new Address:");
+                        System.out.print("?> ");
+                        try {
+                            text = input.readLine();
+                        } catch (Exception ex) {
+                            //System.out.println("Error: Invalid Option");
+                            text = null;
+                        }
+                        if (text != null) {
+                            userOnline.setAddress(text);
+                            System.out.println("User's Address edited successfully!");
+                            pressAnyKeyToContinue();
+                            edited = true;
+                        } else {
+                            System.out.println("ERROR: Please type again.");
+                            pressAnyKeyToContinue();
+                        }
+                    }
+                    clearConsole();
+
+                    choice = -1;
+                    break;
+                case 4:
+                    text = null;
+                    edited = false;
+                    String bdate = null;
+                    GregorianCalendar gcDate = new GregorianCalendar();
+                    while (edited == false) {
+                        System.out.println("\n\n- Type the new Birth Date:");
+                        System.out.print("?> ");
+                        try {
+                            bdate = input.readLine();
+                        } catch (Exception ex) {
+                            Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                        Date startDate;
+                        try {
+                            startDate = df.parse(bdate);
+                            gcDate.setTime(startDate);
+                            userOnline.setBirthDate(gcDate);
+                            System.out.println("User's Birth Date edited successfully!");
+                            edited = true;
+                        } catch (ParseException ex) {
+                            System.out.println("Error with the Date Format, please use dd/MM/yyyy");
+                        }
+
+                    }
+                    clearConsole();
+
+                    choice = -1;
+                    break;
+                case 5:
+                    text = null;
+                    String password = null;
+                    edited = false;
+                    boolean pwok = false;
+                    while (edited == false) {
+
+                        while (pwok == false) {
+                            System.out.println("\n\n- Type the current Password:");
+                            System.out.print("?> ");
+                            Console console = System.console();
+                            if (console == null) {
+                                try {
+                                    text = input.readLine();
+                                } catch (Exception ex) {
+                                    Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            } else {
+                                text = new String(console.readPassword()); // No echo
+                            }
+                            pwok = userOnline.checkPassword(text);
+                            if (pwok == false) {
+                                System.out.println("Error: Password is wrong!");
+                            }
+
+                        }
+
+                        System.out.println("\n- Type the new Password:");
+                        System.out.print("?> ");
+                        Console console = System.console();
+                        if (console == null) {
+                            try {
+                                text = input.readLine();
+                            } catch (Exception ex) {
+                                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        } else {
+                            text = new String(console.readPassword()); // No echo
+                        }
+
+                        System.out.println("\n- Repeat the new Password:");
+                        System.out.print("?> ");
+                        if (console == null) {
+                            try {
+                                password = input.readLine();
+                            } catch (Exception ex) {
+                                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        } else {
+                            password = new String(console.readPassword()); // No echo
+                        }
+
+                        if (password.equals(text) == false) {
+                            System.out.println("Error: New Password don't match");
+                        } else if (password.length() < 5) {
+                            System.out.println("Error: Password must have at least 5 characters of length");
+                        } else {
+                            edited = true;
+                            userOnline.setPassword(password);
+                            System.out.println("User's Password edited successfully!");
+                        }
+                        pressAnyKeyToContinue();
+                    }
+                    clearConsole();
+
+                    choice = -1;
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Error: Option not available");
+                    choice = -1;
+                    break;
+            }
+        }
     }
 
     // ------------------- FRIENDS MENU ------------------
@@ -627,6 +779,63 @@ public class Geocaching {
     }
 
     // ------------------- CACHES MENU ------------------
+    private static void mCaches() {
+        int choice = -1;
+        while (choice == -1) { // REVIEWER IFS MISSING
+            System.out.println("####### Caches Menu #######\n");
+            System.out.println("-- [1] Search Caches");
+            System.out.println("-- [2] Create a Cache");
+            System.out.println("-- [3] View Found Caches");
+            System.out.println("-- [4] View Owned Caches");
+            System.out.println("-----");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 1:
+                    clearConsole();
+                    mSearchCaches();
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 2:
+                    clearConsole();
+                    mCreateCache();
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 3:
+                    clearConsole();
+                    mViewFoundCaches((User) userOnline);
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 4:
+                    clearConsole();
+                    mViewOwnedCaches((User) userOnline);
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Error: Option not available");
+                    choice = -1;
+                    break;
+            }
+        }
+    }
+
+    private static void mSearchCaches() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     private static void mViewOwnedCaches(User user) {
 
         int choice = -1;
@@ -674,11 +883,11 @@ public class Geocaching {
 
     private static void mViewFoundCaches(User user) {
         int choice = -1;
-        SortedSet<Cache> arrayCaches = data.getCachesFoundFrom(user);
-        String format = "\t[ %" + (arrayCaches.size() + "").length() + "d ] ";
 
         while (choice == -1) {
             int i = 1;
+            SortedSet<Cache> arrayCaches = data.getCachesFoundFrom(user);
+            String format = "\t[ %" + (arrayCaches.size() + "").length() + "d ] ";
             System.out.println("####### " + userOnline.getName() + " Founds #######\n");
 
             System.out.println("\n-- Total Founds: " + arrayCaches.size() + "\n\n");
@@ -733,17 +942,29 @@ public class Geocaching {
         while (choice == -1) {
             boolean user = false, publish = false, archive = false, disable = false, enable = false, edit = false, mystery = false;
             System.out.println("####### " + cache.getCacheTitle() + " #######\n");
-            System.out.println(cache.toListing() + "\n");
-            if (userOnline.getRole() == UserAbstract.Role.USER) { // Only Users can do these actions
-                System.out.println("-- [1] Log your visit");
-                System.out.println("-- [2] View Logs");
-                System.out.println("-- [3] View My Logs");
-                System.out.println("-- [4] View Friends Logs");
-                if (cache.getType() == Cache.Type.MYSTERY) {
-                    System.out.println("-- [5] Check Coordinates");
-                    mystery = true;
+            System.out.println(cache.toListing());
+
+            if (cache.getOwner() != (User) userOnline) {
+                Log_Type logt = cache.getFoundStatus((User) userOnline);
+                if (logt == null) {
+                    System.out.println("- Found Status = None\n");
+                } else {
+                    System.out.println("- Found Status = " + cache.getFoundStatus((User) userOnline) + "\n");
                 }
+            }
+
+            // Only Users can do these actions
+            System.out.println("-- [1] Log your visit");
+            System.out.println("-- [2] View Logs");
+            System.out.println("-- [3] View My Logs");
+            if (userOnline.getRole() == UserAbstract.Role.USER) { // Only User's have Friends
+                System.out.println("-- [4] View Friends Logs");
                 user = true;
+            }
+            System.out.println("-- [5] View Owner");
+            if (cache.getType() == Cache.Type.MYSTERY) {
+                System.out.println("-- [6] Check Enigma Coordinates");
+                mystery = true;
             }
 
             if (userOnline.equals(cache.getOwner()) || userOnline.equals(cache.getReviewer())) { // Only Owner or Reviewer can see this menu
@@ -753,26 +974,26 @@ public class Geocaching {
 
                     case UNPUBLISHED:
                         if (userOnline.equals(cache.getReviewer())) {
-                            System.out.println("-- [6] Publish");
+                            System.out.println("-- [10] Publish");
                             publish = true;
-                            System.out.println("-- [7] Archive");
+                            System.out.println("-- [11] Archive");
                             archive = true;
-                            System.out.println("-- [8] Disable");
+                            System.out.println("-- [12] Disable");
                             disable = true;
                         }
                         break;
 
                     case DISABLED:
-                        System.out.println("-- [7] Archive");
+                        System.out.println("-- [11] Archive");
                         archive = true;
-                        System.out.println("-- [8] Enable");
+                        System.out.println("-- [12] Enable");
                         enable = true;
                         break;
 
                     case ENABLED:
-                        System.out.println("-- [7] Archive");
+                        System.out.println("-- [11] Archive");
                         archive = true;
-                        System.out.println("-- [8] Disable");
+                        System.out.println("-- [12] Disable");
                         disable = true;
                         break;
 
@@ -785,7 +1006,7 @@ public class Geocaching {
                         break;
                 }
 
-                System.out.println("-- [9] Edit Cache");
+                System.out.println("-- [13] Edit Cache");
                 edit = true;
             }
 
@@ -801,42 +1022,38 @@ public class Geocaching {
 
             switch (choice) {
                 case 1:
-                    if (user == true) {
-
-                        clearConsole();
-                        mLogCache(cache);
-                    }
+                    clearConsole();
+                    mLogCache(cache);
                     choice = -1;
                     break;
                 case 2:
-                    if (user == true) {
-
-                        clearConsole();
-                        mLogs(cache);
-                        clearConsole();
-                    }
+                    clearConsole();
+                    mLogs(cache);
+                    clearConsole();
                     choice = -1;
                     break;
                 case 3:
-                    if (user == true) {
-                        clearConsole();
-                        HashMap<String, User> userlist = new HashMap<>();
-                        userlist.put(userOnline.getEmail(), (User) userOnline);
-                        mLogs(userlist, cache);
-                        clearConsole();
-                    }
+                    clearConsole();
+                    mLogs((User) userOnline, cache);
+                    clearConsole();
                     choice = -1;
                     break;
                 case 4:
                     if (user == true) {
                         clearConsole();
-                        mLogs(((User) userOnline).getFriends(), cache);
+                        mLogsFriends((User) userOnline, cache);
                         clearConsole();
                     }
                     choice = -1;
                     break;
                 case 5:
-                    if (user == true) {
+                    clearConsole();
+                    mViewUser((User) cache.getOwner());
+                    clearConsole();
+                    choice = -1;
+                    break;
+                case 6:
+                    if (mystery == true) {
                         clearConsole();
                         Position p = mInputPosition(true);
                         if (((Mystery) cache).checkCoord(p)) {
@@ -848,7 +1065,7 @@ public class Geocaching {
                     }
                     choice = -1;
                     break;
-                case 6:
+                case 10:
                     if (publish == true) {
                         clearConsole();
                         ((Reviewer) userOnline).publishCache(cache);
@@ -856,7 +1073,7 @@ public class Geocaching {
                     }
                     choice = -1;
                     break;
-                case 7:
+                case 11:
                     if (archive == true) {
                         clearConsole();
                         ((User) userOnline).archiveCache(cache);
@@ -864,7 +1081,7 @@ public class Geocaching {
                     }
                     choice = -1;
                     break;
-                case 8:
+                case 12:
                     if (disable == true) {
                         clearConsole();
                         ((User) userOnline).disableCache(cache);
@@ -876,7 +1093,7 @@ public class Geocaching {
                     }
                     choice = -1;
                     break;
-                case 9:
+                case 13:
                     if (edit == true) {
                         clearConsole();
                         mEditCache(cache);
@@ -895,30 +1112,171 @@ public class Geocaching {
 
     }
 
-    private static void mLogCache(Cache get) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private static void mLogCache(Cache cache) {
+        int choice = -1;
+        boolean rev = false;
+        Log_Type type;
+        while (choice == -1) {
+
+            System.out.println("####### Log your visit at " + cache.getCacheTitle() + " #######\n");
+
+            // Reviewer
+            if (userOnline.getRole() == UserAbstract.Role.REVIEWER) {
+                System.out.println(" [6] Reviewer Note\n");
+                rev = true;
+            } else {
+                System.out.println(" [1] Found It\n");
+                System.out.println(" [2] DNF\n");
+                System.out.println(" [3] Needs Maintenance\n");
+                System.out.println(" [4] Needs Archiving\n");
+                System.out.println(" [5] Note\n");
+            }
+            System.out.println("-----");
+            System.out.println("-- [0] Back");
+
+            System.out.println("-- Choose the Log Type:");
+            while (choice == -1) {
+                type = null;
+                System.out.print("?> ");
+                try {
+                    choice = Integer.parseInt(input.readLine());
+                } catch (Exception ex) {
+                    //System.out.println("Error: Invalid Option");
+                    choice = -1;
+                }
+
+                if (rev) {
+                    switch (choice) {
+                        case 6:
+                            type = Log_Type.REVIEWER_NOTE;
+                            break;
+                        case 0:
+                            break;
+                        default:
+                            choice = -1;
+                            System.out.println("Error: Invalid Option");
+                            break;
+                    }
+                } else {
+                    switch (choice) {
+                        case 1:
+                            type = Log_Type.FOUND_IT;
+                            break;
+                        case 2:
+                            type = Log_Type.DNF;
+                            break;
+                        case 3:
+                            type = Log_Type.NEEDS_MAINTENANCE;
+                            break;
+                        case 4:
+                            type = Log_Type.NEEDS_ARCHIVING;
+                            break;
+                        case 5:
+                            type = Log_Type.NOTE;
+                            break;
+                        case 0:
+                            break;
+                        default:
+                            choice = -1;
+                            System.out.println("Error: Invalid Option");
+                            break;
+                    }
+                }
+                if (type != null) {
+                    String text = "";
+                    boolean bText = false;
+                    System.out.println("-- Type the Log");
+                    while (bText == false) {
+                        System.out.print("?> ");
+                        try {
+                            text = input.readLine();
+                            bText = true;
+                        } catch (Exception ex) {
+                            System.out.println("Error: Invalid Option");
+                        }
+                        if (text.trim().length() < 1) {
+                            System.out.println("Error: You have to type something!");
+                        }
+                    }
+                    Log newLog = new Log(text, new GregorianCalendar(), type);
+                    cache.logCache((User) userOnline, newLog);
+                    System.out.println("Cache Successfully Logged!");
+                    pressAnyKeyToContinue();
+                    clearConsole();
+                }
+            }
+        }
     }
 
-    private static void mLogs(HashMap<String, User> userlist, Cache cache) {
+    private static void mLogsFriends(User user, Cache cache) {
         int choice = -1;
-        TreeSet<Log> setLogs = cache.getCache_Logs();
+        TreeSet<Log> setLogs = cache.getFriendsLogs(user);
         String format = "  [ %" + (setLogs.size() + "").length() + "d ]";
         while (choice == -1) {
             System.out.println("####### '" + cache.getCacheTitle() + "' - Friend's Logs #######\n");
 
             int i = 1;
-            for (Log log : setLogs)// For each Friend
+            for (Log log : setLogs)// For each Log
             {
-                for (User friend : userlist.values()) {
-                    if (log.getUser().equals(friend)) {
-                        System.out.format(format + "\n" + log.toLogListing() + "\n", i);
-                        i++;
-                    }
-
-                }
+                System.out.format(format + "\n" + log.toLogListing() + "\n", i);
+                i++;
             }
             if (i == 1) {
                 System.out.println("-- There are no Friend's Logs for this cache!");
+            } else {
+                System.out.println("\n-- [X] View Log Details");
+            }
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                default:
+                    if (choice > 0 && choice <= setLogs.size()) {
+                        clearConsole();
+                        Log log = null;
+                        Iterator<Log> iterator = setLogs.iterator();
+                        int count = 0;
+                        while (iterator.hasNext() && count < choice) {
+                            log = iterator.next();
+                            count++;
+                        }
+                        mViewLog(log, cache);
+                        clearConsole();
+                    } else {
+                        System.out.println("Error: Invalid Option");
+                    }
+                    choice = -1;
+                    break;
+            }
+        }
+    }
+
+    private static void mLogs(User user, Cache cache) {
+        int choice = -1;
+        TreeSet<Log> setLogs = cache.getLogs(user);
+        String format = "  [ %" + (setLogs.size() + "").length() + "d ]";
+        while (choice == -1) {
+            System.out.println("####### '" + cache.getCacheTitle() + "' - Logs #######\n");
+
+            int i = 1;
+            for (Log log : setLogs)// For each Log
+            {
+                System.out.format(format + "\n" + log.toLogListing() + "\n", i);
+                i++;
+            }
+            if (i == 1) {
+                System.out.println("-- You have no Logs for this cache!");
             } else {
                 System.out.println("\n-- [X] View Log Details");
             }
@@ -1015,27 +1373,38 @@ public class Geocaching {
         }
     }
 
-    private static void mEditCache(Cache get) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    private static void mViewLog(Log log, Cache cache) {
+        int choice = -1;
+        while (choice == -1) {
+            boolean user = false, delete = false, edit = false;
+            System.out.println("####### " + cache.getCacheTitle() + " #######\n");
+            System.out.println("\n" + log.toLogListing());
 
-    private static void mSearchCaches() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    private static void mCreateCache() {
-    	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.        
-    }
+            System.out.println("-- [1] View User");
 
-    private static void mEvents() {
-    	int choice = -1;
-        while (choice == -1) { // REVIEWER IFS MISSING
-            System.out.println("####### Events Menu #######\n");
-            System.out.println("-- [1] Active Events");
-            System.out.println("-- [2] Happening Events");
-            System.out.println("-- [3] Create a Event");
-            System.out.println("-- [4] View Owned Events");
-            System.out.println("-- [5] View Participated Events");
+            if ((userOnline.equals(cache.getOwner()) && log.getUser().equals(userOnline)) || // If I am the Owner and I made this Log then I can Edit and Delete this Log
+                    log.getUser().equals(userOnline)) {  // OR If I am just the User who made this Log then I can Edit and Delete
+                System.out.println("------- Admin Tools");
+                System.out.println("-- [8] Edit Log");
+                System.out.println("-- [9] Delete Log");
+                edit = true;
+                delete = true;
+                /*} else if (log.getUser().equals(userOnline)) {
+                 System.out.println("------- Admin Tools");
+                 System.out.println("-- [8] Edit Log");
+                 System.out.println("-- [9] Delete Log");
+                 edit = true;*/
+            } else if (userOnline.equals(cache.getReviewer()) || // If I am the Reviewer then I can Edit and Delete this Log
+                    userOnline.equals(cache.getOwner())) { // If I am just the Owner then I can only Delete
+                System.out.println("------- Admin Tools");
+                System.out.println("-- [9] Delete Log");
+                delete = true;
+                /*} else if (userOnline.equals(cache.getOwner())) { // If I am just the Owner then I can only Delete
+                 System.out.println("------- Admin Tools");
+                 System.out.println("-- [9] Delete Log");
+                 edit = true;*/
+            }
+
             System.out.println("-----");
             System.out.println("-- [0] Back");
             System.out.print("?> ");
@@ -1048,33 +1417,36 @@ public class Geocaching {
 
             switch (choice) {
                 case 1:
+
                     clearConsole();
-                    mActiveEvents();
+                    mViewUser((User) log.getUser());
+                    clearConsole();
+
                     choice = -1;
-                    clearConsole();
                     break;
-                case 2:
-                	clearConsole();
-                	mHappeningEvents();
-                	choice = -1;
-                	break;
-                case 3:
-                    clearConsole();
-                    mCreateEvent();
+
+                case 8:
+                    if (edit == true) {
+                        clearConsole();
+                        mEditLog(log, cache);
+                        clearConsole();
+                    }
                     choice = -1;
-                    clearConsole();
                     break;
-                case 4:
-                    clearConsole();
-                    mViewOwedEvents(userOnline);
-                    choice = -1;
-                    clearConsole();
-                    break;
-                case 5:
-                    clearConsole();
-                    mParticipatedEvents(userOnline);
-                    choice = -1;
-                    clearConsole();
+
+                case 9:
+                    if (delete == true) {
+                        clearConsole();
+                        boolean deleted = cache.deleteLog(log);
+                        if (deleted) {
+                            System.out.println("Log was successfully Deleted!");// Go Back
+                        } else {
+                            System.out.println("ERROR: Log wasn't Deleted");
+                            choice = -1; // NOT Go Back
+                        }
+                        pressAnyKeyToContinue();
+                        clearConsole();
+                    }
                     break;
                 case 0:
                     break;
@@ -1085,35 +1457,19 @@ public class Geocaching {
             }
         }
     }
-    
-    private static void mHappeningEvents() {
-    	int choice = -1;
-    	HashMap<String, Event> events = data.getEnabledEvents();
-    	ArrayList<Event> list = new ArrayList<Event>();
-    	Date today = new GregorianCalendar().getTime();
-    	SimpleDateFormat fmt = new SimpleDateFormat("ddMMyyyy");
-    	
-    	
-    	for(Event e: events.values())
-    		if(fmt.format(today).equals(fmt.format(e.getDateEvent().getTime())))
-    			list.add(e);
-    	
+
+    private static void mEditLog(Log log, Cache cache) {
+        int choice = -1;
         while (choice == -1) {
-            int i = 1;
-            System.out.println("####### " + userOnline.getName() + " Founds #######\n");
 
-            System.out.println("\n-- Total Founds: " + list.size() + "\n\n");
-            for (Event e : list)// For each Friend
-            {
-            	Date dt = e.getDateEndApplications().getTime();
-                System.out.format("\t[%d] - %s - %s\n", i, e.getCacheTitle(), dt.toString());
-                i++;
-            }
-            
-            System.out.println("\n-- [X] View Event");
-            System.out.println("-----:");
+            System.out.println("####### Edit " + log.getUser().getName() + "'s Log #######\n");
+            System.out.println("\n" + log.toLogListing() + "\n");
+
+            System.out.println("-- [1] Edit Text");
+            System.out.println("-- [2] Edit Log Type");
+
+            System.out.println("-----");
             System.out.println("-- [0] Back");
-
             System.out.print("?> ");
             try {
                 choice = Integer.parseInt(input.readLine());
@@ -1121,442 +1477,162 @@ public class Geocaching {
                 //System.out.println("Error: Invalid Option");
                 choice = -1;
             }
-
+            boolean edited;
             switch (choice) {
-                case 0:
+                case 1:
+                    String text = null;
+                    edited = false;
+                    while (edited == false) {
+                        System.out.println("\n\n- Type the new Log Text:");
+                        System.out.print("?> ");
+                        try {
+                            text = input.readLine();
+                        } catch (Exception ex) {
+                            //System.out.println("Error: Invalid Option");
+                            text = null;
+                        }
+                        if (text != null) {
+                            log.setLog(text);
+                            System.out.println("Log Text edited successfully!");
+                            pressAnyKeyToContinue();
+                            edited = true;
+                        } else {
+                            System.out.println("ERROR: Please type again.");
+                            pressAnyKeyToContinue();
+                        }
+                    }
                     clearConsole();
+
+                    choice = -1;
+                    break;
+                case 2:
+                    Log_Type type = log.getLogType();
+                    edited = false;
+                    boolean foundit = false,
+                     dnf = false,
+                     needm = false,
+                     needa = false,
+                     note = false;
+                    while (edited == false) {
+                        System.out.println("\n\n- Log Types:");
+
+                        // FOUND_IT, DNF, NEEDS_MAINTENANCE, NEEDS_ARCHIVING, NOTE, REVIEWER_NOTE, ARCHIVED, ENABLED, DISABLED;
+                        if (type != Log_Type.FOUND_IT) {
+                            System.out.println(" [1] Found It\n");
+                            foundit = true;
+                        }
+                        if (type != Log_Type.DNF) {
+                            System.out.println(" [2] DNF\n");
+                            dnf = true;
+                        }
+                        if (type != Log_Type.NEEDS_MAINTENANCE) {
+                            System.out.println(" [3] Needs Maintenance\n");
+                            needm = true;
+                        }
+                        if (type != Log_Type.NEEDS_ARCHIVING) {
+                            System.out.println(" [4] Needs Archiving\n");
+                            needa = true;
+                        }
+                        if (type != Log_Type.NOTE) {
+                            System.out.println(" [5] Note\n");
+                            note = true;
+                        }
+
+                        System.out.println("\n-- [X] Choose the new Log Type:");
+                        System.out.println("-----");
+                        System.out.println("-- [0] Back");
+                        int ntype;
+                        System.out.print("?> ");
+                        try {
+                            ntype = Integer.parseInt(input.readLine());
+                        } catch (Exception ex) {
+                            //System.out.println("Error: Invalid Option");
+                            ntype = 0;
+                        }
+
+                        switch (ntype) {
+                            case 1:
+                                if (foundit) {
+                                    log.setLogType(Log_Type.FOUND_IT);
+                                    edited = true;
+                                    // If now is a FOUND IT then increase user's total founds
+                                    log.getUser().incTotalFound();
+                                }
+                                break;
+                            case 2:
+                                if (dnf) {
+                                    if (type == Log_Type.FOUND_IT)// If it was a FOUND IT then decrease user's total founds
+                                    {
+                                        log.getUser().decTotalFound();
+                                    }
+                                    log.setLogType(Log_Type.DNF);
+                                    edited = true;
+                                }
+                                break;
+                            case 3:
+                                if (needm) {
+                                    if (type == Log_Type.FOUND_IT)// If it was a FOUND IT then decrease user's total founds
+                                    {
+                                        log.getUser().decTotalFound();
+                                    }
+                                    log.setLogType(Log_Type.NEEDS_MAINTENANCE);
+                                    edited = true;
+                                }
+                                break;
+                            case 4:
+                                if (needa) {
+                                    if (type == Log_Type.FOUND_IT)// If it was a FOUND IT then decrease user's total founds
+                                    {
+                                        log.getUser().decTotalFound();
+                                    }
+                                    log.setLogType(Log_Type.NEEDS_ARCHIVING);
+                                    edited = true;
+                                }
+                                break;
+                            case 5:
+                                if (note) {
+                                    if (type == Log_Type.FOUND_IT)// If it was a FOUND IT then decrease user's total founds
+                                    {
+                                        log.getUser().decTotalFound();
+                                    }
+                                    log.setLogType(Log_Type.NOTE);
+                                    edited = true;
+                                }
+                                break;
+                            default:
+                                System.out.println("ERROR: Please choose again.");
+                                pressAnyKeyToContinue();
+                                break;
+                        }
+                        if (edited) {
+                            System.out.println("Log Type edited successfully!");
+                            // Add Activity
+                            Activity act = new Activity(new GregorianCalendar(), Activity.Type.UPDATED_LOG_TYPE, cache, userOnline, log);
+                            data.addActivity(act);
+                            pressAnyKeyToContinue();
+                        }
+
+                    }
+                    clearConsole();
+
+                    choice = -1;
+                    break;
+                case 0:
                     break;
                 default:
-                    if (choice > 0 && choice <= list.size()) {
-                        clearConsole();
-                        Event ev = list.get(choice - 1);
-                        mViewEvent(ev);
-                        clearConsole();
-                    } else {
-                        System.out.println("Error: Invalid Option");
-                    }
+                    System.out.println("Error: Option not available");
                     choice = -1;
-                     break;
-            }
-        }
-	}
-
-	private static void mActiveEvents() {
-    	int choice = -1;
-    	HashMap<String, Event> events = data.getEnabledEvents();
-    	ArrayList<Event> list = new ArrayList<Event>();
-    	Calendar today = new GregorianCalendar();
-    	
-    	for(Event e: events.values())
-    		if(today.before(e.getDateEndApplications()))    			
-    			list.add(e);
-    		
-    	list.sort(data.compareEventAppDate());
-
-        while (choice == -1) {
-            int i = 1;
-            System.out.println("####### " + userOnline.getName() + " Founds #######\n");
-
-            System.out.println("\n-- Total Founds: " + list.size() + "\n\n");
-            for (Event e : list)// For each Friend
-            {
-            	Date dt = e.getDateEndApplications().getTime();
-                System.out.format("\t[%d] - %s - %s\n", i, e.getCacheTitle(), dt.toString());
-                i++;
-            }
-            System.out.println("\n-- [X] View Event");
-            System.out.println("-----:");
-            System.out.println("-- [0] Back");
-
-            System.out.print("?> ");
-            try {
-                choice = Integer.parseInt(input.readLine());
-            } catch (Exception ex) {
-                //System.out.println("Error: Invalid Option");
-                choice = -1;
-            }
-
-            switch (choice) {
-                case 0:
-                    clearConsole();
                     break;
-                default:
-                    if (choice > 0 && choice <= list.size()) {
-                        clearConsole();
-                        Event ev = list.get(choice - 1);
-                        mViewEvent(ev);
-                        clearConsole();
-                    } else {
-                        System.out.println("Error: Invalid Option");
-                    }
-                    choice = -1;
-                     break;
             }
         }
-		
-	}
+    }
 
-	private static void mViewEvent(Event ev) {
-		int choice = -1;
-		boolean canSubs = new GregorianCalendar().getTime().before(ev.getDateEndApplications().getTime());
-		boolean participate = ev.checkParticipation(userOnline);
-		
-		while (choice == -1) {
-			System.out.println("\n-- Event Details --\n");
-			System.out.println("\tOrganizer: "+ ev.getOwner().getName());
-			System.out.println("\tID: "+ ev.getCacheID());
-			System.out.println("\tTitle: "+ ev.getCacheTitle());
-			System.out.println("\tDescription: "+ ev.getDescription());
-			System.out.println("\tNº Regist: "+ ev.getNRegistrations() +"/"+ ev.getMaxP());
-			System.out.println("\tDate Creation: "+ ev.getCreationDate().getTime().toString());
-			System.out.println("\tDate End App:  "+ ev.getDateEndApplications().getTime().toString());
-			System.out.println("\tDate of Event: "+ ev.getDateEvent().getTime().toString());
-			
-			System.out.println("\n-- [1] See Participants");
-			System.out.println("-- [2] See Caches");
-			if(canSubs){
-				if(!participate)
-					System.out.println("-- [3] Subscribe");
-				else
-					System.out.println("-- [3] Unsubscribe");
-			}
-	        System.out.println("-----:");
-	        System.out.println("-- [0] Back");
-	
-	        System.out.print("?> ");
-	        try {
-	            choice = Integer.parseInt(input.readLine());
-	        } catch (Exception ex) {
-	            choice = -1;
-	        }
-	
-	        switch (choice) {
-	            case 0:
-	                clearConsole();
-	                break;
-	            case 1:
-	            	clearConsole();
-	            	if(ev.getNRegistrations() != 0){
-		            	System.out.println("\tPoints - Username");
-		                for(UserAbstract u: ev.getParticipants().values())
-		                	System.out.println("\t" + ev.getPointsByUser(u) + " - " + u.getName());	            		
-	            	} else
-	            		System.out.println("Error: Event without users resgistrated!!");
-	            	choice = -1;
-	                break;
-	            case 2:
-	            	clearConsole();
-	                if(ev.getCaches().size() != 0){
-	                	mEventCaches(ev);	            		
-	            	} else
-	            		System.out.println("Error: Event without caches resgistrated!!");
-	                choice = -1;
-	                break;
-	            case 3:
-	            	if(canSubs){
-	            		choice = -1;
-	            		clearConsole();
-	            		if(!participate){
-	            			
-			                Calendar today = new GregorianCalendar();
-			            	if(today.after(ev.getDateEndApplications())){  
-			            		System.out.println("Error: The application date limit is expired!!");
-		            			break;
-		            		}
-			            	
-			            	if(userOnline.equals(ev.getOwner())){
-			            		System.out.println("Error: You are the owner!!");
-			            		break;
-			            	}
-		
-			            	if(ev.getNRegistrations() < ev.getMaxP())
-			            		if(ev.addParticipant(userOnline)){
-			            			System.out.println("Congratulations!! Now you are a participant!!");
-			            			participate = true;
-			            		} else
-			            			System.out.println("Error: User is already registrated in event!!");
-			            	else
-			            		System.out.println("Error: The event is full!! Try later..");
-	            		}else{
-	            			if(ev.remParticipant(userOnline)){
-	            				System.out.println("Congratulations!! You Unsubscribe this event!!");
-	            				participate = false;
-	            			}
-	            		}
-			            break;
-	            	}
-	            default:
-	                System.out.println("Error: Invalid Option");
-	                choice = -1;
-	                 break;
-	        }
-		}
-	}
+    private static void mEditCache(Cache get) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
-	private static void mEventCaches(Event ev) {
-		int i, choice = -1;
-		Cache cache = null;
-		
-		while (choice == -1) {
-			System.out.println("\tID - Title");
-        	Object[] array = ev.getCaches().values().toArray();
-        	
-            for(i=0; i< array.length;i++){
-            	cache = (Cache)array[i];
-            	System.out.format("\t[%d] - %s - %s\n", i+1, cache.getCacheID(), cache.getCacheTitle());
-            }
-            
-            System.out.println("\n-- [X] View Cache");
-            System.out.println("-----:");
-            System.out.println("-- [0] Back");
-            System.out.print("?> ");
-	        try {
-	            choice = Integer.parseInt(input.readLine());
-	        } catch (Exception ex) {
-	            choice = -1;
-	        }
-            
-            switch (choice) {
-	            case 0:
-	                clearConsole();
-	                break;
-	            default:
-	            	if (choice > 0 && choice <= array.length) {
-	            		clearConsole();
-	            		cache = (Cache)array[choice-1];
-                        mViewCache(cache);
-                    } else 
-	                        System.out.println("Error: Invalid Option");
-	                choice = -1;
-	                break;
-            }
-		}
-	}
-
-	private static void mViewOwedEvents(UserAbstract user) {
-		int i, choice = -1;
-		Event ev = null;
-		
-		ArrayList<Event> list = new ArrayList<Event>(); 
-    	Iterator<Event> evEnable = data.enabledEvents.values().iterator();
-    	Iterator<Event> evPast = data.pastEvents.values().iterator();
-    	
-    	while(evEnable.hasNext()){
-    		ev = evEnable.next();
-    		if(user.equals(ev.getOwner()))
-    			list.add(ev);
-    	}
-    	
-    	while(evPast.hasNext()){
-    		ev = evPast.next();
-    		if(user.equals(ev.getOwner()))
-    			list.add(ev);
-    	}
-    	
-    	list.sort(data.compareEventDate());
-    	
-		while (choice == -1) {
-        	
-			if(list.size() != 0){
-				System.out.println("\tID - Title - Date of Event");
-	            for(i=0; i< list.size();i++){
-	            	ev = list.get(i);
-	            	System.out.format("\t[%d] - %s - %s - %s\n", i+1, ev.getCacheID(), ev.getCacheTitle(), ev.getDateEvent().getTime().toString());
-	            }
-			}else
-	    		System.out.println("\n\tError: You didn't organize events!! ");
-            
-            System.out.println("\n-- [X] View Event");
-            System.out.println("-----:");
-            System.out.println("-- [0] Back");
-            System.out.print("?> ");
-	        try {
-	            choice = Integer.parseInt(input.readLine());
-	        } catch (Exception ex) {
-	            choice = -1;
-	        }
-            
-            switch (choice) {
-	            case 0:
-	                clearConsole();
-	                break;
-	            default:
-	            	if (choice > 0 && choice <= list.size()) {
-	            		clearConsole();
-	            		ev = list.get(choice-1);
-                        mViewEvent(ev);
-                    } else 
-	                        System.out.println("Error: Invalid Option");
-	                choice = -1;
-	                break;
-            }
-		}
-	}
-
-	private static void mParticipatedEvents(UserAbstract user) {
-		int i, choice = -1;
-		Event ev = null;
-		
-		ArrayList<Event> list = new ArrayList<Event>(); 
-    	Iterator<Event> evEnable = data.enabledEvents.values().iterator();
-    	Iterator<Event> evPast = data.pastEvents.values().iterator();
-    	
-    	while(evEnable.hasNext()){
-    		ev = evEnable.next();
-    		if(ev.checkParticipation(user))
-    			list.add(ev);
-    	}
-    	
-    	while(evPast.hasNext()){
-    		ev = evPast.next();
-    		if(ev.checkParticipation(user))
-    			list.add(ev);
-    	}
-    	
-    	list.sort(data.compareEventDate());
-		
-		while (choice == -1) {
-
-        	if(list.size() != 0){
-        		System.out.println("\tID - Title - Date of Event");
-        		for(i=0; i< list.size();i++){
-	            	ev = list.get(i);
-	            	System.out.format("\t[%d] - %s - %s - %s\n", i+1, ev.getCacheID(), ev.getCacheTitle(), ev.getDateEvent().getTime().toString());
-	            }
-        	}else
-        		System.out.println("\n\tError: You didn't participate in events!! ");
-            
-            System.out.println("\n-- [X] View Event");
-            System.out.println("-----:");
-            System.out.println("-- [0] Back");
-            System.out.print("?> ");
-	        try {
-	            choice = Integer.parseInt(input.readLine());
-	        } catch (Exception ex) {
-	            choice = -1;
-	        }
-            
-            switch (choice) {
-	            case 0:
-	                clearConsole();
-	                break;
-	            default:
-	            	if (choice > 0 && choice <= list.size()) {
-	            		clearConsole();
-	            		ev = list.get(choice-1);
-                        mViewEvent(ev);
-                    } else 
-	                        System.out.println("Error: Invalid Option");
-	                choice = -1;
-	                break;
-            }
-		}
-		
-	}
-
-	private static void mCreateEvent() {
-        GregorianCalendar dateEvent = new GregorianCalendar();
-        GregorianCalendar dateEndApplications = new GregorianCalendar();
-        String name="", description="", str="";
-        Position pos;
-        int maxP=0;
-        boolean status = false;
-        
-        // Name Event
-        System.out.println("-- Name of Event");
-        while (status == false) {
-            System.out.print("?> ");
-            try {
-				name = input.readLine();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-            if(name.length()>4)
-                status = true;
-            else
-                System.out.println("Error: The name need at least 4 characters!");
-        }
-        status = false;
-        
-        // Description
-        System.out.println("-- Description of Event");
-        while (status == false) {
-            System.out.print("?> ");
-            
-            try {
-				description = input.readLine();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-            if(description.length()>10)
-                status = true;
-            else
-                System.out.println("Error: The name need at least 10 characters!");
-        }
-        status = false;
-        
-        
-        System.out.println("-- Date Of Event:");
-        while (status == false) {
-            System.out.print("?> ");
-            try {
-                str = input.readLine();
-            } catch (Exception ex) {
-                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-            Date startDate;
-            try {
-                startDate = df.parse(str);
-                dateEvent.setTime(startDate);
-                status = true;
-            } catch (ParseException ex) {
-                System.out.println("Error with the Date Format, please use dd/MM/yyyy");
-            }
-        }
-        
-        System.out.println("-- Limit Date To Applications:");
-        while (status == false) {
-            System.out.print("?> ");
-            try {
-                str = input.readLine();
-            } catch (Exception ex) {
-                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-            Date startDate;
-            try {
-                startDate = df.parse(str);
-                dateEndApplications.setTime(startDate);
-                status = true;
-            } catch (ParseException ex) {
-                System.out.println("Error with the Date Format, please use dd/MM/yyyy");
-            }
-        }
-        
-        System.out.println("-- Max of Participants");
-        while (status == false) {
-            System.out.print("?> ");
-            try {
-                str = input.readLine();
-                maxP = Integer.parseInt(str);
-                status = true;
-            } catch (Exception ex) {
-                System.out.println("Error: Number isn't in the correct format (12)");
-            }
-        }
-        status = false;
-        
-        //Positon of Event
-        pos = mInputPosition(true);
-        
-        HashMap<String, Cache> caches = data.getByPosition(pos, 5);
-        Event event = new Event(new GregorianCalendar(), dateEndApplications, dateEvent, name, description, pos, maxP, userOnline, caches);
-        
+    private static void mCreateCache() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private static Position mInputPosition(boolean onlyCoords) {
@@ -1702,38 +1778,21 @@ public class Geocaching {
         return new Position(lati, longi, continent, country, city, diff);
     }
 
-    private static void mViewLog(Log log, Cache cache) {
+// ------------------- ACTIVITIES MENU ------------------
+    private static void mViewActivities(User user) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    // ------------------- EVENTS MENU ------------------
+    private static void mEvents() {
         int choice = -1;
-        while (choice == -1) {
-            boolean user = false, delete = false, edit = false;
-            System.out.println("####### " + cache.getCacheTitle() + " #######\n");
-            System.out.println("\n" + log.toLogListing());
-
-            System.out.println("-- [1] View User");
-
-            if (userOnline.equals(cache.getOwner()) && log.getUser().equals(userOnline) || // If I am the Owner and I made this Log then I can Edit and Delete this Log
-                    log.getUser().equals(userOnline)) {  // OR If I am just the User who made this Log then I can Edit and Delete
-                System.out.println("------- Admin Tools");
-                System.out.println("-- [8] Edit Log");
-                System.out.println("-- [9] Delete Log");
-                edit = true;
-                delete = true;
-                /*} else if (log.getUser().equals(userOnline)) {
-                 System.out.println("------- Admin Tools");
-                 System.out.println("-- [8] Edit Log");
-                 System.out.println("-- [9] Delete Log");
-                 edit = true;*/
-            } else if (userOnline.equals(cache.getReviewer()) || // If I am the Reviewer then I can Edit and Delete this Log
-                    userOnline.equals(cache.getOwner())) { // If I am just the Owner then I can only Delete
-                System.out.println("------- Admin Tools");
-                System.out.println("-- [9] Delete Log");
-                delete = true;
-                /*} else if (userOnline.equals(cache.getOwner())) { // If I am just the Owner then I can only Delete
-                 System.out.println("------- Admin Tools");
-                 System.out.println("-- [9] Delete Log");
-                 edit = true;*/
-            }
-
+        while (choice == -1) { // REVIEWER IFS MISSING
+            System.out.println("####### Events Menu #######\n");
+            System.out.println("-- [1] Active Events");
+            System.out.println("-- [2] Happening Events");
+            System.out.println("-- [3] Create a Event");
+            System.out.println("-- [4] View Owned Events");
+            System.out.println("-- [5] View Participated Events");
             System.out.println("-----");
             System.out.println("-- [0] Back");
             System.out.print("?> ");
@@ -1746,36 +1805,33 @@ public class Geocaching {
 
             switch (choice) {
                 case 1:
-
                     clearConsole();
-                    mViewUser((User) log.getUser());
+                    mActiveEvents();
+                    choice = -1;
                     clearConsole();
-
+                    break;
+                case 2:
+                    clearConsole();
+                    mHappeningEvents();
                     choice = -1;
                     break;
-
-                case 8:
-                    if (edit == true) {
-                        clearConsole();
-                        mEditLog(log);
-                        clearConsole();
-                    }
+                case 3:
+                    clearConsole();
+                    mCreateEvent();
                     choice = -1;
+                    clearConsole();
                     break;
-
-                case 9:
-                    if (delete == true) {
-                        clearConsole();
-                        boolean deleted = cache.deleteLog(log);
-                        if (deleted) {
-                            System.out.println("Log was successfully Deleted!");// Go Back
-                        } else {
-                            System.out.println("ERROR: Log wasn't Deleted");
-                            choice = -1; // NOT Go Back
-                        }
-                        pressAnyKeyToContinue();
-                        clearConsole();
-                    }
+                case 4:
+                    clearConsole();
+                    mViewOwedEvents(userOnline);
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 5:
+                    clearConsole();
+                    mParticipatedEvents(userOnline);
+                    choice = -1;
+                    clearConsole();
                     break;
                 case 0:
                     break;
@@ -1787,13 +1843,504 @@ public class Geocaching {
         }
     }
 
-// ------------------- ACTIVITES MENU ------------------
-    private static void mViewActivities(User friend) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private static void mHappeningEvents() {
+        int choice = -1;
+        HashMap<String, Event> events = data.getEnabledEvents();
+        ArrayList<Event> list = new ArrayList<Event>();
+        Date today = new GregorianCalendar().getTime();
+        SimpleDateFormat fmt = new SimpleDateFormat("ddMMyyyy");
+
+        for (Event e : events.values()) {
+            if (fmt.format(today).equals(fmt.format(e.getDateEvent().getTime()))) {
+                list.add(e);
+            }
+        }
+
+        while (choice == -1) {
+            int i = 1;
+            System.out.println("####### " + userOnline.getName() + " Founds #######\n");
+
+            System.out.println("\n-- Total Founds: " + list.size() + "\n\n");
+            for (Event e : list)// For each Friend
+            {
+                Date dt = e.getDateEndApplications().getTime();
+                System.out.format("\t[%d] - %s - %s\n", i, e.getCacheTitle(), dt.toString());
+                i++;
+            }
+
+            System.out.println("\n-- [X] View Event");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                default:
+                    if (choice > 0 && choice <= list.size()) {
+                        clearConsole();
+                        Event ev = list.get(choice - 1);
+                        mViewEvent(ev);
+                        clearConsole();
+                    } else {
+                        System.out.println("Error: Invalid Option");
+                    }
+                    choice = -1;
+                    break;
+            }
+        }
+    }
+
+    private static void mActiveEvents() {
+        int choice = -1;
+        HashMap<String, Event> events = data.getEnabledEvents();
+        ArrayList<Event> list = new ArrayList<Event>();
+        Calendar today = new GregorianCalendar();
+
+        for (Event e : events.values()) {
+            if (today.before(e.getDateEndApplications())) {
+                list.add(e);
+            }
+        }
+
+        list.sort(data.compareEventAppDate());
+
+        while (choice == -1) {
+            int i = 1;
+            System.out.println("####### " + userOnline.getName() + " Founds #######\n");
+
+            System.out.println("\n-- Total Founds: " + list.size() + "\n\n");
+            for (Event e : list)// For each Friend
+            {
+                Date dt = e.getDateEndApplications().getTime();
+                System.out.format("\t[%d] - %s - %s\n", i, e.getCacheTitle(), dt.toString());
+                i++;
+            }
+            System.out.println("\n-- [X] View Event");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                default:
+                    if (choice > 0 && choice <= list.size()) {
+                        clearConsole();
+                        Event ev = list.get(choice - 1);
+                        mViewEvent(ev);
+                        clearConsole();
+                    } else {
+                        System.out.println("Error: Invalid Option");
+                    }
+                    choice = -1;
+                    break;
+            }
+        }
+
+    }
+
+    private static void mViewEvent(Event ev) {
+        int choice = -1;
+        boolean canSubs = new GregorianCalendar().getTime().before(ev.getDateEndApplications().getTime());
+        boolean participate = ev.checkParticipation(userOnline);
+
+        while (choice == -1) {
+            System.out.println("\n-- Event Details --\n");
+            System.out.println("\tOrganizer: " + ev.getOwner().getName());
+            System.out.println("\tID: " + ev.getCacheID());
+            System.out.println("\tTitle: " + ev.getCacheTitle());
+            System.out.println("\tDescription: " + ev.getDescription());
+            System.out.println("\tNº Regist: " + ev.getNRegistrations() + "/" + ev.getMaxP());
+            System.out.println("\tDate Creation: " + ev.getCreationDate().getTime().toString());
+            System.out.println("\tDate End App:  " + ev.getDateEndApplications().getTime().toString());
+            System.out.println("\tDate of Event: " + ev.getDateEvent().getTime().toString());
+
+            System.out.println("\n-- [1] See Participants");
+            System.out.println("-- [2] See Caches");
+            if (canSubs) {
+                if (!participate) {
+                    System.out.println("-- [3] Subscribe");
+                } else {
+                    System.out.println("-- [3] Unsubscribe");
+                }
+            }
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                case 1:
+                    clearConsole();
+                    if (ev.getNRegistrations() != 0) {
+                        System.out.println("\tPoints - Username");
+                        for (UserAbstract u : ev.getParticipants().values()) {
+                            System.out.println("\t" + ev.getPointsByUser(u) + " - " + u.getName());
+                        }
+                    } else {
+                        System.out.println("Error: Event without users resgistrated!!");
+                    }
+                    choice = -1;
+                    break;
+                case 2:
+                    clearConsole();
+                    if (ev.getCaches().size() != 0) {
+                        mEventCaches(ev);
+                    } else {
+                        System.out.println("Error: Event without caches resgistrated!!");
+                    }
+                    choice = -1;
+                    break;
+                case 3:
+                    if (canSubs) {
+                        choice = -1;
+                        clearConsole();
+                        if (!participate) {
+
+                            Calendar today = new GregorianCalendar();
+                            if (today.after(ev.getDateEndApplications())) {
+                                System.out.println("Error: The application date limit is expired!!");
+                                break;
+                            }
+
+                            if (userOnline.equals(ev.getOwner())) {
+                                System.out.println("Error: You are the owner!!");
+                                break;
+                            }
+
+                            if (ev.getNRegistrations() < ev.getMaxP()) {
+                                if (ev.addParticipant(userOnline)) {
+                                    System.out.println("Congratulations!! Now you are a participant!!");
+                                    participate = true;
+                                } else {
+                                    System.out.println("Error: User is already registrated in event!!");
+                                }
+                            } else {
+                                System.out.println("Error: The event is full!! Try later..");
+                            }
+                        } else {
+                            if (ev.remParticipant(userOnline)) {
+                                System.out.println("Congratulations!! You Unsubscribe this event!!");
+                                participate = false;
+                            }
+                        }
+                        break;
+                    }
+                default:
+                    System.out.println("Error: Invalid Option");
+                    choice = -1;
+                    break;
+            }
+        }
+    }
+
+    private static void mEventCaches(Event ev) {
+        int i, choice = -1;
+        Cache cache = null;
+
+        while (choice == -1) {
+            System.out.println("\tID - Title");
+            Object[] array = ev.getCaches().values().toArray();
+
+            for (i = 0; i < array.length; i++) {
+                cache = (Cache) array[i];
+                System.out.format("\t[%d] - %s - %s\n", i + 1, cache.getCacheID(), cache.getCacheTitle());
+            }
+
+            System.out.println("\n-- [X] View Cache");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                default:
+                    if (choice > 0 && choice <= array.length) {
+                        clearConsole();
+                        cache = (Cache) array[choice - 1];
+                        mViewCache(cache);
+                    } else {
+                        System.out.println("Error: Invalid Option");
+                    }
+                    choice = -1;
+                    break;
+            }
+        }
+    }
+
+    private static void mViewOwedEvents(UserAbstract user) {
+        int i, choice = -1;
+        Event ev = null;
+
+        ArrayList<Event> list = new ArrayList<Event>();
+        Iterator<Event> evEnable = data.enabledEvents.values().iterator();
+        Iterator<Event> evPast = data.pastEvents.values().iterator();
+
+        while (evEnable.hasNext()) {
+            ev = evEnable.next();
+            if (user.equals(ev.getOwner())) {
+                list.add(ev);
+            }
+        }
+
+        while (evPast.hasNext()) {
+            ev = evPast.next();
+            if (user.equals(ev.getOwner())) {
+                list.add(ev);
+            }
+        }
+
+        list.sort(data.compareEventDate());
+
+        while (choice == -1) {
+
+            if (list.size() != 0) {
+                System.out.println("\tID - Title - Date of Event");
+                for (i = 0; i < list.size(); i++) {
+                    ev = list.get(i);
+                    System.out.format("\t[%d] - %s - %s - %s\n", i + 1, ev.getCacheID(), ev.getCacheTitle(), ev.getDateEvent().getTime().toString());
+                }
+            } else {
+                System.out.println("\n\tError: You didn't organize events!! ");
+            }
+
+            System.out.println("\n-- [X] View Event");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                default:
+                    if (choice > 0 && choice <= list.size()) {
+                        clearConsole();
+                        ev = list.get(choice - 1);
+                        mViewEvent(ev);
+                    } else {
+                        System.out.println("Error: Invalid Option");
+                    }
+                    choice = -1;
+                    break;
+            }
+        }
+    }
+
+    private static void mParticipatedEvents(UserAbstract user) {
+        int i, choice = -1;
+        Event ev = null;
+
+        ArrayList<Event> list = new ArrayList<Event>();
+        Iterator<Event> evEnable = data.enabledEvents.values().iterator();
+        Iterator<Event> evPast = data.pastEvents.values().iterator();
+
+        while (evEnable.hasNext()) {
+            ev = evEnable.next();
+            if (ev.checkParticipation(user)) {
+                list.add(ev);
+            }
+        }
+
+        while (evPast.hasNext()) {
+            ev = evPast.next();
+            if (ev.checkParticipation(user)) {
+                list.add(ev);
+            }
+        }
+
+        list.sort(data.compareEventDate());
+
+        while (choice == -1) {
+
+            if (list.size() != 0) {
+                System.out.println("\tID - Title - Date of Event");
+                for (i = 0; i < list.size(); i++) {
+                    ev = list.get(i);
+                    System.out.format("\t[%d] - %s - %s - %s\n", i + 1, ev.getCacheID(), ev.getCacheTitle(), ev.getDateEvent().getTime().toString());
+                }
+            } else {
+                System.out.println("\n\tError: You didn't participate in events!! ");
+            }
+
+            System.out.println("\n-- [X] View Event");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                default:
+                    if (choice > 0 && choice <= list.size()) {
+                        clearConsole();
+                        ev = list.get(choice - 1);
+                        mViewEvent(ev);
+                    } else {
+                        System.out.println("Error: Invalid Option");
+                    }
+                    choice = -1;
+                    break;
+            }
+        }
+
+    }
+
+    private static void mCreateEvent() {
+        GregorianCalendar dateEvent = new GregorianCalendar();
+        GregorianCalendar dateEndApplications = new GregorianCalendar();
+        String name = "", description = "", str = "";
+        Position pos;
+        int maxP = 0;
+        boolean status = false;
+
+        // Name Event
+        System.out.println("-- Name of Event");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                name = input.readLine();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            if (name.length() > 4) {
+                status = true;
+            } else {
+                System.out.println("Error: The name need at least 4 characters!");
+            }
+        }
+        status = false;
+
+        // Description
+        System.out.println("-- Description of Event");
+        while (status == false) {
+            System.out.print("?> ");
+
+            try {
+                description = input.readLine();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            if (description.length() > 10) {
+                status = true;
+            } else {
+                System.out.println("Error: The name need at least 10 characters!");
+            }
+        }
+        status = false;
+
+        System.out.println("-- Date Of Event:");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                str = input.readLine();
+            } catch (Exception ex) {
+                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            Date startDate;
+            try {
+                startDate = df.parse(str);
+                dateEvent.setTime(startDate);
+                status = true;
+            } catch (ParseException ex) {
+                System.out.println("Error with the Date Format, please use dd/MM/yyyy");
+            }
+        }
+        status = false;
+        System.out.println("-- Limit Date To Applications:");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                str = input.readLine();
+            } catch (Exception ex) {
+                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            Date startDate;
+            try {
+                startDate = df.parse(str);
+                dateEndApplications.setTime(startDate);
+                status = true;
+            } catch (ParseException ex) {
+                System.out.println("Error with the Date Format, please use dd/MM/yyyy");
+            }
+        }
+        status = false;
+        System.out.println("-- Max of Participants");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                str = input.readLine();
+                maxP = Integer.parseInt(str);
+                status = true;
+            } catch (Exception ex) {
+                System.out.println("Error: Number isn't in the correct format (12)");
+            }
+        }
+        status = false;
+
+        //Positon of Event
+        pos = mInputPosition(true);
+
+        HashMap<String, Cache> caches = data.getByPosition(pos, 5);
+        Event event = new Event(new GregorianCalendar(), dateEndApplications, dateEvent, name, description, pos, maxP, userOnline, caches);
+
     }
 
     // ------------------- STATISTICS MENU ------------------
-    private static void mViewStatistics(User friend) {
+    private static void mViewStatistics(User user) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static void mStats() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -1816,7 +2363,7 @@ public class Geocaching {
     }
 
     // Load Data if it exists else create new one
-    public static Data getData() {
+    public static Data startData() {
 
         // Load Data
         if (loadData()) {
@@ -1860,42 +2407,43 @@ public class Geocaching {
     }
 
     // Pre-Made Dataset
-    private static void populateData(Data data) {
+    private static Data populateData() {
+        Data newData = new Data();
+        User u1 = new User("1", "1", "Ulisses", "M", "rua", new GregorianCalendar(2000, 1, 24, 11, 11, 11), true, 0, null, null, newData);
+        User u2 = new User("2", "2", "Uche Villareal", "M", "rua", new GregorianCalendar(1982, 2, 2, 11, 11, 11), false, 0, null, null, newData);
+        User u3 = new User("3", "3", "Ukra", "M", "rua", new GregorianCalendar(1992, 3, 29, 11, 11, 11), false, 0, null, null, newData);
+        User u4 = new User("4", "4", "Uruguaio", "M", "rua", new GregorianCalendar(2001, 8, 13, 11, 11, 11), false, 0, null, null, newData);
+        Reviewer r1 = new Reviewer("r", "r", "Rickon", "M", "rua", new GregorianCalendar(1968, 1, 24, 11, 11, 11), false, 0, null, null, newData);
+        Admin a1 = new Admin("a", "a", "Aemon", "M", "rua", new GregorianCalendar(1987, 7, 14, 11, 11, 11), false, 0, null, null, newData);
 
-        User u1 = new User("1", "1", "Ulisses", "M", "rua", new GregorianCalendar(2000, 1, 24, 11, 11, 11), true, 0, null, null, data);
-        User u2 = new User("2", "2", "Uche Villareal", "M", "rua", new GregorianCalendar(1982, 2, 2, 11, 11, 11), false, 0, null, null, data);
-        User u3 = new User("3", "3", "Ukra", "M", "rua", new GregorianCalendar(1992, 3, 29, 11, 11, 11), false, 0, null, null, data);
-        User u4 = new User("4", "4", "Uruguaio", "M", "rua", new GregorianCalendar(2001, 8, 13, 11, 11, 11), false, 0, null, null, data);
-        Reviewer r1 = new Reviewer("r", "r", "Rickon", "M", "rua", new GregorianCalendar(1968, 1, 24, 11, 11, 11), false, 0, null, null, data);
-        Admin a1 = new Admin("a", "a", "Aemon", "M", "rua", new GregorianCalendar(1987, 7, 14, 11, 11, 11), false, 0, null, null, data);
-
-        data.getAllUsers().put(u1.getEmail(), u1);
-        data.getAllUsers().put(u2.getEmail(), u2);
-        data.getAllUsers().put(u3.getEmail(), u3);
-        data.getAllUsers().put(u4.getEmail(), u4);
-        data.getAllUsers().put(r1.getEmail(), r1);
-        data.getAllUsers().put(a1.getEmail(), a1);
+        newData.getAllUsers().put(u1.getEmail(), u1);
+        newData.getAllUsers().put(u2.getEmail(), u2);
+        newData.getAllUsers().put(u3.getEmail(), u3);
+        newData.getAllUsers().put(u4.getEmail(), u4);
+        newData.getAllUsers().put(r1.getEmail(), r1);
+        newData.getAllUsers().put(a1.getEmail(), a1);
 
         Position p1 = CountriesData.portugal;
         Position p2 = new Position(41.57238, -8.47875, 1.5f);
+
         Traditional tc1 = new Traditional(new GregorianCalendar(2015, 06, 24, 11, 11, 11), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), new ArrayList<String>());
         Traditional tc2 = new Traditional(new GregorianCalendar(2015, 06, 19, 9, 12, 47), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new ArrayList<String>());
         Mystery mc1 = new Mystery(new GregorianCalendar(2015, 06, 25, 2, 3, 4), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new Position(1.1f, 2.2f), "YOU SOLVED IT!");
-        
-        Event e1 = new Event(new GregorianCalendar(), new GregorianCalendar(2015,6,2), new GregorianCalendar(2015,6,4), "Evento All Star", "Está tudo a brilhar", new Position(42,51), 5, u1, new HashMap<String,Cache>());
-        Event e2 = new Event(new GregorianCalendar(2015,5,2), new GregorianCalendar(2015,5,5), new GregorianCalendar(2015,5,31), "Evento Joker", "Um grande sorriso!!", new Position(82,321), 5, u2, new HashMap<String,Cache>());
-        Event e3 = new Event(new GregorianCalendar(2015,5,4), new GregorianCalendar(2015,4,30), new GregorianCalendar(2015,5,31), "Evento Mais Bonito", "Um grandhe sorriso!!", new Position(282,322), 5, u3, new HashMap<String,Cache>());
-        Event e4 = new Event(new GregorianCalendar(2015,5,4), new GregorianCalendar(2015,3,30), new GregorianCalendar(2015,4,31), "Evento de Hoje", "Tudo a jogar!!", new Position(82,32), 5, u1, new HashMap<String,Cache>());
-        
+
+        Event e1 = new Event(new GregorianCalendar(), new GregorianCalendar(2015, 6, 2), new GregorianCalendar(2015, 6, 4), "Evento All Star", "Está tudo a brilhar", new Position(42, 51), 5, u1, new HashMap<String, Cache>());
+        Event e2 = new Event(new GregorianCalendar(2015, 5, 2), new GregorianCalendar(2015, 5, 5), new GregorianCalendar(2015, 5, 31), "Evento Joker", "Um grande sorriso!!", new Position(82, 321), 5, u2, new HashMap<String, Cache>());
+        Event e3 = new Event(new GregorianCalendar(2015, 5, 4), new GregorianCalendar(2015, 4, 30), new GregorianCalendar(2015, 5, 31), "Evento Mais Bonito", "Um grandhe sorriso!!", new Position(282, 322), 5, u3, new HashMap<String, Cache>());
+        Event e4 = new Event(new GregorianCalendar(2015, 5, 4), new GregorianCalendar(2015, 3, 30), new GregorianCalendar(2015, 4, 31), "Evento de Hoje", "Tudo a jogar!!", new Position(82, 32), 5, u1, new HashMap<String, Cache>());
+
         e1.addCache(tc1);
         e1.addCache(tc2);
         e1.addCache(mc1);
-        
-        data.getEnabledEvents().put(e1.getCacheID(), e1);
-        data.getEnabledEvents().put(e2.getCacheID(), e2);
-        data.getEnabledEvents().put(e3.getCacheID(), e3);
-        data.getEnabledEvents().put(e4.getCacheID(), e4);
-        
+
+        newData.getEnabledEvents().put(e1.getCacheID(), e1);
+        newData.getEnabledEvents().put(e2.getCacheID(), e2);
+        newData.getEnabledEvents().put(e3.getCacheID(), e3);
+        newData.getEnabledEvents().put(e4.getCacheID(), e4);
+
         u1.createCache(tc1);
         u2.createCache(tc2);
         u1.createCache(mc1);
@@ -1929,7 +2477,7 @@ public class Geocaching {
         u1.newFriendship(u2);
         u2.newFriendship(u3);
         u3.newFriendship(u4);
-
+        return newData;
     }
 
     // Show GeoCaching Logo
@@ -1957,10 +2505,6 @@ public class Geocaching {
         System.out.println("..............0xx@@xx000000000xx@@x00.........");
         System.out.println(".................00000000000000000............");
         System.out.println("..............................................");
-    }
-
-    private static void mEditLog(Log log) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private static void pressAnyKeyToContinue() {

@@ -376,6 +376,19 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         return list;
     }
 
+    public Log_Type getFoundStatus(User user) { // Return if the user has Found It or DNF it for cache display
+        Log_Type type = null;
+        for (Log l : this.cache_Logs) {
+            if (l.getUser().equals(user)) {
+                type = l.getLogType();
+                if (type == Log_Type.DNF || type == Log_Type.FOUND_IT) {
+                    return l.getLogType();
+                }
+            }
+        }
+        return type;
+    }
+
     private int getTotalType(Log_Type type) {
         int total = 0;
         for (Log l : this.cache_Logs) {
@@ -403,6 +416,37 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
 
     public boolean deleteLog(Log log) {
         return this.cache_Logs.remove(log);
+    }
+
+    private String getSizeToString(int cacheSize) {
+        switch (cacheSize) {
+            case 1:
+                return "Micro";
+            case 2:
+                return "Small";
+            case 3:
+                return "Regular";
+            case 4:
+                return "Large";
+            case 5:
+                return "Other";
+            default:
+                return "";
+        }
+    }
+
+    public TreeSet<Log> getFriendsLogs(User user) {
+        TreeSet<Log> set = new TreeSet<>();
+
+        for (User u : user.getFriends().values()) {
+            for (Log l : this.cache_Logs) {
+                if (l.getUser().equals(u)) {
+                    set.add(l);
+                }
+            }
+        }
+
+        return set;
     }
 
     @Override
@@ -439,20 +483,20 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
     }
 
     public String toListing() {
-        return "\nTitle = '" + cacheTitle + '\''
-                + "\nType = " + getType()
-                + "\nCreation Date = " + formatDateTime(creationDate)
-                + "\nPublishing Date = " + formatDateTime(publishDate)
-                + "\nCache ID = '" + cacheID + '\''
-                + "\nCacheState = " + cacheState
-                + "\nOwner = " + owner
-                + "\nSize = " + cacheSize
-                + "\nDifficulty = " + difficulty + "\n"
+        return "- Title = '" + cacheTitle + '\''
+                + "\n- Type = " + getType()
+                + "\n- Creation Date = " + formatDateTime(creationDate)
+                + "\n- Publishing Date = " + formatDateTime(publishDate)
+                + "\n- Cache ID = '" + cacheID + '\''
+                + "\n- CacheState = " + cacheState
+                + "\n- Owner = " + owner
+                + "\n- Size = " + getSizeToString(cacheSize)
+                + "\n- Difficulty = " + difficulty + "\n"
                 + position.toListing()
-                + "\nDescription = '" + description + '\''
-                + "\nHint = '" + hint + '\''
-                + "\nTotal Founds= " + getTotalType(Log_Type.FOUND_IT)
-                + "\nTotal Not Founds= " + getTotalType(Log_Type.DNF);
+                + "\n- Description = '" + description + '\''
+                + "\n- Hint = '" + hint + '\''
+                + "\n- Total Founds = " + getTotalType(Log_Type.FOUND_IT)
+                + "\n- Total Not Founds =" + getTotalType(Log_Type.DNF);
     }
 
     public String toSimpleListing() {

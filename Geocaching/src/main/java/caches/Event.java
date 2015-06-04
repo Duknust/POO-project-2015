@@ -5,12 +5,7 @@ import base.Position;
 
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.TreeSet;
 
-import com.sun.javafx.css.CalculatedValue;
-
-import user.Reviewer;
-import user.User;
 import user.UserAbstract;
 
 public class Event extends Cache {
