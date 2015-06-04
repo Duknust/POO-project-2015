@@ -1,14 +1,14 @@
 package caches;
 
+import activity.Activity;
+import base.Data;
 import base.Position;
 import caches.Log.Log_Type;
-
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.TreeSet;
-
 import user.Admin;
 import user.Reviewer;
 import user.User;
@@ -80,9 +80,10 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
     private String hint; // Hints to find the cache
     private TreeSet<Log> cache_Logs; // Cache logs
     private Reviewer reviewer = null; // Reviewer responsible
+    private Data data = null; // System Data
 
     // Constructors
-    public Cache(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer) {
+    public Cache(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer, Data data) {
         this.publishDate = publishDate;
         this.creationDate = creationDate;
         this.cacheID = cacheID;
@@ -97,10 +98,11 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.hint = hint;
         this.cache_Logs = cache_Logs;
         this.reviewer = reviewer;
+        this.data = data;
     }
 
     // w/o ID
-    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer) {
+    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer, Data data) {
         this.creationDate = creationDate;
         this.description = description;
         this.cacheState = Status.UNPUBLISHED;
@@ -111,10 +113,11 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.hint = hint;
         this.cache_Logs = cache_Logs;
         this.reviewer = reviewer;
+        this.data = data;
     }
 
     // w/o Reviewer
-    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs) {
+    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Data data) {
         this.creationDate = creationDate;
         this.description = description;
         this.cacheState = Status.UNPUBLISHED;
@@ -125,10 +128,11 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.hint = hint;
         this.cache_Logs = cache_Logs;
         this.cacheID = genID(6);
+        this.data = data;
     }
-    
- // w/o Reviewer && Hint && Difficulty && CacheSize && Cache-Logs
-    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, Position position, UserAbstract owner) {
+
+    // w/o Reviewer && Hint && Difficulty && CacheSize && Cache-Logs
+    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, Position position, UserAbstract owner, Data data) {
         this.creationDate = creationDate;
         this.owner = owner;
         this.cacheTitle = cacheTitle;
@@ -138,9 +142,10 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.difficulty = 0;
         this.position = position;
         this.hint = "No Hint";
-        this.cache_Logs =  new TreeSet<Log>();
+        this.cache_Logs = new TreeSet<Log>();
         this.premiumOnly = false;
         this.cacheID = genID(6);
+        this.data = data;
     }
 
     // Getters and Setters
@@ -337,6 +342,9 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
             user.incTotalFound(); // Then increment by 1 the Total Founds
         }
         this.cache_Logs.add(log);
+
+        Activity ac = new Activity(new GregorianCalendar(), Activity.Type.FOUND_CACHE, this, user, log);
+        this.data.addActivity(ac);
         return true;
     }
 

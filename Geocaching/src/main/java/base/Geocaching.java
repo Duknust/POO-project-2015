@@ -369,8 +369,9 @@ public class Geocaching {
         while (choice == -1) {
             System.out.println("####### My Profile #######\n");
             System.out.println(userOnline.toStringTotal() + "\n");
-            System.out.println("-- [1] Edit Profile");
-            System.out.println("-- [2] Premium Membership");
+            System.out.println("-- [1] Activities");
+            System.out.println("-- [2] Edit Profile");
+            System.out.println("-- [3] Premium Membership");
             System.out.println("-----");
             System.out.println("-- [0] Back");
             System.out.print("?> ");
@@ -384,11 +385,17 @@ public class Geocaching {
             switch (choice) {
                 case 1:
                     clearConsole();
-                    mEditProfile();
+                    mActivities((User) userOnline);
                     choice = -1;
                     clearConsole();
                     break;
                 case 2:
+                    clearConsole();
+                    mEditProfile();
+                    choice = -1;
+                    clearConsole();
+                    break;
+                case 3:
                     clearConsole();
                     mPremium();
                     choice = -1;
@@ -746,7 +753,7 @@ public class Geocaching {
                     break;
                 case 2:
                     clearConsole();
-                    mViewActivities(user);
+                    mActivities(user);
                     choice = -1;
                     clearConsole();
                     break;
@@ -1779,7 +1786,50 @@ public class Geocaching {
     }
 
 // ------------------- ACTIVITIES MENU ------------------
-    private static void mViewActivities(User user) {
+    private static void mActivities(User user) {
+        int choice = -1;
+        ArrayList<Activity> arrayActivities = data.getActivitiesArray(user, 10);
+        String format = "\t[ %" + (arrayActivities.size() + "").length() + "d ] ";
+        //arrayActivities.sort(data.compareCachePubDate());
+        while (choice == -1) {
+            System.out.println("####### " + user.getName() + "'s Activities #######\n");
+
+            for (int i = 0; i < arrayActivities.size(); i++)// For each Cache
+            {
+                Activity c = arrayActivities.get(i);
+                System.out.format(format + c.toString() + "\n", i + 1);
+            }
+            System.out.println("\n-- [X] View Activity");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                default:
+                    if (choice > 0 && choice <= arrayActivities.size()) {
+                        clearConsole();
+                        mViewActivity(arrayActivities.get(choice - 1));
+                        clearConsole();
+                    } else {
+                        System.out.println("Error: Invalid Option");
+                    }
+                    choice = -1;
+                    break;
+            }
+        }
+    }
+
+    private static void mViewActivity(Activity get) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -2331,7 +2381,7 @@ public class Geocaching {
         pos = mInputPosition(true);
 
         HashMap<String, Cache> caches = data.getByPosition(pos, 5);
-        Event event = new Event(new GregorianCalendar(), dateEndApplications, dateEvent, name, description, pos, maxP, userOnline, caches);
+        Event event = new Event(new GregorianCalendar(), dateEndApplications, dateEvent, name, description, pos, maxP, userOnline, caches, data);
 
     }
 
@@ -2426,14 +2476,14 @@ public class Geocaching {
         Position p1 = CountriesData.portugal;
         Position p2 = new Position(41.57238, -8.47875, 1.5f);
 
-        Traditional tc1 = new Traditional(new GregorianCalendar(2015, 06, 24, 11, 11, 11), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), new ArrayList<String>());
-        Traditional tc2 = new Traditional(new GregorianCalendar(2015, 06, 19, 9, 12, 47), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new ArrayList<String>());
-        Mystery mc1 = new Mystery(new GregorianCalendar(2015, 06, 25, 2, 3, 4), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new Position(1.1f, 2.2f), "YOU SOLVED IT!");
+        Traditional tc1 = new Traditional(new GregorianCalendar(2015, 06, 24, 11, 11, 11), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), new ArrayList<String>(), newData);
+        Traditional tc2 = new Traditional(new GregorianCalendar(2015, 06, 19, 9, 12, 47), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new ArrayList<String>(), newData);
+        Mystery mc1 = new Mystery(new GregorianCalendar(2015, 06, 25, 2, 3, 4), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new Position(1.1f, 2.2f), "YOU SOLVED IT!", newData);
 
-        Event e1 = new Event(new GregorianCalendar(), new GregorianCalendar(2015, 6, 2), new GregorianCalendar(2015, 6, 4), "Evento All Star", "Está tudo a brilhar", new Position(42, 51), 5, u1, new HashMap<String, Cache>());
-        Event e2 = new Event(new GregorianCalendar(2015, 5, 2), new GregorianCalendar(2015, 5, 5), new GregorianCalendar(2015, 5, 31), "Evento Joker", "Um grande sorriso!!", new Position(82, 321), 5, u2, new HashMap<String, Cache>());
-        Event e3 = new Event(new GregorianCalendar(2015, 5, 4), new GregorianCalendar(2015, 4, 30), new GregorianCalendar(2015, 5, 31), "Evento Mais Bonito", "Um grandhe sorriso!!", new Position(282, 322), 5, u3, new HashMap<String, Cache>());
-        Event e4 = new Event(new GregorianCalendar(2015, 5, 4), new GregorianCalendar(2015, 3, 30), new GregorianCalendar(2015, 4, 31), "Evento de Hoje", "Tudo a jogar!!", new Position(82, 32), 5, u1, new HashMap<String, Cache>());
+        Event e1 = new Event(new GregorianCalendar(), new GregorianCalendar(2015, 6, 2), new GregorianCalendar(2015, 6, 4), "Evento All Star", "Está tudo a brilhar", new Position(42, 51), 5, u1, new HashMap<String, Cache>(), newData);
+        Event e2 = new Event(new GregorianCalendar(2015, 5, 2), new GregorianCalendar(2015, 5, 5), new GregorianCalendar(2015, 5, 31), "Evento Joker", "Um grande sorriso!!", new Position(82, 321), 5, u2, new HashMap<String, Cache>(), newData);
+        Event e3 = new Event(new GregorianCalendar(2015, 5, 4), new GregorianCalendar(2015, 4, 30), new GregorianCalendar(2015, 5, 31), "Evento Mais Bonito", "Um grandhe sorriso!!", new Position(282, 322), 5, u3, new HashMap<String, Cache>(), newData);
+        Event e4 = new Event(new GregorianCalendar(2015, 5, 4), new GregorianCalendar(2015, 3, 30), new GregorianCalendar(2015, 4, 31), "Evento de Hoje", "Tudo a jogar!!", new Position(82, 32), 5, u1, new HashMap<String, Cache>(), newData);
 
         e1.addCache(tc1);
         e1.addCache(tc2);
@@ -2456,6 +2506,7 @@ public class Geocaching {
         r1.publishCache(tc2);
         r1.publishCache(mc1);
 
+        // Force different days for sorting
         tc1.setPublishDate(new GregorianCalendar(2015, 06, 24, 11, 22, 9));
         tc1.setPublishDate(new GregorianCalendar(2015, 06, 20, 1, 2, 8));
         tc1.setPublishDate(new GregorianCalendar(2015, 06, 26, 23, 34, 17));

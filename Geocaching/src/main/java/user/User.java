@@ -138,6 +138,9 @@ public class User extends UserAbstract implements Serializable {
         cache.setCacheState(Cache.Status.UNPUBLISHED);
         this.data.getUnpublishedCaches().put(cache.getCacheID(), cache);
         this.caches.put(cache.getCacheID(), cache);
+        //Activity ac = new Activity(new GregorianCalendar(), Activity.Type.NEW_CACHE, cache, this);
+        //this.data.addActivity(ac);
+
         return true;
     }
 
@@ -289,11 +292,17 @@ public class User extends UserAbstract implements Serializable {
     public void newFriendship(User u2) {
         this.friends.put(u2.getEmail(), u2);
         u2.friends.put(this.getEmail(), this);
+
+        Activity ac = new Activity(new GregorianCalendar(), Activity.Type.FRIENDS_WITH, this, u2);
+        this.data.addActivity(ac);
     }
 
     public void removeFriendship(User u2) {
         this.friends.remove(u2.getEmail(), u2);
         u2.friends.remove(this.getEmail(), this);
+
+        Activity ac = new Activity(new GregorianCalendar(), Activity.Type.NOT_FRIENDS_WITH, this, u2);
+        this.data.addActivity(ac);
     }
 
     // toString
@@ -379,14 +388,15 @@ public class User extends UserAbstract implements Serializable {
     public boolean isFriendsWith(User friend) {
         return this.friends.containsKey(friend.getEmail());
     }
-    
-    
-    public int nFindFromType(Cache.Type type){
-    	int res=0;
-    	for(Cache c: this.caches.values())
-    		if(c.getType() == type)
-    			res++;
-    	return res;
+
+    public int nFindFromType(Cache.Type type) {
+        int res = 0;
+        for (Cache c : this.caches.values()) {
+            if (c.getType() == type) {
+                res++;
+            }
+        }
+        return res;
     }
 
 }

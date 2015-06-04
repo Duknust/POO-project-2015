@@ -1,5 +1,6 @@
 package caches;
 
+import base.Data;
 import base.Position;
 import java.util.GregorianCalendar;
 import java.util.TreeSet;
@@ -18,19 +19,19 @@ public class Mystery extends Cache {
     private String finalText = "";
 
     // Constructors
-    public Mystery(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer) {
+    public Mystery(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer, Data data) {
         super(publishDate, creationDate, cacheID, premiumOnly, description, cacheState,
-                cacheTitle, owner, cacheSize, difficulty, position, hint, cache_Logs, reviewer);
+                cacheTitle, owner, cacheSize, difficulty, position, hint, cache_Logs, reviewer, data);
     }
 
-    public Mystery(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Position finalPos, String finalText) {
-        super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs);
+    public Mystery(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Position finalPos, String finalText, Data data) {
+        super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs, data);
         this.finalPos = finalPos;
         this.finalText = finalText;
     }
 
-    public Mystery(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Position pos, String finalText) {
-        super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs);
+    public Mystery(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Position pos, String finalText, Data data) {
+        super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs, data);
         this.finalPos = pos;
         this.finalText = finalText;
     }
