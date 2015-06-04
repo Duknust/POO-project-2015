@@ -2569,8 +2569,168 @@ public class Geocaching {
     }
 
     private static void mStats() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int choice = -1;
+		Statistics statistics = null;
+		while (choice == -1) {
+			System.out.println("####### Statistics #######\n");
+
+			System.out.println("-- [1] Mine Statistics");
+			System.out.println("-- [2] Global Statistics");
+
+			System.out.println("-----");
+			System.out.println("-- [0] Back");
+			System.out.print("?> ");
+			try {
+				choice = Integer.parseInt(input.readLine());
+			} catch (Exception ex) {
+				// System.out.println("Error: Invalid Option");
+				choice = -1;
+			}
+
+			switch (choice) {
+			case 1:
+				mStatsOpt1();
+				statistics = new Statistics();
+				statistics.yearStatistics(data, userOnline,
+						new GregorianCalendar(), true);
+				statistics.monthStatistics(data, userOnline,
+						new GregorianCalendar(), true);
+
+				clearConsole();
+				choice = -1;
+				break;
+			case 2:
+				mStatsOpt2();
+				statistics = new Statistics();
+				System.out
+						.println("Until now were found "
+								+ statistics.getNumberCachesLastYear()
+								+ "in last year");
+				System.out.println("Until now were found "
+						+ statistics.getNumberCachesLastMonth()
+						+ "in last month");
+				clearConsole();
+				choice = -1;
+				break;
+			case 0:
+				break;
+			default:
+				System.out.println("Error: Option not available");
+				choice = -1;
+				break;
+			}
+		}
     }
+    
+    private static void mStatsOpt1() {
+		int choice = -1;
+		Statistics statistics = null;
+		while (choice == -1) {
+			System.out.println("####### Mine Statistics #######\n");
+
+			System.out.println("-- [1] Last month");
+			System.out.println("-- [2] Last year");
+
+			System.out.println("-----");
+			System.out.println("-- [0] Back");
+			System.out.print("?> ");
+			try {
+				choice = Integer.parseInt(input.readLine());
+			} catch (Exception ex) {
+				// System.out.println("Error: Invalid Option");
+				choice = -1;
+			}
+
+			switch (choice) {
+			case 1:
+				statistics = new Statistics();
+				statistics.monthStatistics(data, userOnline,
+						new GregorianCalendar(), true);
+
+				clearConsole();
+				choice = -1;
+				break;
+			case 2:
+
+				statistics = new Statistics();
+				statistics.yearStatistics(data, userOnline,
+						new GregorianCalendar(), true);
+
+				clearConsole();
+				choice = -1;
+				break;
+			case 0:
+				break;
+			default:
+				System.out.println("Error: Option not available");
+				choice = -1;
+				break;
+			}
+		}
+	}
+    
+    private static void mStatsOpt2() {
+		int choice = -1;
+		Statistics statistics = null;
+		while (choice == -1) {
+			System.out.println("####### Global Statistics #######\n");
+
+			System.out.println("-- [1] Statistics in Numbers");
+			System.out.println("-- [2] Tops");
+
+			System.out.println("-----");
+			System.out.println("-- [0] Back");
+			System.out.print("?> ");
+			try {
+				choice = Integer.parseInt(input.readLine());
+			} catch (Exception ex) {
+				// System.out.println("Error: Invalid Option");
+				choice = -1;
+			}
+
+			switch (choice) {
+			case 1:
+				statistics = new Statistics();
+				System.out
+						.println("Until now were found "
+								+ statistics.getNumberCachesLastYear()
+								+ "in last year");
+				System.out.println("Until now were found "
+						+ statistics.getNumberCachesLastMonth()
+						+ "in last month");
+
+				clearConsole();
+				choice = -1;
+				break;
+			case 2:
+				statistics = new Statistics();
+				TreeSet<ToTop> topFinders = statistics
+						.topTenCacheFinders(data.allUsers);
+				TreeSet<ToTop> topCreators = statistics
+						.topTenCacheCreators(data.enabledCaches);
+
+				System.out.println("Top finders:");
+				for (ToTop tt : topFinders)
+					System.out.println(tt.toString());
+
+				System.out.println("Top creators:");
+				System.out.println("Top creators:");
+				for (ToTop tt : topCreators)
+					System.out.println(tt.toString());
+
+				clearConsole();
+				choice = -1;
+				break;
+			case 0:
+				break;
+			default:
+				System.out.println("Error: Option not available");
+				choice = -1;
+				break;
+			}
+		}
+	}
+
 
     // ------------------- OTHER STUFF ------------------
     // Clear Console
