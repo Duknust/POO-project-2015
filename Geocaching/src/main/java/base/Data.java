@@ -252,6 +252,28 @@ public class Data implements Serializable {
         return array;
     }
 
+    // Timeline with myself
+    ArrayList<Activity> getActivitiesFriendsArray(User user, int total) {
+        int i = 0;
+        ArrayList<Activity> array = new ArrayList<>();
+        ArrayList<User> userlist = user.getFriendsArray();
+        userlist.add(user); // add the user to the list
+        for (Activity c : this.getAllActivities().values()) {
+            for (User f : userlist) {
+                if (c.about(f)) {
+                    if (array.contains(c) == false) { // Check Duplicates like 'friends with'
+                        array.add(c);
+                        i++;
+                        if (i >= total) {
+                            return array;
+                        }
+                    }
+                }
+            }
+        }
+        return array;
+    }
+
     // Has to be a class in order to be serializable with TreeMap
     private class ComparatorActivity implements Serializable, Comparator<GregorianCalendar> {
 
