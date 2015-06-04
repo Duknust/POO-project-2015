@@ -13,7 +13,7 @@ public class Activity implements Comparable<Activity>, Serializable {
 
     public enum Type {
 
-        NEW_CACHE, FOUND_CACHE, NOT_FOUND_CACHE, ARCHIVED_CACHE, DISABLED_CACHE, ENABLED_CACHE, UPDATED_LOG_TYPE, FRIENDS_WITH, NOT_FRIENDS_WITH
+        NEW_CACHE, FOUND_CACHE, DIDNT_FIND_CACHE, ARCHIVED_CACHE, DISABLED_CACHE, ENABLED_CACHE, UPDATED_LOG_TYPE, FRIENDS_WITH, NOT_FRIENDS_WITH, REV_NOTE, NOTE
     }
 
     private GregorianCalendar date;
@@ -40,7 +40,6 @@ public class Activity implements Comparable<Activity>, Serializable {
     public Activity(GregorianCalendar date, Type type, UserAbstract user1, UserAbstract user2) {
         this.date = date;
         this.type = type;
-        this.cache = cache;
         this.user1 = user1;
         this.user2 = user2;
     }
@@ -122,35 +121,43 @@ public class Activity implements Comparable<Activity>, Serializable {
         String res = "";
         switch (this.type) {
             case NEW_CACHE:
-                res = this.cache.getOwner().getName() + " published \""
+                res = this.user1.getName() + " published \""
                         + this.cache.getCacheTitle() + "\" "
-                        + this.cache.getClass().getSimpleName() + " cache";
+                        + this.cache.getClass().getSimpleName() + " cache from " + this.cache.getOwner().getName();
                 break;
             case FOUND_CACHE:
-                res = this.user1.getName() + " found \""
+                res = this.user1.getName() + " Found \""
                         + this.cache.getCacheTitle() + "\"";
                 break;
-            case NOT_FOUND_CACHE:
-                res = this.user1.getName() + " didn't found \""
+            case DIDNT_FIND_CACHE:
+                res = this.user1.getName() + " didn't Found \""
+                        + this.cache.getCacheTitle() + "\"";
+                break;
+            case REV_NOTE:
+                res = this.user1.getName() + " posted a Reviewer Note on \""
+                        + this.cache.getCacheTitle() + "\"";
+                break;
+            case NOTE:
+                res = this.user1.getName() + " posted a Note on \""
                         + this.cache.getCacheTitle() + "\"";
                 break;
             case ARCHIVED_CACHE:
-                res = "\"" + this.cache.getCacheTitle() + "\" has been archived by " + this.user1.getName();
+                res = "\"" + this.cache.getCacheTitle() + "\" from " + this.cache.getOwner().getName() + " has been Archived by " + this.user1.getName();
                 break;
             case DISABLED_CACHE:
-                res = "\"" + this.cache.getCacheTitle() + "\" has been disabled by " + this.user1.getName();
+                res = "\"" + this.cache.getCacheTitle() + "\" from " + this.cache.getOwner().getName() + " has been Disabled by " + this.user1.getName();
                 break;
             case ENABLED_CACHE:
-                res = "\"" + this.cache.getCacheTitle() + "\" has been enabled by " + this.user1.getName();
+                res = "\"" + this.cache.getCacheTitle() + "\" from " + this.cache.getOwner().getName() + " has been Enabled by " + this.user1.getName();
                 break;
             case UPDATED_LOG_TYPE:
                 res = "The " + this.user1.getName() + "'s log from \"" + this.cache.getCacheTitle() + "\" has been updated to " + this.log.getLogType();
                 break;
             case FRIENDS_WITH:
-                res = this.user1.getName() + " is now friends with " + this.user2.getName();
+                res = this.user1.getName() + " is now Friends with " + this.user2.getName();
                 break;
             case NOT_FRIENDS_WITH:
-                res = this.user1.getName() + " is no longer friends with " + this.user2.getName();
+                res = this.user1.getName() + " is no longer Friends with " + this.user2.getName();
                 break;
             default:
                 break;

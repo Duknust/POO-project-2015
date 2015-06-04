@@ -44,8 +44,8 @@ public class UserTest {
 
         data = new Data();
         u1 = new User("x@x.com", "12345", "Ulisses", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
-        r1 = new Reviewer("x1@x.com", "12345", "Rickon", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
-        a1 = new Admin("x2@x.com", "12345", "Aemon", "M", "rua", new GregorianCalendar(), false, 0, null, null, data);
+        r1 = new Reviewer("x1@x.com", "12345", "Rickon", "M", "rua", new GregorianCalendar(), data);
+        a1 = new Admin("x2@x.com", "12345", "Aemon", "M", "rua", new GregorianCalendar(), data);
 
         data.getAllUsers().put(u1.getEmail(), u1);
         data.getAllUsers().put(r1.getEmail(), r1);
@@ -86,9 +86,9 @@ public class UserTest {
         Data datat = new Data();
 
         User usr1 = new User("x@x.com", "12345", "Ulisses", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
-        User usr2 = new User("x@x.com", "12345", "Ulisses", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
-        Reviewer rev = new Reviewer("x1@x.com", "12345", "Rickon", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
-        Admin adm = new Admin("x2@x.com", "12345", "Aemon", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
+        User usr2 = new User("y@y.com", "12345", "Unter", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
+        Reviewer rev = new Reviewer("x1@x.com", "12345", "Rickon", "M", "rua", new GregorianCalendar(), datat);
+        Admin adm = new Admin("x2@x.com", "12345", "Aemon", "M", "rua", new GregorianCalendar(), datat);
 
         datat.getAllUsers().put(usr1.getEmail(), usr1);
         datat.getAllUsers().put(usr1.getEmail(), usr2);
@@ -121,7 +121,8 @@ public class UserTest {
 
         assertFalse(usr1.logCache(log3, tca2));
         assertFalse(usr2.logCache(log4, tca2));
-        assertTrue(usr2.logCache(log7, tca2));
+        assertFalse(usr2.logCache(log7, tca2));
+        assertTrue(rev.logCache(log7, tca2));
 
         adm.archiveCache(tca1);
         // tca1 archived
@@ -143,7 +144,7 @@ public class UserTest {
         Data datat = new Data();
 
         User usr = new User("x@x.com", "12345", "Ulisses", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
-        Reviewer rev = new Reviewer("x1@x.com", "12345", "Rickon", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
+        Reviewer rev = new Reviewer("x1@x.com", "12345", "Rickon", "M", "rua", new GregorianCalendar(), datat);
 
         datat.getAllUsers().put(usr.getEmail(), usr);
         datat.getAllUsers().put(rev.getEmail(), rev);
@@ -166,7 +167,7 @@ public class UserTest {
         Data datat = new Data();
 
         User usr = new User("x@x.com", "12345", "Ulisses", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
-        Reviewer rev = new Reviewer("x1@x.com", "12345", "Rickon", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
+        Reviewer rev = new Reviewer("x1@x.com", "12345", "Rickon", "M", "rua", new GregorianCalendar(), datat);
 
         datat.getAllUsers().put(usr.getEmail(), usr);
         datat.getAllUsers().put(rev.getEmail(), rev);
@@ -192,7 +193,7 @@ public class UserTest {
         Data datat = new Data();
 
         User usr = new User("x@x.com", "12345", "Ulisses", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
-        Reviewer rev = new Reviewer("x1@x.com", "12345", "Rickon", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
+        Reviewer rev = new Reviewer("x1@x.com", "12345", "Rickon", "M", "rua", new GregorianCalendar(), datat);
 
         datat.getAllUsers().put(usr.getEmail(), usr);
         datat.getAllUsers().put(rev.getEmail(), rev);
@@ -222,9 +223,9 @@ public class UserTest {
         Data datat = new Data();
 
         User usr1 = new User("x@x.com", "12345", "Ulisses", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
-        User usr2 = new User("x@x.com", "12345", "Ulisses", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
-        Reviewer rev = new Reviewer("x1@x.com", "12345", "Rickon", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
-        Admin adm = new Admin("x2@x.com", "12345", "Aemon", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
+        User usr2 = new User("y@y.com", "12345", "Unter", "M", "rua", new GregorianCalendar(), false, 0, null, null, datat);
+        Reviewer rev = new Reviewer("x1@x.com", "12345", "Rickon", "M", "rua", new GregorianCalendar(), datat);
+        Admin adm = new Admin("x2@x.com", "12345", "Aemon", "M", "rua", new GregorianCalendar(), datat);
 
         datat.getAllUsers().put(usr1.getEmail(), usr1);
         datat.getAllUsers().put(rev.getEmail(), rev);

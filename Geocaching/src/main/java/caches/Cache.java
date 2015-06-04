@@ -9,10 +9,10 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.TreeSet;
-import user.Admin;
 import user.Reviewer;
 import user.User;
 import user.UserAbstract;
+import user.UserAbstract.Role;
 
 public abstract class Cache implements Serializable, Comparable<Cache> {
 
@@ -272,78 +272,99 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         }
     }
 
-    public boolean logCache(User user, Log log) {// CHECK THIS , STUFF MISSING !!!
+    public boolean logCache(UserAbstract user, Log log) {
 
+        Activity ac = null;
         switch (this.getCacheStatus()) {
             case UNPUBLISHED:
                 // If Reviewer
-                if (user instanceof Reviewer == true) {
-                    if (this.reviewer == null) {
-                        return false; // No Reviewer No Log
-                    } else if (this.reviewer.equals(user) == false) {
-                        return false; // If this Reviewer is not assigned, No Log
-                    }
+                if (user.getRole() == Role.REVIEWER) {
+                    /*if (this.reviewer == null) {
+                     return false; // No Reviewer No Log
+                     } else if (this.reviewer.equals(user) == false) {
+                     return false; // If this Reviewer is not assigned, No Log
+                     }*/
                     if (log.getLogType() != Log.Log_Type.REVIEWER_NOTE) { // Check Log Type
                         return false;
                     }
+                    ac = new Activity(new GregorianCalendar(), Activity.Type.REV_NOTE, this, user, log);
 
-                } else if (user instanceof Admin == true) {
+                } // If Admin
+                else if (user.getRole() == Role.ADMIN) {
                     if (log.getLogType() != Log.Log_Type.REVIEWER_NOTE) { // Check Log Type
                         return false;
                     }
-                } else // User
+                    ac = new Activity(new GregorianCalendar(), Activity.Type.REV_NOTE, this, user, log);
+                } else if (user.getRole() == Role.USER) // User
                 {
                     if (this.getOwner().equals(user)) // If he is the Owner
                     {
-                        if (log.getLogType() != Log.Log_Type.REVIEWER_NOTE) { // Check Log Type
+                        if (log.getLogType() != Log.Log_Type.NOTE) { // Check Log Type
                             return false;
                         }
+                        ac = new Activity(new GregorianCalendar(), Activity.Type.NOTE, this, user, log);
                     } else // Not the Owner
                     {
-                        return false;
+                        return false; // Not Published, can't post
                     }
-                }
-                break;
-
-            case DISABLED:
-                // Everyone can log
-                if (log.getLogType() != Log.Log_Type.NOTE) { // Check Log Type
+                } else {
                     return false;
                 }
                 break;
 
+            case DISABLED:
             case ARCHIVED:
                 // Everyone can log
-                if (log.getLogType() != Log.Log_Type.NOTE) { // Check Log Type
+                if (log.getLogType() == Log.Log_Type.NOTE) { // Check Log Type
+                    ac = new Activity(new GregorianCalendar(), Activity.Type.NOTE, this, user, log);
+                } else if (log.getLogType() == Log.Log_Type.REVIEWER_NOTE && user.getRole() != Role.USER) {
+                    ac = new Activity(new GregorianCalendar(), Activity.Type.REV_NOTE, this, user, log);
+                } else {
                     return false;
                 }
                 break;
 
             case ENABLED:
                 // Everyone can log
-                if (log.getLogType() == Log.Log_Type.ARCHIVED || log.getLogType() == Log.Log_Type.DISABLED
-                        || log.getLogType() == Log.Log_Type.ENABLED) { // Check Log Type
-                    return false;
-                } else if (log.getLogType() == Log.Log_Type.REVIEWER_NOTE) {
-                    if (user instanceof Reviewer == true) {
-                        if (user.equals(this.getReviewer()) == false) {
-                            return false; // Not the assigned Reviewer
+
+                switch (log.getLogType()) {
+                    case REVIEWER_NOTE:
+                        if (user.getRole() == Role.REVIEWER || user.getRole() == Role.ADMIN) {
+                            ac = new Activity(new GregorianCalendar(), Activity.Type.REV_NOTE, this, user, log);
+                        } else {
+                            return false;
                         }
-                    } else {
-                        return false;
-                    }
+                        break;
+                    case NEEDS_ARCHIVING:
+                    case NEEDS_MAINTENANCE:
+                    case NOTE:
+                        ac = new Activity(new GregorianCalendar(), Activity.Type.NOTE, this, user, log);
+                        break;
+                    case DNF:
+                        if (user.getRole() == Role.USER) {
+                            ac = new Activity(new GregorianCalendar(), Activity.Type.DIDNT_FIND_CACHE, this, user, log);
+                        } else {
+                            return false;
+                        }
+                        break;
+                    case FOUND_IT:
+                        if (user.getRole() == Role.USER) {
+                            ac = new Activity(new GregorianCalendar(), Activity.Type.FOUND_CACHE, this, user, log);
+                        } else {
+                            return false;
+                        }
+                        break;
+
                 }
-                break;
 
         }
 
         log.setUser(user);
         if (log.getLogType() == Log_Type.FOUND_IT) {// If the User Found It
-            user.incTotalFound(); // Then increment by 1 the Total Founds
+            ((User) user).incTotalFound(); // Then increment by 1 the Total Founds
         }
         this.cache_Logs.add(log);
 
-        Activity ac = new Activity(new GregorianCalendar(), Activity.Type.FOUND_CACHE, this, user, log);
         this.data.addActivity(ac);
         return true;
     }
@@ -420,6 +441,13 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.cacheID);
+        return hash;
     }
 
     public boolean deleteLog(Log log) {

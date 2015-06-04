@@ -1,5 +1,7 @@
 package user;
 
+import base.Data;
+import caches.Cache;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -8,9 +10,7 @@ import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
-import caches.Cache;
-
-public abstract class UserAbstract implements Serializable {
+public abstract class UserAbstract implements Serializable, UserInterface {
 
     public enum Role {
 
@@ -39,10 +39,10 @@ public abstract class UserAbstract implements Serializable {
     private String address;
     private GregorianCalendar birthDate;
     private boolean premium;
-    private int totalFound;
+    private Data data = null;
 
     // Constructors
-    public UserAbstract(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound) {
+    public UserAbstract(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, Data data) {
         this.email = email;
         this.password = getHash(password);
         this.name = name;
@@ -50,7 +50,18 @@ public abstract class UserAbstract implements Serializable {
         this.address = address;
         this.birthDate = birthDate;
         this.premium = premium;
-        this.totalFound = totalFound;
+        this.data = data;
+    }
+
+    public UserAbstract(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, Data data) {
+        this.email = email;
+        this.password = getHash(password);
+        this.name = name;
+        this.gender = gender;
+        this.address = address;
+        this.birthDate = birthDate;
+        this.premium = true;
+        this.data = data;
     }
 
     // Getters and Setters
@@ -110,14 +121,6 @@ public abstract class UserAbstract implements Serializable {
         this.premium = premium;
     }
 
-    public int getTotalFound() {
-        return totalFound;
-    }
-
-    public void setTotalFound(int totalFound) {
-        this.totalFound = totalFound;
-    }
-
     // Methods
     private byte[] getHash(String password) { //SHA-256
         byte byteData[] = null;
@@ -150,24 +153,26 @@ public abstract class UserAbstract implements Serializable {
         return fmt.format(calendar.getTime());
     }
 
-    public void incTotalFound() {
-        this.totalFound++;
+    public Data getData() {
+        return this.data;
     }
 
-    public void decTotalFound() {
-        this.totalFound--;
+    public void setData(Data data) {
+        this.data = data;
     }
 
-    // toString
-    // Needs to be Overrided
+    @Override
     public Role getRole() {
         return Role.DEFAULT;
     }
 
+    // toString
+    @Override
     public String toString() {
-        return name + " (" + totalFound + ")" + (premium ? " Premium" : "");
+        return name + (premium ? " Premium" : "");
     }
 
+    @Override
     public String toStringTotal() {
         return "E-Mail - " + email
                 + "\nName - " + name
@@ -175,7 +180,7 @@ public abstract class UserAbstract implements Serializable {
                 + "\nAddress - " + address
                 + "\nBirth Date - " + formatDate(birthDate)
                 + "\nPremium - " + premium
-                + "\nTotal Found - " + totalFound;
+                + "\nRole - " + getRole();
     }
 
     @Override
@@ -191,6 +196,13 @@ public abstract class UserAbstract implements Serializable {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + Objects.hashCode(this.email);
+        return hash;
     }
 
     public abstract int nFindFromType(Cache.Type type);
