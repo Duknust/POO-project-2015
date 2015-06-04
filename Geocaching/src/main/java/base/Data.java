@@ -130,6 +130,9 @@ public class Data implements Serializable {
     }
 
     public void addActivity(Activity act) {
+        if (act == null) {
+            return;
+        }
         while (this.allActivities.containsKey(act.getDate()) == true) {
             act.incMs();
         }

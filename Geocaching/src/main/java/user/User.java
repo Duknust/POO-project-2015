@@ -9,15 +9,15 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-public class User extends UserAbstract implements Serializable {
+public class User extends UserAbstract implements BasicCacheMethodsInterface, Serializable {
 
     private HashMap<String, Cache> caches = null;
     private HashMap<String, User> friends = null;
-    private Data data = null;
+    private int totalFound;
 
     // Constructors
     public User(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, boolean premium, int totalFound, HashMap<String, Cache> caches, HashMap<String, User> friends, Data data) {
-        super(email, password, name, gender, address, birthDate, premium, totalFound);
+        super(email, password, name, gender, address, birthDate, premium, data);
 
         if (caches == null) {
             this.caches = new HashMap<String, Cache>();
@@ -31,7 +31,8 @@ public class User extends UserAbstract implements Serializable {
             this.friends = friends;
         }
 
-        this.data = data;
+        this.totalFound = totalFound;
+
     }
 
     // Getters and Setters
@@ -108,24 +109,16 @@ public class User extends UserAbstract implements Serializable {
     }
 
     public int getTotalFound() {
-        return super.getTotalFound();
+        return totalFound;
     }
 
     public void setTotalFound(int totalFound) {
-        super.setTotalFound(totalFound);
-    }
-
-    public Data getData() {
-        return this.data;
-    }
-
-    public void setData(Data data) {
-        this.data = data;
+        this.totalFound = totalFound;
     }
 
     // Methods
     public boolean createCache(Cache cache) {
-        HashMap<String, Cache> map = this.data.getAllCachesAndUnpublished();
+        HashMap<String, Cache> map = super.getData().getAllCachesAndUnpublished();
         if (map == null) {
             return false;
         }
@@ -136,29 +129,20 @@ public class User extends UserAbstract implements Serializable {
         cache.setCacheID(cache.genID(6));
         cache.setOwner(this);
         cache.setCacheState(Cache.Status.UNPUBLISHED);
-        this.data.getUnpublishedCaches().put(cache.getCacheID(), cache);
+        super.getData().getUnpublishedCaches().put(cache.getCacheID(), cache);
         this.caches.put(cache.getCacheID(), cache);
         //Activity ac = new Activity(new GregorianCalendar(), Activity.Type.NEW_CACHE, cache, this);
-        //this.data.addActivity(ac);
+        //super.getData().addActivity(ac);
 
         return true;
     }
 
+    @Override
     public boolean disableCache(Cache c) {
 
-        if (this instanceof Admin == true)
-            ; else if (this instanceof Reviewer) {
-            if (c.getReviewer() == null) {
-                return false;
-            }
-            if (c.getReviewer().equals(this) == false) { // If I am the reviewer
-                return false;
-            }
-
-        } else if (this instanceof User) {
-            if (c.getOwner().equals(this) == false) { // If I am not the owner
-                return false;
-            }
+        // If I am not the owner
+        if (c.getOwner().equals(this) == false) {
+            return false;
         }
 
         if (c.getCacheStatus() != Cache.Status.ENABLED) // Can only disable a enabled cache
@@ -166,31 +150,22 @@ public class User extends UserAbstract implements Serializable {
             return false;
         }
 
-        this.data.getEnabledCaches().remove(c.getCacheID(), c);
+        super.getData().getEnabledCaches().remove(c.getCacheID(), c);
         c.setCacheState(Cache.Status.DISABLED); // Disable it
-        this.data.getDisabledCaches().put(c.getCacheID(), c);
+        super.getData().getDisabledCaches().put(c.getCacheID(), c);
 
         Activity act = new Activity(new GregorianCalendar(), Activity.Type.DISABLED_CACHE, c, c.getOwner()); // Create Activity
-        this.data.addActivity(act);
+        super.getData().addActivity(act);
 
         return true;
     }
 
+    @Override
     public boolean archiveCache(Cache c) {
 
-        if (this instanceof Admin == true)
-            ; else if (this instanceof Reviewer) {
-            if (c.getReviewer() == null) {
-                return false;
-            }
-            if (c.getReviewer().equals(this) == false) { // If I am the reviewer
-                return false;
-            }
+        if (c.getOwner().equals(this) == false) { // If I am not the owner
+            return false;
 
-        } else if (this instanceof User) {
-            if (c.getOwner().equals(this) == false) { // If I am not the owner
-                return false;
-            }
         }
 
         switch (c.getCacheStatus()) // Can only disable a enabled cache
@@ -199,45 +174,35 @@ public class User extends UserAbstract implements Serializable {
                 return false;
 
             case UNPUBLISHED:
-                this.data.getUnpublishedCaches().remove(c.getCacheID(), c);
+                super.getData().getUnpublishedCaches().remove(c.getCacheID(), c);
                 c.setCacheState(Cache.Status.ARCHIVED);
-                this.data.getArchivedCaches().put(c.getCacheID(), c);
+                super.getData().getArchivedCaches().put(c.getCacheID(), c);
                 break;
             case ENABLED:
 
-                this.data.getEnabledCaches().remove(c.getCacheID(), c);
+                super.getData().getEnabledCaches().remove(c.getCacheID(), c);
                 c.setCacheState(Cache.Status.ARCHIVED);
-                this.data.getArchivedCaches().put(c.getCacheID(), c);
+                super.getData().getArchivedCaches().put(c.getCacheID(), c);
                 break;
             case DISABLED:
 
-                this.data.getDisabledCaches().remove(c.getCacheID(), c);
+                super.getData().getDisabledCaches().remove(c.getCacheID(), c);
                 c.setCacheState(Cache.Status.ARCHIVED);
-                this.data.getArchivedCaches().put(c.getCacheID(), c);
+                super.getData().getArchivedCaches().put(c.getCacheID(), c);
                 break;
         }
 
         Activity act = new Activity(new GregorianCalendar(), Activity.Type.ARCHIVED_CACHE, c, c.getOwner()); // Create Activity
-        this.data.addActivity(act);
+        super.getData().addActivity(act);
 
         return true;
     }
 
+    @Override
     public boolean enableCache(Cache c) {
 
-        if (this instanceof Admin == true)
-            ; else if (this instanceof Reviewer) {
-            if (c.getReviewer() == null) {
-                return false;
-            }
-            if (c.getReviewer().equals(this) == false) { // If I am the reviewer
-                return false;
-            }
-
-        } else if (this instanceof User) {
-            if (c.getOwner().equals(this) == false) { // If I am not the owner
-                return false;
-            }
+        if (c.getOwner().equals(this) == false) { // If I am not the owner
+            return false;
         }
 
         switch (c.getCacheStatus()) // Can only disable a enabled cache
@@ -250,24 +215,25 @@ public class User extends UserAbstract implements Serializable {
                 if (c.getPublishDate() == null) {
                     return false; // Can't enable a cache that is unpublished and archived
                 }
-                this.data.getArchivedCaches().remove(c.getCacheID(), c);
+                super.getData().getArchivedCaches().remove(c.getCacheID(), c);
                 c.setCacheState(Cache.Status.ENABLED);
-                this.data.getEnabledCaches().put(c.getCacheID(), c);
+                super.getData().getEnabledCaches().put(c.getCacheID(), c);
                 break;
 
             case DISABLED:
-                this.data.getDisabledCaches().remove(c.getCacheID(), c);
+                super.getData().getDisabledCaches().remove(c.getCacheID(), c);
                 c.setCacheState(Cache.Status.ENABLED);
-                this.data.getEnabledCaches().put(c.getCacheID(), c);
+                super.getData().getEnabledCaches().put(c.getCacheID(), c);
                 break;
         }
 
         Activity act = new Activity(new GregorianCalendar(), Activity.Type.ENABLED_CACHE, c, c.getOwner()); // Create Activity
-        this.data.addActivity(act);
+        super.getData().addActivity(act);
 
         return true;
     }
 
+    @Override
     public boolean logCache(Log l, Cache c) {
 
         if (c == null) {
@@ -276,8 +242,6 @@ public class User extends UserAbstract implements Serializable {
         if (l == null) {
             return false;
         }
-
-        l.setUser(this); // Assign this user to the log
 
         if (c.logCache(this, l) == false) {
             return false;
@@ -294,7 +258,7 @@ public class User extends UserAbstract implements Serializable {
         u2.friends.put(this.getEmail(), this);
 
         Activity ac = new Activity(new GregorianCalendar(), Activity.Type.FRIENDS_WITH, this, u2);
-        this.data.addActivity(ac);
+        super.getData().addActivity(ac);
     }
 
     public void removeFriendship(User u2) {
@@ -302,13 +266,32 @@ public class User extends UserAbstract implements Serializable {
         u2.friends.remove(this.getEmail(), this);
 
         Activity ac = new Activity(new GregorianCalendar(), Activity.Type.NOT_FRIENDS_WITH, this, u2);
-        this.data.addActivity(ac);
+        super.getData().addActivity(ac);
+    }
+
+    public void incTotalFound() {
+        this.totalFound++;
+    }
+
+    public void decTotalFound() {
+        this.totalFound--;
     }
 
     // toString
     @Override
     public String toString() {
-        return super.toString();
+        return super.getName() + " (" + totalFound + ")" + (super.isPremium() ? " Premium" : "");
+    }
+
+    @Override
+    public String toStringTotal() {
+        return "E-Mail - " + super.getEmail()
+                + "\nName - " + super.getName()
+                + "\nGender - " + super.getGender()
+                + "\nAddress - " + super.getAddress()
+                + "\nBirth Date - " + formatDate(super.getBirthDate())
+                + "\nPremium - " + super.isPremium()
+                + "\nTotal Found - " + totalFound;
     }
 
     public String friendsToString() {
@@ -352,25 +335,11 @@ public class User extends UserAbstract implements Serializable {
         return array;
     }
 
-    @Override
-    public String toStringTotal() {
-        return "E-Mail - " + super.getEmail()
-                + "\nName - " + super.getName()
-                + "\nGender - " + super.getGender()
-                + "\nAddress - " + super.getAddress()
-                + "\nBirth Date - " + super.formatDate(super.getBirthDate())
-                + "\nPremium - " + super.isPremium()
-                + "\nTotal Found - " + super.getTotalFound()
-                + "\nTotal Owned Caches - " + this.caches.size()
-                + "\nFriends - " + this.friends.size() + "\n"
-                + this.friendsToString();
-    }
-
     public String toStringFriend() {
         return "Name - " + super.getName()
                 + "\nGender - " + super.getGender()
                 + "\nPremium - " + super.isPremium()
-                + "\nTotal Found - " + super.getTotalFound()
+                + "\nTotal Found - " + totalFound
                 + "\nTotal Owned Caches - " + this.caches.size()
                 + "\nFriends - " + this.friends.size() + "\n";
     }
@@ -389,6 +358,7 @@ public class User extends UserAbstract implements Serializable {
         return this.friends.containsKey(friend.getEmail());
     }
 
+    @Override
     public int nFindFromType(Cache.Type type) {
         int res = 0;
         for (Cache c : this.caches.values()) {

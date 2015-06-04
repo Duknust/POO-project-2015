@@ -1570,14 +1570,14 @@ public class Geocaching {
                                     log.setLogType(Log_Type.FOUND_IT);
                                     edited = true;
                                     // If now is a FOUND IT then increase user's total founds
-                                    log.getUser().incTotalFound();
+                                    ((User) log.getUser()).incTotalFound();
                                 }
                                 break;
                             case 2:
                                 if (dnf) {
                                     if (type == Log_Type.FOUND_IT)// If it was a FOUND IT then decrease user's total founds
                                     {
-                                        log.getUser().decTotalFound();
+                                        ((User) log.getUser()).decTotalFound();
                                     }
                                     log.setLogType(Log_Type.DNF);
                                     edited = true;
@@ -1587,7 +1587,7 @@ public class Geocaching {
                                 if (needm) {
                                     if (type == Log_Type.FOUND_IT)// If it was a FOUND IT then decrease user's total founds
                                     {
-                                        log.getUser().decTotalFound();
+                                        ((User) log.getUser()).decTotalFound();
                                     }
                                     log.setLogType(Log_Type.NEEDS_MAINTENANCE);
                                     edited = true;
@@ -1597,7 +1597,7 @@ public class Geocaching {
                                 if (needa) {
                                     if (type == Log_Type.FOUND_IT)// If it was a FOUND IT then decrease user's total founds
                                     {
-                                        log.getUser().decTotalFound();
+                                        ((User) log.getUser()).decTotalFound();
                                     }
                                     log.setLogType(Log_Type.NEEDS_ARCHIVING);
                                     edited = true;
@@ -1607,7 +1607,7 @@ public class Geocaching {
                                 if (note) {
                                     if (type == Log_Type.FOUND_IT)// If it was a FOUND IT then decrease user's total founds
                                     {
-                                        log.getUser().decTotalFound();
+                                        ((User) log.getUser()).decTotalFound();
                                     }
                                     log.setLogType(Log_Type.NOTE);
                                     edited = true;
@@ -1858,7 +1858,7 @@ public class Geocaching {
                     break;
 
                 case FOUND_CACHE:
-                case NOT_FOUND_CACHE:
+                case DIDNT_FIND_CACHE:
                 case UPDATED_LOG_TYPE:
                     System.out.println("-- [1] View Cache");
                     System.out.println("-- [2] View User");
@@ -1923,7 +1923,7 @@ public class Geocaching {
                             break;
                     }
                 case FOUND_CACHE:
-                case NOT_FOUND_CACHE:
+                case DIDNT_FIND_CACHE:
                 case UPDATED_LOG_TYPE:
                     switch (choice) {
                         case 1:
@@ -2570,167 +2570,168 @@ public class Geocaching {
 
     private static void mStats() {
         int choice = -1;
-		Statistics statistics = null;
-		while (choice == -1) {
-			System.out.println("####### Statistics #######\n");
+        Statistics statistics = null;
+        while (choice == -1) {
+            System.out.println("####### Statistics #######\n");
 
-			System.out.println("-- [1] Mine Statistics");
-			System.out.println("-- [2] Global Statistics");
+            System.out.println("-- [1] Mine Statistics");
+            System.out.println("-- [2] Global Statistics");
 
-			System.out.println("-----");
-			System.out.println("-- [0] Back");
-			System.out.print("?> ");
-			try {
-				choice = Integer.parseInt(input.readLine());
-			} catch (Exception ex) {
-				// System.out.println("Error: Invalid Option");
-				choice = -1;
-			}
+            System.out.println("-----");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                // System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
 
-			switch (choice) {
-			case 1:
-				mStatsOpt1();
-				statistics = new Statistics();
-				statistics.yearStatistics(data, userOnline,
-						new GregorianCalendar(), true);
-				statistics.monthStatistics(data, userOnline,
-						new GregorianCalendar(), true);
+            switch (choice) {
+                case 1:
+                    mStatsOpt1();
+                    statistics = new Statistics();
+                    statistics.yearStatistics(data, (User) userOnline,
+                            new GregorianCalendar(), true);
+                    statistics.monthStatistics(data, (User) userOnline,
+                            new GregorianCalendar(), true);
 
-				clearConsole();
-				choice = -1;
-				break;
-			case 2:
-				mStatsOpt2();
-				statistics = new Statistics();
-				System.out
-						.println("Until now were found "
-								+ statistics.getNumberCachesLastYear()
-								+ "in last year");
-				System.out.println("Until now were found "
-						+ statistics.getNumberCachesLastMonth()
-						+ "in last month");
-				clearConsole();
-				choice = -1;
-				break;
-			case 0:
-				break;
-			default:
-				System.out.println("Error: Option not available");
-				choice = -1;
-				break;
-			}
-		}
+                    clearConsole();
+                    choice = -1;
+                    break;
+                case 2:
+                    mStatsOpt2();
+                    statistics = new Statistics();
+                    System.out
+                            .println("Until now were found "
+                                    + statistics.getNumberCachesLastYear()
+                                    + "in last year");
+                    System.out.println("Until now were found "
+                            + statistics.getNumberCachesLastMonth()
+                            + "in last month");
+                    clearConsole();
+                    choice = -1;
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Error: Option not available");
+                    choice = -1;
+                    break;
+            }
+        }
     }
-    
+
     private static void mStatsOpt1() {
-		int choice = -1;
-		Statistics statistics = null;
-		while (choice == -1) {
-			System.out.println("####### Mine Statistics #######\n");
+        int choice = -1;
+        Statistics statistics = null;
+        while (choice == -1) {
+            System.out.println("####### Mine Statistics #######\n");
 
-			System.out.println("-- [1] Last month");
-			System.out.println("-- [2] Last year");
+            System.out.println("-- [1] Last month");
+            System.out.println("-- [2] Last year");
 
-			System.out.println("-----");
-			System.out.println("-- [0] Back");
-			System.out.print("?> ");
-			try {
-				choice = Integer.parseInt(input.readLine());
-			} catch (Exception ex) {
-				// System.out.println("Error: Invalid Option");
-				choice = -1;
-			}
+            System.out.println("-----");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                // System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
 
-			switch (choice) {
-			case 1:
-				statistics = new Statistics();
-				statistics.monthStatistics(data, userOnline,
-						new GregorianCalendar(), true);
+            switch (choice) {
+                case 1:
+                    statistics = new Statistics();
+                    statistics.monthStatistics(data, (User) userOnline,
+                            new GregorianCalendar(), true);
 
-				clearConsole();
-				choice = -1;
-				break;
-			case 2:
+                    clearConsole();
+                    choice = -1;
+                    break;
+                case 2:
 
-				statistics = new Statistics();
-				statistics.yearStatistics(data, userOnline,
-						new GregorianCalendar(), true);
+                    statistics = new Statistics();
+                    statistics.yearStatistics(data, (User) userOnline,
+                            new GregorianCalendar(), true);
 
-				clearConsole();
-				choice = -1;
-				break;
-			case 0:
-				break;
-			default:
-				System.out.println("Error: Option not available");
-				choice = -1;
-				break;
-			}
-		}
-	}
-    
+                    clearConsole();
+                    choice = -1;
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Error: Option not available");
+                    choice = -1;
+                    break;
+            }
+        }
+    }
+
     private static void mStatsOpt2() {
-		int choice = -1;
-		Statistics statistics = null;
-		while (choice == -1) {
-			System.out.println("####### Global Statistics #######\n");
+        int choice = -1;
+        Statistics statistics = null;
+        while (choice == -1) {
+            System.out.println("####### Global Statistics #######\n");
 
-			System.out.println("-- [1] Statistics in Numbers");
-			System.out.println("-- [2] Tops");
+            System.out.println("-- [1] Statistics in Numbers");
+            System.out.println("-- [2] Tops");
 
-			System.out.println("-----");
-			System.out.println("-- [0] Back");
-			System.out.print("?> ");
-			try {
-				choice = Integer.parseInt(input.readLine());
-			} catch (Exception ex) {
-				// System.out.println("Error: Invalid Option");
-				choice = -1;
-			}
+            System.out.println("-----");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                // System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
 
-			switch (choice) {
-			case 1:
-				statistics = new Statistics();
-				System.out
-						.println("Until now were found "
-								+ statistics.getNumberCachesLastYear()
-								+ "in last year");
-				System.out.println("Until now were found "
-						+ statistics.getNumberCachesLastMonth()
-						+ "in last month");
+            switch (choice) {
+                case 1:
+                    statistics = new Statistics();
+                    System.out
+                            .println("Until now were found "
+                                    + statistics.getNumberCachesLastYear()
+                                    + "in last year");
+                    System.out.println("Until now were found "
+                            + statistics.getNumberCachesLastMonth()
+                            + "in last month");
 
-				clearConsole();
-				choice = -1;
-				break;
-			case 2:
-				statistics = new Statistics();
-				TreeSet<ToTop> topFinders = statistics
-						.topTenCacheFinders(data.allUsers);
-				TreeSet<ToTop> topCreators = statistics
-						.topTenCacheCreators(data.enabledCaches);
+                    clearConsole();
+                    choice = -1;
+                    break;
+                case 2:
+                    statistics = new Statistics();
+                    TreeSet<ToTop> topFinders = statistics
+                            .topTenCacheFinders(data.allUsers);
+                    TreeSet<ToTop> topCreators = statistics
+                            .topTenCacheCreators(data.enabledCaches);
 
-				System.out.println("Top finders:");
-				for (ToTop tt : topFinders)
-					System.out.println(tt.toString());
+                    System.out.println("Top finders:");
+                    for (ToTop tt : topFinders) {
+                        System.out.println(tt.toString());
+                    }
 
-				System.out.println("Top creators:");
-				System.out.println("Top creators:");
-				for (ToTop tt : topCreators)
-					System.out.println(tt.toString());
+                    System.out.println("Top creators:");
+                    System.out.println("Top creators:");
+                    for (ToTop tt : topCreators) {
+                        System.out.println(tt.toString());
+                    }
 
-				clearConsole();
-				choice = -1;
-				break;
-			case 0:
-				break;
-			default:
-				System.out.println("Error: Option not available");
-				choice = -1;
-				break;
-			}
-		}
-	}
-
+                    clearConsole();
+                    choice = -1;
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Error: Option not available");
+                    choice = -1;
+                    break;
+            }
+        }
+    }
 
     // ------------------- OTHER STUFF ------------------
     // Clear Console
@@ -2801,8 +2802,8 @@ public class Geocaching {
         User u2 = new User("2", "2", "Uche Villareal", "M", "rua", new GregorianCalendar(1982, 2, 2, 11, 11, 11), false, 0, null, null, newData);
         User u3 = new User("3", "3", "Ukra", "M", "rua", new GregorianCalendar(1992, 3, 29, 11, 11, 11), false, 0, null, null, newData);
         User u4 = new User("4", "4", "Uruguaio", "M", "rua", new GregorianCalendar(2001, 8, 13, 11, 11, 11), false, 0, null, null, newData);
-        Reviewer r1 = new Reviewer("r", "r", "Rickon", "M", "rua", new GregorianCalendar(1968, 1, 24, 11, 11, 11), false, 0, null, null, newData);
-        Admin a1 = new Admin("a", "a", "Aemon", "M", "rua", new GregorianCalendar(1987, 7, 14, 11, 11, 11), false, 0, null, null, newData);
+        Reviewer r1 = new Reviewer("r", "r", "Rickon", "M", "rua", new GregorianCalendar(1968, 1, 24, 11, 11, 11), newData);
+        Admin a1 = new Admin("a", "a", "Aemon", "M", "rua", new GregorianCalendar(1987, 7, 14, 11, 11, 11), newData);
 
         newData.getAllUsers().put(u1.getEmail(), u1);
         newData.getAllUsers().put(u2.getEmail(), u2);
