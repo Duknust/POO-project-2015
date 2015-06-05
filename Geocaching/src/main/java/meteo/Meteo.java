@@ -111,7 +111,7 @@ public class Meteo {
 		boolean northHemisphere = position.getContinent().equals("Europe")
 				|| position.getContinent().equals("North America")
 				|| position.getContinent().equals("Asia");
-		int season = position.getSeason(northHemisphere, date); // 0-winter;
+		int season = position.getSeasonByWeeks(northHemisphere, date); // 0-winter;
 		// 1-spring;
 		// 2-summer;
 		// 3-autumn
@@ -242,5 +242,16 @@ public class Meteo {
 			break;
 		}
 		return res;
+	}
+
+	public Meteo staticMeteo(int day, Position position) {
+		float temperature = (float) (-5.41417f - 1.03914f * day + 0.0193654f
+				* Math.pow(day, 2) - 0.0000905978f * Math.pow(day, 3) + 1.24375f
+				* Math.pow(10, -7) * Math.pow(day, 4));
+		float rainProbability = temperature < 12 ? 0.5f : 0.1f;
+
+		int dif = position.getDiferentialSeasonByDayAndPosition(day, position);
+
+		return new Meteo(temperature + dif, rainProbability);
 	}
 }

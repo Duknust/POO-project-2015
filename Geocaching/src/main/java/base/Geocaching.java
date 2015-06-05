@@ -1,6 +1,17 @@
 package base;
 
 import activity.Activity;
+import static activity.Activity.Type.ARCHIVED_CACHE;
+import static activity.Activity.Type.DIDNT_FIND_CACHE;
+import static activity.Activity.Type.DISABLED_CACHE;
+import static activity.Activity.Type.ENABLED_CACHE;
+import static activity.Activity.Type.FOUND_CACHE;
+import static activity.Activity.Type.FRIENDS_WITH;
+import static activity.Activity.Type.NEW_CACHE;
+import static activity.Activity.Type.NOTE;
+import static activity.Activity.Type.NOT_FRIENDS_WITH;
+import static activity.Activity.Type.REV_NOTE;
+import static activity.Activity.Type.UPDATED_LOG_TYPE;
 import caches.Cache;
 import caches.Event;
 import caches.Log;
@@ -41,6 +52,7 @@ public class Geocaching {
     static Data data = null;
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static UserAbstract userOnline; // User online and using the System
+    static Statistics statistics = null;
 
     public static void main(String[] args) {
 
@@ -3149,9 +3161,13 @@ public class Geocaching {
         Statistics statistics = null;
         while (choice == -1) {
             System.out.println("####### Statistics #######\n");
-
-            System.out.println("-- [1] Mine Statistics");
-            System.out.println("-- [2] Global Statistics");
+            if (userOnline.getRole() == Role.ADMIN
+                    || userOnline.getRole() == Role.REVIEWER) {
+                System.out.println("-- [1] Global Statistics");
+            } else {
+                System.out.println("-- [1] Mine Statistics");
+                System.out.println("-- [2] Global Statistics");
+            }
 
             System.out.println("-----");
             System.out.println("-- [0] Back");
@@ -3163,21 +3179,32 @@ public class Geocaching {
                 choice = -1;
             }
 
+            if (userOnline.getRole() == Role.ADMIN
+                    || userOnline.getRole() == Role.REVIEWER) {
+                if (choice == 1) {
+                    choice = 2;
+                }
+            }
             switch (choice) {
                 case 1:
                     mStatsOpt1();
-                    statistics = new Statistics();
-                    statistics.yearStatistics(data, (User) userOnline,
-                            new GregorianCalendar(), true);
-                    statistics.monthStatistics(data, (User) userOnline,
-                            new GregorianCalendar(), true);
+                    if (statistics == null) {
+                        statistics = new Statistics(data);
+                    }
 
-                    clearConsole();
+                    System.out.println(statistics.yearStatistics(data,
+                            (User) userOnline, new GregorianCalendar(), true));
+                    System.out.println(statistics.monthStatistics(data,
+                            (User) userOnline, new GregorianCalendar(), true));
+
                     choice = -1;
                     break;
                 case 2:
+                    if (statistics == null) {
+                        statistics = new Statistics(data);
+                    }
+
                     mStatsOpt2();
-                    statistics = new Statistics();
                     System.out
                             .println("Until now were found "
                                     + statistics.getNumberCachesLastYear()
@@ -3185,7 +3212,7 @@ public class Geocaching {
                     System.out.println("Until now were found "
                             + statistics.getNumberCachesLastMonth()
                             + "in last month");
-                    clearConsole();
+
                     choice = -1;
                     break;
                 case 0:
@@ -3219,20 +3246,23 @@ public class Geocaching {
 
             switch (choice) {
                 case 1:
-                    statistics = new Statistics();
-                    statistics.monthStatistics(data, (User) userOnline,
-                            new GregorianCalendar(), true);
+                    if (statistics == null) {
+                        statistics = new Statistics(data);
+                    }
+                    System.out.println(statistics.monthStatistics(data,
+                            (User) userOnline, new GregorianCalendar(), true)
+                            + "\n");
 
-                    clearConsole();
                     choice = -1;
                     break;
                 case 2:
+                    if (statistics == null) {
+                        statistics = new Statistics(data);
+                    }
+                    System.out.println(statistics.yearStatistics(data,
+                            (User) userOnline, new GregorianCalendar(), true)
+                            + "\n");
 
-                    statistics = new Statistics();
-                    statistics.yearStatistics(data, (User) userOnline,
-                            new GregorianCalendar(), true);
-
-                    clearConsole();
                     choice = -1;
                     break;
                 case 0:
@@ -3266,37 +3296,43 @@ public class Geocaching {
 
             switch (choice) {
                 case 1:
-                    statistics = new Statistics();
-                    System.out
-                            .println("Until now were found "
-                                    + statistics.getNumberCachesLastYear()
-                                    + "in last year");
+                    if (statistics == null) {
+                        statistics = new Statistics(data);
+                    }
+
+                    System.out.println("Until now were found "
+                            + statistics.getNumberCachesLastYear()
+                            + " in last year");
                     System.out.println("Until now were found "
                             + statistics.getNumberCachesLastMonth()
-                            + "in last month");
+                            + " in last month");
 
-                    clearConsole();
                     choice = -1;
                     break;
                 case 2:
-                    statistics = new Statistics();
+                    if (statistics == null) {
+                        statistics = new Statistics(data);
+                    }
+
                     TreeSet<ToTop> topFinders = statistics
                             .topTenCacheFinders(data.allUsers);
                     TreeSet<ToTop> topCreators = statistics
                             .topTenCacheCreators(data.enabledCaches);
 
-                    System.out.println("Top finders:");
-                    for (ToTop tt : topFinders) {
-                        System.out.println(tt.toString());
+                    System.out.println("\nTop finders:");
+                    Iterator<ToTop> tt = topFinders.descendingIterator();
+                    while (tt.hasNext()) {
+                        ToTop totop = tt.next();
+                        System.out.println(totop.toString());
                     }
 
-                    System.out.println("Top creators:");
-                    System.out.println("Top creators:");
-                    for (ToTop tt : topCreators) {
-                        System.out.println(tt.toString());
+                    System.out.println("\nTop creators:");
+                    tt = topCreators.descendingIterator();
+                    while (tt.hasNext()) {
+                        ToTop totop = tt.next();
+                        System.out.println(totop.toString());
                     }
 
-                    clearConsole();
                     choice = -1;
                     break;
                 case 0:
@@ -3520,5 +3556,4 @@ public class Geocaching {
         } catch (Exception e) {
         }
     }
-
 }
