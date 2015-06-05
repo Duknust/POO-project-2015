@@ -120,9 +120,9 @@ public class Statistics implements Serializable {
             for (i = 0; i < columns; i++) {
                 if (!graph) {
                     if (points.get(i) == maximum) {
-                        matrix[8 - (points.get(i) / (limit / 10)) + 1][i] = "  x  ";
+                        matrix[8 - (points.get(i) / ((limit / 10) == 0 ? 1 : (limit / 10))) + 1][i] = "  x  ";
                     } else {
-                        matrix[8 - (points.get(i) / (limit / 10)) + 1][i] = "  .  ";
+                        matrix[8 - (points.get(i) / ((limit / 10) == 0 ? 1 : (limit / 10))) + 1][i] = "  .  ";
                     }
                 } else {
                     matrix[8 - (points.get(i) / ((limit / 10) == 0 ? 1 : (limit / 10))) + 1][i] = "  #  ";
@@ -452,7 +452,7 @@ public class Statistics implements Serializable {
 
         ArrayList<Cache> cachesCreatedInDate = new ArrayList<Cache>();
 
-        for (Cache c : user.getCaches().values()) {
+        for (Cache c : user.getCachesOnly().values()) {
             if (c.getCreationDate().before(dateFinnish)
                     && c.getCreationDate().after(dateInit)) {
                 cachesCreatedInDate.add(c);
@@ -479,7 +479,7 @@ public class Statistics implements Serializable {
             }
 
             if (withGraph) {
-                ArrayList<Integer> points = new ArrayList<>();
+                ArrayList<Integer> points = new ArrayList<Integer>();
                 for (int ind = 0; ind < 12; ind++) {
                     points.add(0);
                 }
@@ -497,8 +497,11 @@ public class Statistics implements Serializable {
                 months.add("Nov");
                 months.add("Dec");
                 for (Cache c : cachesCreatedInDate) {
-                    int toSum = points.get(c.getCreationDate().get(GregorianCalendar.MONTH));
-                    points.add(c.getCreationDate().get(GregorianCalendar.MONTH), toSum + 1);
+                    int toSum = points.get(c.getCreationDate().get(
+                            GregorianCalendar.MONTH));
+                    points.add(
+                            c.getCreationDate().get(GregorianCalendar.MONTH),
+                            toSum + 1);
                 }
                 for (int x : points) {
                     if (x > max) {
@@ -518,11 +521,11 @@ public class Statistics implements Serializable {
             }
 
             if (withGraph) {
-                ArrayList<Integer> points = new ArrayList<>();
+                ArrayList<Integer> points = new ArrayList<Integer>();
                 for (int ind = 0; ind < 12; ind++) {
                     points.add(0);
                 }
-                ArrayList<String> months = new ArrayList<>();
+                ArrayList<String> months = new ArrayList<String>();
                 months.add("Jan");
                 months.add("Feb");
                 months.add("Mar");
