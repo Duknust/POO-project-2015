@@ -1,13 +1,8 @@
 package base;
 
-import meteo.Meteo;
-
 public class testing {
 	public static void main(String[] args) {
 
-		System.out.println(staticMeteo(1));
-		System.out.println(staticMeteo(30));
-		System.out.println(staticMeteo(200));
 		/*
 		 * Data data = new Data(); Statistics s = new Statistics(data);
 		 * ArrayList<Integer> arr = new ArrayList<Integer>(); arr.add(1);
@@ -24,12 +19,4 @@ public class testing {
 		 */
 	}
 
-	public static Meteo staticMeteo(int value) {
-		float temperature = (float) (-5.41417f - 1.03914f * value + 0.0193654f
-				* Math.pow(value, 2) - 0.0000905978f * Math.pow(value, 3) + 1.24375f
-				* Math.pow(10, -7) * Math.pow(value, 4));
-		float rainProbability = temperature < 12 ? 0.5f : 0.1f;
-
-		return new Meteo(temperature, rainProbability);
-	}
 }
