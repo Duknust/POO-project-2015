@@ -2774,6 +2774,9 @@ public class Geocaching {
 			switch (choice) {
 			case 1:
 				mStatsOpt1();
+				if (statistics == null)
+					statistics = new Statistics(data);
+
 				System.out.println(statistics.yearStatistics(data,
 						(User) userOnline, new GregorianCalendar(), true));
 				System.out.println(statistics.monthStatistics(data,
@@ -2782,6 +2785,9 @@ public class Geocaching {
 				choice = -1;
 				break;
 			case 2:
+				if (statistics == null)
+					statistics = new Statistics(data);
+
 				mStatsOpt2();
 				System.out
 						.println("Until now were found "
@@ -2824,6 +2830,8 @@ public class Geocaching {
 
 			switch (choice) {
 			case 1:
+				if (statistics == null)
+					statistics = new Statistics(data);
 				System.out.println(statistics.monthStatistics(data,
 						(User) userOnline, new GregorianCalendar(), true)
 						+ "\n");
@@ -2831,7 +2839,8 @@ public class Geocaching {
 				choice = -1;
 				break;
 			case 2:
-
+				if (statistics == null)
+					statistics = new Statistics(data);
 				System.out.println(statistics.yearStatistics(data,
 						(User) userOnline, new GregorianCalendar(), true)
 						+ "\n");
@@ -2869,31 +2878,39 @@ public class Geocaching {
 
 			switch (choice) {
 			case 1:
-				System.out
-						.println("Until now were found "
-								+ statistics.getNumberCachesLastYear()
-								+ "in last year");
+				if (statistics == null)
+					statistics = new Statistics(data);
+
+				System.out.println("Until now were found "
+						+ statistics.getNumberCachesLastYear()
+						+ " in last year");
 				System.out.println("Until now were found "
 						+ statistics.getNumberCachesLastMonth()
-						+ "in last month");
+						+ " in last month");
 
 				choice = -1;
 				break;
 			case 2:
+				if (statistics == null)
+					statistics = new Statistics(data);
+
 				TreeSet<ToTop> topFinders = statistics
 						.topTenCacheFinders(data.allUsers);
 				TreeSet<ToTop> topCreators = statistics
 						.topTenCacheCreators(data.enabledCaches);
 
-				System.out.println("Top finders:");
-				for (ToTop tt : topFinders) {
-					System.out.println(tt.toString());
+				System.out.println("\nTop finders:");
+				Iterator<ToTop> tt = topFinders.descendingIterator();
+				while (tt.hasNext()) {
+					ToTop totop = tt.next();
+					System.out.println(totop.toString());
 				}
 
-				System.out.println("Top creators:");
-				System.out.println("Top creators:");
-				for (ToTop tt : topCreators) {
-					System.out.println(tt.toString());
+				System.out.println("\nTop creators:");
+				tt = topCreators.descendingIterator();
+				while (tt.hasNext()) {
+					ToTop totop = tt.next();
+					System.out.println(totop.toString());
 				}
 
 				choice = -1;
