@@ -1,5 +1,6 @@
 package base;
 
+
 public class testing {
 	public static void main(String[] args) {
 
@@ -17,6 +18,8 @@ public class testing {
 		 * 
 		 * s.graphic2D(arr, arr2, 12, 10, "n trabalhadores", "n bolotas", true);
 		 */
+
+		System.out.println(System.currentTimeMillis());
 	}
 
 }
