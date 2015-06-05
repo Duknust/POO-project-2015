@@ -107,13 +107,39 @@ public class Activity implements Comparable<Activity>, Serializable {
     }
 
     public boolean about(UserAbstract user) {
+
         if (this.user1.equals(user)) {
             return true;
-        } else if (this.user2 == null) {
-            return false;
-        } else {
-            return this.user2.equals(user);
         }
+
+        if (this.user2 != null) {
+            if (this.user2.equals(user)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean aboutWithCache(UserAbstract user) {
+
+        if (this.user1.equals(user)) {
+            return true;
+        }
+
+        if (this.user2 != null) {
+            if (this.user2.equals(user)) {
+                return true;
+            }
+        }
+
+        if (this.cache != null) {
+            if (cache.getOwner().equals(user) && (this.user1.getRole() == UserAbstract.Role.REVIEWER)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -130,7 +156,7 @@ public class Activity implements Comparable<Activity>, Serializable {
                         + this.cache.getCacheTitle() + "\"";
                 break;
             case DIDNT_FIND_CACHE:
-                res = this.user1.getName() + " didn't Found \""
+                res = this.user1.getName() + " didn't Find \""
                         + this.cache.getCacheTitle() + "\"";
                 break;
             case REV_NOTE:

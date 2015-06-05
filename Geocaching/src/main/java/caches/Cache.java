@@ -395,7 +395,7 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         return false;
     }
 
-    public TreeSet<Log> getLogs(User user) {
+    public TreeSet<Log> getLogs(UserAbstract user) {
         TreeSet<Log> list = new TreeSet<>();
         for (Log l : this.cache_Logs) {
             if (l.getUser().equals(user)) {
@@ -542,6 +542,15 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
                 + " D " + difficulty
                 + " / T " + position.getDifficulty()
                 + " (" + formatDateTime(publishDate) + ")";
+    }
+
+    public String toSimpleListingState() {
+        return cacheID
+                + " '" + cacheTitle + '\''
+                + " (" + getType() + ")"
+                + " D " + difficulty
+                + " / T " + position.getDifficulty()
+                + " (" + formatDateTime(publishDate) + ")  - " + this.cacheState;
     }
 
     public String toLogsListing() {

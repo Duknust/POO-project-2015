@@ -147,4 +147,11 @@ public class Admin extends UserAbstract implements BasicCacheMethodsInterface, S
                 + "\nBirth Date - " + formatDate(super.getBirthDate())
                 + "\nRole - " + getRole();
     }
+
+    @Override
+    public String toStringOthers() {
+        return "Name - " + super.getName()
+                + "\nGender - " + super.getGender()
+                + "\nRole - " + getRole();
+    }
 }
