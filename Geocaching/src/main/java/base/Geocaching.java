@@ -2,7 +2,9 @@ package base;
 
 import activity.Activity;
 import caches.Cache;
+import caches.Earth;
 import caches.Event;
+import caches.Letterbox;
 import caches.Log;
 import caches.Log.Log_Type;
 import caches.Multi;
@@ -1700,7 +1702,7 @@ public class Geocaching {
         }
         status = false;
         
-     // Hint of Cache
+        // Hint of Cache
         System.out.println("-- Hint of Cache");
         while (status == false) {
             System.out.print("?> ");
@@ -1851,17 +1853,47 @@ public class Geocaching {
         
          
         if(type == Cache.Type.TRADITIONAL) {
-        	cache = new Traditional(new GregorianCalendar(), description, name, cacheSize, difficulty, pos, hint, new TreeSet<Log>(), new ArrayList<String>(), data);
+        	cache = new Traditional(new GregorianCalendar(), description, name, cacheSize, difficulty, pos, hint, onlyPremium, userOnline, data);
+        
+        } else  if(type == Cache.Type.EARTH) {
+        	cache = new Earth(new GregorianCalendar(), description, name, cacheSize, difficulty, pos, hint, onlyPremium, userOnline, data);
         
         } else if(type == Cache.Type.MULTI){
         	ArrayList<Stage> stages = mStages();
-        	cache = new Multi(new GregorianCalendar(), description, name, cacheSize, difficulty, pos, hint, new TreeSet<Log>(), stages, data);
+        	cache = new Multi(new GregorianCalendar(), description, name, cacheSize, difficulty, pos, hint, onlyPremium, stages, userOnline, data);
+        
+        }  else if(type == Cache.Type.LETTERBOX){
+        	ArrayList<Stage> stages = mStages();
+        	cache = new Letterbox(new GregorianCalendar(), description, name, cacheSize, difficulty, pos, hint, onlyPremium, stages, userOnline, data);
+        
+        } else if(type == Cache.Type.MYSTERY){
+        	Position finPosition = null;
+        	String finText = "";
+        	
+        	//Positon of Cache
+        	System.out.println("Insert the Final Position");
+        	finPosition = mInputPosition(true);
+        	
+        	System.out.println("-- Final Text of Cache");
+            while (status == false) {
+                System.out.print("?> ");
+
+                try {
+                	finText = input.readLine();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                if (finText.length() > 10) {
+                    status = true;
+                } else {
+                    System.out.println("Error: The name need at least 10 characters!");
+                }
+            }
+        	
+        	cache = new Mystery(new GregorianCalendar(), description, name, cacheSize, difficulty, pos, hint, onlyPremium, finPosition, finText, userOnline, data);
         }
         
-        
-        
-        
-       
         HashMap<String, Cache> unp = data.getUnpublishedCaches();
         unp.put(cache.getCacheID(), cache);
 
@@ -3126,9 +3158,9 @@ public class Geocaching {
         Position p1 = CountriesData.portugal;
         Position p2 = new Position(41.57238, -8.47875, 1.5f);
 
-        Traditional tc1 = new Traditional(new GregorianCalendar(2015, 06, 24, 11, 11, 11), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), new ArrayList<String>(), newData);
-        Traditional tc2 = new Traditional(new GregorianCalendar(2015, 06, 19, 9, 12, 47), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new ArrayList<String>(), newData);
-        Traditional tc3 = new Traditional(new GregorianCalendar(2015, 06, 17, 2, 12, 47), "more info", "Gualtar - A Primeira", 4, 1.0f, p2, "magnetic", new TreeSet<Log>(), new ArrayList<String>(), newData);
+        Traditional tc1 = new Traditional(new GregorianCalendar(2015, 06, 24, 11, 11, 11), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), newData);
+        Traditional tc2 = new Traditional(new GregorianCalendar(2015, 06, 19, 9, 12, 47), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), newData);
+        Traditional tc3 = new Traditional(new GregorianCalendar(2015, 06, 17, 2, 12, 47), "more info", "Gualtar - A Primeira", 4, 1.0f, p2, "magnetic", new TreeSet<Log>(), newData);
         Mystery mc1 = new Mystery(new GregorianCalendar(2015, 06, 25, 2, 3, 4), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new Position(1.1f, 2.2f), "YOU SOLVED IT!", newData);
 
         Event e1 = new Event(new GregorianCalendar(), new GregorianCalendar(2015, 6, 2), new GregorianCalendar(2015, 6, 4), "Evento All Star", "Está tudo a brilhar", new Position(42, 51), 5, u1, new HashMap<String, Cache>(), newData);

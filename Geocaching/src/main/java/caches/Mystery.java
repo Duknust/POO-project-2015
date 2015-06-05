@@ -2,8 +2,10 @@ package caches;
 
 import base.Data;
 import base.Position;
+
 import java.util.GregorianCalendar;
 import java.util.TreeSet;
+
 import user.Reviewer;
 import user.UserAbstract;
 
@@ -33,6 +35,12 @@ public class Mystery extends Cache {
     public Mystery(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Position pos, String finalText, Data data) {
         super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs, data);
         this.finalPos = pos;
+        this.finalText = finalText;
+    }
+    
+    public Mystery(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, boolean premium, Position finalPosition, String finalText, UserAbstract owner, Data data) {
+    	super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, premium, owner, data);
+        this.finalPos = finalPosition;
         this.finalText = finalText;
     }
 

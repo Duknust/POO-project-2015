@@ -2,9 +2,11 @@ package caches;
 
 import base.Data;
 import base.Position;
+
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.TreeSet;
+
 import user.Reviewer;
 import user.UserAbstract;
 
@@ -33,6 +35,12 @@ public class Letterbox extends Cache {
         this.stages = stages;
     }
 
+    public Letterbox(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, boolean premium, ArrayList<Stage> stages, UserAbstract owner, Data data){
+    	super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, premium, owner, data);
+    	this.stages = stages;
+    }
+  
+    
     @Override
     public String toString() {
         return "Letterbox Cache\n" + super.toListing()

@@ -31,6 +31,11 @@ public class Multi extends Cache {
         super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs, data);
         this.stages = stages;
     }
+    
+    public Multi(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, boolean premium, ArrayList<Stage> stages, UserAbstract owner, Data data) {
+    	super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, premium, owner, data);
+    	this.stages = stages;
+    }
 
     @Override
     public String toString() {

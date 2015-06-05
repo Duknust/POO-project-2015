@@ -4,11 +4,13 @@ import activity.Activity;
 import base.Data;
 import base.Position;
 import caches.Log.Log_Type;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.TreeSet;
+
 import user.Reviewer;
 import user.User;
 import user.UserAbstract;
@@ -148,7 +150,24 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
         this.data = data;
     }
 
-    // Getters and Setters
+    public Cache(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, boolean premium, UserAbstract owner, Data data) {
+    	this.creationDate = creationDate;
+    	this.owner = owner;
+    	this.cacheTitle = cacheTitle;
+        this.description = description;
+        this.cacheState = Status.UNPUBLISHED;
+        this.cacheSize = cacheSize;
+        this.difficulty = difficulty;
+        this.position = position;
+        this.hint = hint;
+        this.cache_Logs = new TreeSet<Log>();
+        this.premiumOnly = premium;
+        this.cacheID = genID(6);
+        this.data = data;
+    	
+    	
+    }
+	// Getters and Setters
     public GregorianCalendar getPublishDate() {
         return publishDate;
     }
