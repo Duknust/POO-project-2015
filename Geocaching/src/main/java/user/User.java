@@ -88,6 +88,17 @@ public class User extends UserAbstract implements BasicCacheMethodsInterface, Se
         return this.caches;
     }
 
+    public HashMap<String, Cache> getCachesOnly() {
+        HashMap<String, Cache> map = new HashMap<>();
+
+        for (Cache c : this.caches.values()) {
+            if (c.getType() != Cache.Type.EVENT) {
+                map.put(c.getCacheID(), c);
+            }
+        }
+        return this.caches;
+    }
+
     public void setCaches(HashMap<String, Cache> caches) {
         this.setCaches(caches);
     }

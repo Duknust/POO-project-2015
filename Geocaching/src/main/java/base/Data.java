@@ -147,7 +147,7 @@ public class Data implements Serializable {
         HashMap<String, Cache> allCaches = getAllCaches();
 
         for (Cache c : allCaches.values()) {
-            if (c.getOwner().equals(u)) {
+            if (c.getOwner().equals(u) && c.getType() != Cache.Type.EVENT) {
                 list.add(c);
             }
         }
@@ -162,7 +162,7 @@ public class Data implements Serializable {
         HashMap<String, Cache> allCaches = getAllCaches();
 
         for (Cache c : allCaches.values()) {
-            if (c.hasFound(u)) {
+            if (c.hasFound(u) && c.getType() != Cache.Type.EVENT) {
                 list.add(c);
             }
         }
