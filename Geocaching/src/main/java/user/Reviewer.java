@@ -5,6 +5,7 @@ import base.Data;
 import caches.Cache;
 import caches.Log;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -193,6 +194,7 @@ public class Reviewer extends UserAbstract implements BasicCacheMethodsInterface
         super.getData().getEnabledCaches().put(c.getCacheID(), c); // Move it from Unpublished to Published
         super.getData().getUnpublishedCaches().remove(c.getCacheID(), c);
 
+        this.assignedCaches.add(c);
         Activity act = new Activity(new GregorianCalendar(),
                 Activity.Type.NEW_CACHE, c, this); // Create Activity
         super.getData().addActivity(act);
@@ -201,8 +203,7 @@ public class Reviewer extends UserAbstract implements BasicCacheMethodsInterface
 
     public Cache giveMeCache() {
         Cache c = null;
-        Iterator<Cache> it = super.getData().getUnpublishedCaches().values()
-                .iterator();
+        Iterator<Cache> it = super.getData().getUnpublishedCaches().values().iterator();
 
         while (it.hasNext()) {
             c = it.next();
@@ -212,7 +213,7 @@ public class Reviewer extends UserAbstract implements BasicCacheMethodsInterface
                 return c;
             }
         }
-        return c;
+        return null;
     }
 
     public Cache giveMeCache(Cache c) {
@@ -240,6 +241,30 @@ public class Reviewer extends UserAbstract implements BasicCacheMethodsInterface
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public ArrayList<Cache> getAssignedCachesArray() {
+
+        ArrayList<Cache> array = new ArrayList<>();
+
+        for (Cache c : this.assignedCaches) {
+            if (c.getType() != Cache.Type.EVENT) {
+                array.add(c);
+            }
+        }
+        return array;
+    }
+
+    public ArrayList<Cache> getAssignedEventsArray() {
+
+        ArrayList<Cache> array = new ArrayList<>();
+
+        for (Cache c : this.assignedCaches) {
+            if (c.getType() == Cache.Type.EVENT) {
+                array.add(c);
+            }
+        }
+        return array;
+    }
+
     // toString
     @Override
     public String toString() {
@@ -254,6 +279,14 @@ public class Reviewer extends UserAbstract implements BasicCacheMethodsInterface
                 + "\nAddress - " + super.getAddress()
                 + "\nBirth Date - " + formatDate(super.getBirthDate())
                 + "\nRole - " + getRole();
+    }
+
+    @Override
+    public String toStringOthers() {
+        return "Name - " + super.getName()
+                + "\nGender - " + super.getGender()
+                + "\nRole - " + getRole()
+                + "\nTotal Assigned Caches - " + this.assignedCaches.size();
     }
 
 }
