@@ -5,6 +5,7 @@ import caches.Cache;
 import caches.Event;
 import caches.Log;
 import caches.Log.Log_Type;
+import caches.Multi;
 import caches.Mystery;
 import caches.Stage;
 import caches.Traditional;
@@ -46,7 +47,7 @@ public class Geocaching {
 
     public static void main(String[] args) {
 
-        data = startData();
+        //data = startData();
         data = populateData(); // Use Pre-Made Database _ Atention, use with caution ! ---------------------------------------------
         showLogo();
 
@@ -1854,13 +1855,15 @@ public class Geocaching {
         
         } else if(type == Cache.Type.MULTI){
         	ArrayList<Stage> stages = mStages();
+        	cache = new Multi(new GregorianCalendar(), description, name, cacheSize, difficulty, pos, hint, new TreeSet<Log>(), stages, data);
         }
         
         
         
         
        
-        data.getUnpublishedCaches().put(cache.getCacheID(), cache);
+        HashMap<String, Cache> unp = data.getUnpublishedCaches();
+        unp.put(cache.getCacheID(), cache);
 
     }
 
@@ -1872,7 +1875,7 @@ public class Geocaching {
 		Stage st = null;
 		int nstage = 1, choice = -1;
 		
-		while(sfinal){
+		while(sfinal == false){
 		 	System.out.format("####### Position Input of Stage %d #######\n", nstage);
 	        System.out.println("----- Please insert the following fields");
 
@@ -1926,7 +1929,7 @@ public class Geocaching {
 	        System.out.println("-- Final Stage:");
             while (status == false) {
             	System.out.println("\t[1] Final Stage");
-            	System.out.println("\t[2] NOT Final Stage ");
+            	System.out.println("\t[2] NOT Final Stage");
             	
             	System.out.print("\n?> ");
                 try {
