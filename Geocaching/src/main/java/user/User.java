@@ -305,6 +305,16 @@ public class User extends UserAbstract implements BasicCacheMethodsInterface, Se
                 + "\nTotal Found - " + totalFound;
     }
 
+    @Override
+    public String toStringOthers() {
+        return "Name - " + super.getName()
+                + "\nGender - " + super.getGender()
+                + "\nPremium - " + super.isPremium()
+                + "\nTotal Found - " + totalFound
+                + "\nTotal Owned Caches - " + this.caches.size()
+                + "\nFriends - " + this.friends.size() + "\n";
+    }
+
     public String friendsToString() {
         StringBuilder sb = new StringBuilder();
         for (UserAbstract u : this.friends.values()) {
@@ -344,15 +354,6 @@ public class User extends UserAbstract implements BasicCacheMethodsInterface, Se
 
         }
         return array;
-    }
-
-    public String toStringFriend() {
-        return "Name - " + super.getName()
-                + "\nGender - " + super.getGender()
-                + "\nPremium - " + super.isPremium()
-                + "\nTotal Found - " + totalFound
-                + "\nTotal Owned Caches - " + this.caches.size()
-                + "\nFriends - " + this.friends.size() + "\n";
     }
 
     // Increment by number the Number of Founds
