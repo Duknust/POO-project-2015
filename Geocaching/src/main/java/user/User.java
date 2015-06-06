@@ -4,10 +4,13 @@ import activity.Activity;
 import base.Data;
 import caches.Cache;
 import caches.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+
+import meteo.Meteo;
 
 public class User extends UserAbstract implements BasicCacheMethodsInterface, Serializable {
 
@@ -129,9 +132,6 @@ public class User extends UserAbstract implements BasicCacheMethodsInterface, Se
 
     // Methods
     public boolean createCache(Cache cache) {
-        if (cache.getType() == Cache.Type.EVENT) {
-            return false;
-        }
         HashMap<String, Cache> map = super.getData().getAllCachesAndUnpublished();
         if (map == null) {
             return false;
@@ -358,6 +358,78 @@ public class User extends UserAbstract implements BasicCacheMethodsInterface, Se
         }
         return array;
     }
+    
+    public int getNumberByTemperature(float temp){
+    	int found = 0;
+    	Meteo m = new Meteo();
+    	
+    	//Count if is good in cold
+    	if(temp<10){
+    		for(Cache c: this.caches.values()){
+    			Log log = c.hasFoundLog(this);
+    			Meteo auxMeteo = m.staticMeteo(log.getDate().get(GregorianCalendar.DAY_OF_YEAR), c.getPosition());
+    			
+    			if(auxMeteo.getTemperature() < 10)
+    				found++;	
+        	}
+    		
+    	} else if (temp < 30){
+    		for(Cache c: this.caches.values()){
+    			Log log = c.hasFoundLog(this);
+    			Meteo auxMeteo = m.staticMeteo(log.getDate().get(GregorianCalendar.DAY_OF_YEAR), c.getPosition());
+    			
+    			if(auxMeteo.getTemperature() >= 10 && auxMeteo.getTemperature() <30)
+    				found++;	
+        	}
+    		
+    	} else { //Count if is good in heat
+    		for(Cache c: this.caches.values()){
+    			Log log = c.hasFoundLog(this);
+    			Meteo auxMeteo = m.staticMeteo(log.getDate().get(GregorianCalendar.DAY_OF_YEAR), c.getPosition());
+    			
+    			if(auxMeteo.getTemperature() >= 30)
+    				found++;	
+        	}
+    	}
+    	return found;
+    }
+    
+    
+    public int getNumberByRain(float rain){
+    	int found = 0;
+    	Meteo m = new Meteo();
+    	
+    	//Count if is good in cold
+    	if(rain< 0.3){
+    		for(Cache c: this.caches.values()){
+    			Log log = c.hasFoundLog(this);
+    			Meteo auxMeteo = m.staticMeteo(log.getDate().get(GregorianCalendar.DAY_OF_YEAR), c.getPosition());
+    			
+    			if(auxMeteo.getTemperature() < 10)
+    				found++;	
+        	}
+    		
+    	} else if (rain < 0.6){
+    		for(Cache c: this.caches.values()){
+    			Log log = c.hasFoundLog(this);
+    			Meteo auxMeteo = m.staticMeteo(log.getDate().get(GregorianCalendar.DAY_OF_YEAR), c.getPosition());
+    			
+    			if(auxMeteo.getTemperature() >= 0.3 && auxMeteo.getTemperature() < 0.6)
+    				found++;	
+        	}
+    		
+    	} else { //Count if is good in heat
+    		for(Cache c: this.caches.values()){
+    			Log log = c.hasFoundLog(this);
+    			Meteo auxMeteo = m.staticMeteo(log.getDate().get(GregorianCalendar.DAY_OF_YEAR), c.getPosition());
+    			
+    			if(auxMeteo.getTemperature() >= 0.6)
+    				found++;	
+        	}
+    	}
+    	return found;
+    }
+    
 
     // Increment by number the Number of Founds
     private void incFounds(int number) {

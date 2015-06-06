@@ -447,6 +447,15 @@ public abstract class Cache implements Serializable, Comparable<Cache> {
 		}
 		return false;
 	}
+	
+	public Log hasFoundLog(User user) {
+		for (Log l : this.cache_Logs) {
+		   if (l.getUser().equals(user)&& l.getLogType() == Log.Log_Type.FOUND_IT) {           // It' Log
+			   return l; // Then he Found it !
+		  }
+		}
+		return null;
+	}
 
 	public TreeSet<Log> getLogs(UserAbstract user) {
 		TreeSet<Log> list = new TreeSet<>();
