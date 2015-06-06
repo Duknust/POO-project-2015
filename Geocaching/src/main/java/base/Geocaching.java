@@ -1070,7 +1070,7 @@ public class Geocaching {
     // ------------------- USER'S MENU ------------------
     private static void mViewUser(User user) {
 
-		// If the user is the Online User than go to Profile for more complete
+        // If the user is the Online User than go to Profile for more complete
         // info
         if (user.equals(userOnline)) {
             mProfileUser();
@@ -1156,7 +1156,7 @@ public class Geocaching {
     }
 
     private static void mViewReviewer(Reviewer user) {
-		// If the user is the Online User than go to Profile for more complete
+        // If the user is the Online User than go to Profile for more complete
         // info
         if (user.equals(userOnline)) {
             mProfileReviewer();
@@ -1211,7 +1211,7 @@ public class Geocaching {
     }
 
     private static void mViewAdmin(Admin user) {
-		// If the user is the Online User than go to Profile for more complete
+        // If the user is the Online User than go to Profile for more complete
         // info
         if (user.equals(userOnline)) {
             mProfileAdmin();
@@ -2466,7 +2466,7 @@ public class Geocaching {
                     while (edited == false) {
                         System.out.println("\n\n- Log Types:");
 
-					// FOUND_IT, DNF, NEEDS_MAINTENANCE, NEEDS_ARCHIVING, NOTE,
+                        // FOUND_IT, DNF, NEEDS_MAINTENANCE, NEEDS_ARCHIVING, NOTE,
                         // REVIEWER_NOTE, ARCHIVED, ENABLED, DISABLED;
                         if (type != Log_Type.FOUND_IT) {
                             System.out.println(" [1] Found It\n");
@@ -2506,7 +2506,7 @@ public class Geocaching {
                                 if (foundit) {
                                     log.setLogType(Log_Type.FOUND_IT);
                                     edited = true;
-							// If now is a FOUND IT then increase user's total
+                                    // If now is a FOUND IT then increase user's total
                                     // founds
                                     ((User) log.getUser()).incTotalFound();
                                 }
@@ -3619,9 +3619,11 @@ public class Geocaching {
             System.out.println("####### Events Menu #######\n");
             System.out.println("-- [1] Scheduled Events");
             System.out.println("-- [2] Today's Events");
-            System.out.println("-- [3] Create an Event");
-            System.out.println("-- [4] View Owned Events");
-            System.out.println("-- [5] View Participated Events");
+            System.out.println("-- [3] View Participated Events");
+            if (userOnline.getRole() == Role.ADMIN) {
+                System.out.println("-- [4] Create an Event");
+                System.out.println("-- [5] View Owned Events");
+            }
             System.out.println("-----");
             System.out.println("-- [0] Back");
             System.out.print("?> ");
@@ -3646,26 +3648,37 @@ public class Geocaching {
                     break;
                 case 3:
                     clearConsole();
-                    mCreateEvent();
+                    mParticipatedEvents(userOnline);
                     choice = -1;
                     clearConsole();
                     break;
                 case 4:
-                    clearConsole();
-                    mViewOwedEvents(userOnline);
-                    choice = -1;
+                    if (userOnline.getRole() == Role.ADMIN) {
+                        clearConsole();
+                        mCreateEvent();
+                        choice = -1;
+                    } else {
+                        System.out.println("Error: Option not available");
+                        pressAnyKeyToContinue();
+                    }
                     clearConsole();
                     break;
                 case 5:
-                    clearConsole();
-                    mParticipatedEvents(userOnline);
-                    choice = -1;
+                    if (userOnline.getRole() == Role.ADMIN) {
+                        clearConsole();
+                        mViewOwedEvents((Admin) userOnline);
+                        choice = -1;
+                    } else {
+                        System.out.println("Error: Option not available");
+                        pressAnyKeyToContinue();
+                    }
                     clearConsole();
                     break;
                 case 0:
                     break;
                 default:
                     System.out.println("Error: Option not available");
+                    pressAnyKeyToContinue();
                     choice = -1;
                     break;
             }
@@ -3688,8 +3701,7 @@ public class Geocaching {
 
         while (choice == -1) {
             int i = 1;
-            System.out.println("####### " + userOnline.getName()
-                    + " Founds #######\n");
+            System.out.println("####### Today's Events #######\n");
 
             System.out.println("\n-- Total Founds: " + list.size() + "\n\n");
             for (Event e : list)// For each Friend
@@ -3747,8 +3759,7 @@ public class Geocaching {
 
         while (choice == -1) {
             int i = 1;
-            System.out.println("####### " + userOnline.getName()
-                    + " Founds #######\n");
+            System.out.println("####### Scheduled Events #######\n");
 
             System.out.println("\n-- Total Founds: " + list.size() + "\n\n");
             for (Event e : list)// For each Friend
@@ -3948,39 +3959,20 @@ public class Geocaching {
         }
     }
 
-    private static void mViewOwedEvents(UserAbstract user) {
+    private static void mViewOwedEvents(Admin admin) {
         int i, choice = -1;
         Event ev = null;
 
         ArrayList<Event> list = new ArrayList<Event>();
-        Iterator<Event> evEnable = data.getEnabledEvents().values().iterator();
-        Iterator<Event> evPast = data.getPastEvents().values().iterator();
-        Iterator<Cache> evUnpub = data.getUnpublishedCaches().values()
-                .iterator();
+        Iterator<Event> evEnable = admin.getEvents().values().iterator();
 
         while (evEnable.hasNext()) {
             ev = evEnable.next();
-            if (user.equals(ev.getOwner())) {
+            if (admin.equals(ev.getOwner())) {
                 list.add(ev);
             }
         }
 
-        while (evPast.hasNext()) {
-            ev = evPast.next();
-            if (user.equals(ev.getOwner())) {
-                list.add(ev);
-            }
-        }
-
-        Cache ch;
-        while (evUnpub.hasNext()) {
-            ch = evUnpub.next();
-            if (ch.getType() == Cache.Type.EVENT) {
-                if (user.equals(ch.getOwner())) {
-                    list.add((Event) ch);
-                }
-            }
-        }
         list.sort(data.compareEventDate());
 
         while (choice == -1) {
@@ -4441,7 +4433,7 @@ public class Geocaching {
         }
     }
 
-	// ------------------- OTHER STUFF ------------------
+    // ------------------- OTHER STUFF ------------------
     // Clear Console
     public final static void clearConsole() {
         try {
@@ -4556,7 +4548,7 @@ public class Geocaching {
                 newData);
 
         Event e1 = new Event(new GregorianCalendar(), new GregorianCalendar(
-                2015, 6, 2), new GregorianCalendar(2015, 6, 4),
+                2015, 6, 6), new GregorianCalendar(2015, 6, 6),
                 "Evento All Star", "Está tudo a brilhar", new Position(42, 51),
                 5, u1, new HashMap<String, Cache>(), newData);
         Event e2 = new Event(new GregorianCalendar(2015, 5, 2),
@@ -4608,13 +4600,13 @@ public class Geocaching {
         r1.giveMeCache(mc1);
         r1.giveMeCache(tc3);
 
-        r1.giveMeCache(e1);
-        r1.giveMeCache(e2);
-
         r1.publishCache(tc1);
         r1.publishCache(tc2);
         r1.publishCache(mc1);
         r1.publishCache(tc3);
+
+        r1.giveMeCache(e1);
+        r1.giveMeCache(e2);
 
         r1.publishCache(e1);
         r1.publishCache(e2);

@@ -23,6 +23,10 @@ public class Admin extends UserAbstract implements BasicCacheMethodsInterface, S
         this.events = events;
     }
 
+    public HashMap<String, Event> getEvents() {
+        return events;
+    }
+
     void deleteLog(Log l, Cache c) {
         c.getCache_Logs().remove(l);
     }
