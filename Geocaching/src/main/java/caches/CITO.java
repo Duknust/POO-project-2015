@@ -18,8 +18,8 @@ public class CITO extends Cache {
      * building.
      */
 
-    GregorianCalendar date;
-    HashMap<String, UserAbstract> participants;
+	private GregorianCalendar date;
+	private HashMap<String, UserAbstract> participants;
 
     // Constructors
     public CITO(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer, Data data) {

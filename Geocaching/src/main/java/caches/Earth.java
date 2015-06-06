@@ -24,10 +24,14 @@ public class Earth extends Cache {
         super(publishDate, creationDate, cacheID, premiumOnly, description, cacheState, cacheTitle, owner, cacheSize, difficulty, position, hint, cache_Logs, reviewer, data);
     }
 
-    public Earth(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, ArrayList<String> travel_bugs, Data data) {
+    public Earth(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Data data) {
         super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs, data);
     }
-
+    
+    public Earth(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, boolean premium, UserAbstract owner, Data data) {
+        super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, premium, owner, data);
+    }
+    
     // toString
     @Override
     public String toString() {

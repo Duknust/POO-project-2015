@@ -13,12 +13,17 @@ import static activity.Activity.Type.NOT_FRIENDS_WITH;
 import static activity.Activity.Type.REV_NOTE;
 import static activity.Activity.Type.UPDATED_LOG_TYPE;
 import caches.Cache;
+import caches.Earth;
 import caches.Event;
+import caches.Letterbox;
 import caches.Log;
 import caches.Log.Log_Type;
+import caches.Multi;
 import caches.Mystery;
+import caches.Stage;
 import caches.Traditional;
 import dataCreation.CountriesData;
+
 import java.io.BufferedReader;
 import java.io.Console;
 import java.io.FileInputStream;
@@ -33,6 +38,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -41,6 +47,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import user.Admin;
 import user.Reviewer;
 import user.User;
@@ -49,14 +56,15 @@ import user.UserAbstract.Role;
 
 public class Geocaching {
 
-    static Data data = null;
-    static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-    static UserAbstract userOnline; // User online and using the System
-    static Statistics statistics = null;
+    private static Data data = null;
+    private static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+    private static UserAbstract userOnline; // User online and using the System
+    private static Statistics statistics = null;
 
+    
     public static void main(String[] args) {
 
-        data = startData();
+        //data = startData();
         data = populateData(); // Use Pre-Made Database _ Atention, use with caution ! ---------------------------------------------
         showLogo();
 
@@ -1260,8 +1268,267 @@ public class Geocaching {
     }
 
     private static void mSearchCaches() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	float lati = 0, longi = 0;
+    	boolean status = false;
+    	Iterator<Cache> iter;
+    	ArrayList<Cache> list;
+    	Cache cache = null;
+    	String str = "";
+    	int choice = -1;
+    	
+
+        while (choice == -1) {
+        	System.out.println("####### Caches Search Menu #######\n");
+        	System.out.println("\t[1] Show All");
+        	System.out.println("\t[2] Search By Type");
+        	System.out.println("\t[3] Search By Title");
+        	System.out.println("\t[4] Search By ID");
+        	System.out.println("\t[5] Search By Position");
+        	
+        	
+            System.out.println("\n-- [X] View Cache");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                case 1:
+                	clearConsole();
+                	Object[] toShow = data.getEnabledCaches().values().toArray();
+                	mShowAllCaches(toShow);
+                	choice = -1;
+                	break;
+                case 2:
+                	clearConsole();
+                	mSearchByType();
+                	choice = -1;
+                	break;
+                case 3:
+                	clearConsole();
+                	iter = data.getEnabledCaches().values().iterator();
+                	list = new ArrayList<Cache>();
+                	
+                	try {
+                		System.out.println("-- Insert what you want to search");
+                		System.out.print("?> ");
+						str = input.readLine();
+						
+						while(iter.hasNext()){
+	                		cache = iter.next();
+	                		if(cache.getCacheTitle().contains(str))
+	                			list.add(cache);
+	                	}
+	                	mShowAllCaches(list.toArray());
+						
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+                	choice = -1;
+                	break;
+                case 4:
+                	clearConsole();
+                	iter = data.getEnabledCaches().values().iterator();
+                	list = new ArrayList<Cache>();
+                	
+                	try {
+                		System.out.println("-- Insert what you want to search");
+                		System.out.print("?> ");
+						str = input.readLine();
+						
+						while(iter.hasNext()){
+	                		cache = iter.next();
+	                		if(cache.getCacheID().contains(str))
+	                			list.add(cache);
+	                	}
+	                	mShowAllCaches(list.toArray());
+						
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+                	choice = -1;
+                	break;
+                case 5:
+                	clearConsole();
+                	System.out.println("####### Position Input#######");
+        	        System.out.println("----- Please insert the following fields");
+
+        	        // Lati
+        	        System.out.println("-- Latitude");
+        	        while (status == false) {
+        	            System.out.print("?> ");
+        	            try {
+        	                str = input.readLine();
+        	                lati = Float.parseFloat(str);
+        	                status = true;
+        	            } catch (Exception ex) {
+        	                System.out.println("Error: Number isn't in the correct format (12.345)");
+        	            }
+        	        }
+        	        status = false;
+
+        	        // Longi
+        	        System.out.println("-- Longitude");
+        	        while (status == false) {
+        	            System.out.print("?> ");
+        	            try {
+        	            	str = input.readLine();
+        	                longi = Float.parseFloat(str);
+        	                status = true;
+        	            } catch (Exception ex) {
+        	                System.out.println("Error: Number isn't in the correct format (12.345)");
+        	            }
+        	        }
+        	        status = false;
+
+                	int nCaches = 10;
+                    Cache[] caches = data.getNByPosition(new Position(lati,longi), nCaches);
+                    
+                    mShowAllCaches(caches);
+                    /*
+                    HashMap<String, Cache> inHash = new HashMap<String, Cache>();
+                    for (int i = 0; i < nCaches; i++) {
+                    	if(caches[i] == null) break;
+                    	inHash.put(caches[i].getCacheID(), caches[i]);
+                    }*/
+                    choice = -1;
+                    break;
+                default:
+                	choice = -1;
+            }
+        }
     }
+
+    private static void mSearchByType() {
+    	Cache.Type type = Cache.Type.TRADITIONAL;;
+    	boolean status = false;
+    	Cache cache = null;
+    	String str = "";
+    	int choice = -1;
+    	
+    	 //Type of cache
+        System.out.println("-- Type Of Cache:");
+        while (status == false) {
+        	System.out.println("\t[1] Traditional");
+        	System.out.println("\t[2] Multi");
+        	System.out.println("\t[3] Earth");
+        	System.out.println("\t[4] Letterbox");
+        	System.out.println("\t[5] Mystery");
+        	
+        	System.out.println("\n-----:");
+            System.out.println("-- [0] Back");
+        	System.out.print("\n?> ");
+            try {
+                str = input.readLine();
+                choice = Integer.parseInt(str);
+                
+                if(choice>0 && choice < 6){
+	               	switch(choice){
+	               		case 1:
+	               			type = Cache.Type.TRADITIONAL;
+	               			break;
+	               		case 2:
+	               			type = Cache.Type.MULTI;
+	               			break;
+	               		case 3:
+	               			type = Cache.Type.EARTH;
+	               			break;
+	               		case 4:
+	               			type = Cache.Type.LETTERBOX;
+	               			break;
+	               		case 5:
+	               			type = Cache.Type.MYSTERY;
+	               			break;
+	               	}
+	               	Iterator<Cache> iter= data.getEnabledCaches().values().iterator();
+                	ArrayList<Cache> list = new ArrayList<Cache>();
+                	
+                	while(iter.hasNext()){
+                		cache = iter.next();
+                		if(type == cache.getType())
+                			list.add(cache);
+                	}
+                	mShowAllCaches(list.toArray());
+                	
+               	} else if (choice == 0)
+               		status = true;
+               	else
+               		System.out.println("Error: Try a number between 1 and 5. Ex: '4'!");
+                
+            } catch (Exception ex) {
+            	System.out.println("Error: The number isn't in the correct format. Ex: '4'!");
+            }
+        }
+	}
+
+	private static void mShowAllCaches(Object[] toShow) {
+    	int i, choice = -1, totalPages, page=0, byPage = 10, start;
+    	boolean status = false;
+    	String str = "";
+    	Cache cache = null;
+    	
+        totalPages = toShow.length/byPage;
+        System.out.println(" --- Search Caches ");
+        
+        while(status == false){
+        	start = byPage * page;
+        	for(i=0; i<byPage  &&  start+i < toShow.length; i++){
+        		cache = (Cache)toShow[start+i];
+        		
+        		if(cache == null) break;
+        		System.out.format("\t[%d] %s - %s - %s\n", i+1, cache.getCacheID(), cache.getCacheTitle(), cache.getType());
+        	}
+        	
+        	System.out.println("\n\t<< Previous [p]  |  [n] Next >>");
+        	System.out.println("\n-- [X] View Cache");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            
+            try {
+            	str = input.readLine();
+                choice = Integer.parseInt(str);
+                
+                if(choice == 0){
+                	status = true;
+                }else{
+                	if(choice > 0  && choice <= i){
+                		cache = (Cache)toShow[start+choice-1];
+                		mViewCache(cache);
+                	}else
+                		System.out.println("Error: You didn't put a valid option!!");
+                }
+                	
+            } catch (Exception ex) {
+                if(str.equals("p")){
+                	if(page>0)
+                		page--;
+                	else
+                		System.out.println("Error: You are already in first page!!");
+                
+                } else if(str.equals("n")){
+                	if((page+1)*byPage < toShow.length)
+                		page++;
+                	else
+                		System.out.println("Error: You are already in last page!!");
+                } else 
+                	System.out.println("Error: You didn't put a valid option!!");
+                choice = -1;
+            }
+        }
+	}
+
 
     private static void mAssignNewCache(Reviewer reviewer) {
         Cache c = reviewer.giveMeCache();
@@ -1413,7 +1680,6 @@ public class Geocaching {
     }
 
     private static void mViewOwnedCaches(User user) {
-
         int choice = -1;
         ArrayList<Cache> arrayCaches = user.getCachesArrayPremiumCheck(user);
         String format = "\t[ %" + (arrayCaches.size() + "").length() + "d ] ";
@@ -1454,7 +1720,6 @@ public class Geocaching {
                     break;
             }
         }
-
     }
 
     private static void mViewFoundCaches(User user) {
@@ -2211,15 +2476,569 @@ public class Geocaching {
         }
     }
 
-    private static void mEditCache(Cache get) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private static void mEditCache(Cache cache) {
+    	Cache.Type type = cache.getType();
+    	int choice = -1, nOption = 4, aux; 
+    	int stage = 0, nStages=0;
+    	boolean status = false;
+    	String str = "";
+    	
+    	
+    	 while (choice == -1) {
+             System.out.println("####### '" + cache.getCacheTitle() + "' #######\n");
+
+             System.out.println("\t[1] Description");
+             System.out.println("\t[2] Cache Size");
+             System.out.println("\t[3] Difficulty");
+             System.out.println("\t[4] Hint");
+             
+              if(type == Cache.Type.MYSTERY){
+            	 System.out.println("\t[5] Final Text");
+            	 nOption = 5;
+            	 
+             } else if(type == Cache.Type.MULTI || type == Cache.Type.LETTERBOX){
+            	 System.out.println("\t[5] Stage Description");
+            	 nOption = 5;
+             }
+            	 
+            
+             System.out.println("\n-- [X] Select Option");
+             System.out.println("-----:");
+             System.out.println("-- [0] Back");
+             System.out.print("?> ");
+             
+             try {
+                 choice = Integer.parseInt(input.readLine());
+             } catch (Exception ex) {
+                 //System.out.println("Error: Invalid Option");
+                 choice = -1;
+             }
+
+             if (choice >= 0 && choice <= nOption) {
+	             switch (choice) {
+	                 case 0:
+	                     clearConsole();
+	                     break;
+	                 case 1:
+	                     clearConsole();
+	                     System.out.println("-- Insert a new Description");
+	                     while (status == false) {
+	                         System.out.print("?> ");
+
+	                         try {
+	                             str = input.readLine();
+	                         } catch (IOException e) {
+	                             // TODO Auto-generated catch block
+	                             e.printStackTrace();
+	                         }
+	                         if (str.length() > 10) {
+	                        	 cache.setDescription(str);
+	                             status = true;
+	                         } else {
+	                             System.out.println("Error: The name need at least 10 characters!");
+	                         }
+	                     }
+	                     status = false;
+	                     choice = -1;
+	                     break;
+	                 case 2:
+	                     clearConsole();
+	                     System.out.println("-- Insert a new Hint");
+	                     while (status == false) {
+	                     	System.out.println("\t[1] Micro");
+	                     	System.out.println("\t[2] Small");
+	                     	System.out.println("\t[3] Normal");
+	                     	System.out.println("\t[4] Large");
+	                     	
+	                     	System.out.print("\n?> ");
+	                         try {
+	                             str = input.readLine();
+	                             aux = Integer.parseInt(str);
+	                             
+	                            	if(aux>0  &&  aux<5){
+	                            		cache.setCacheSize(aux);
+	                            		status = true;
+	                            	} else
+	                            		System.out.println("Error: Try a number between 1 and 4. Ex: '4'!");
+	                            	
+	                         } catch (Exception ex) {
+	                         	System.out.println("Error: The number isn't in the correct format. Ex: '4'!");
+	                         }
+	                     }
+	                     status = false;
+	                     choice = -1;
+	                     break;
+	                 case 3:
+	                     clearConsole();
+	                     System.out.println("-- Insert a new Hint");
+	                     while (status == false) {
+	                     	System.out.println("\t[1] Easier");
+	                     	System.out.println("\t[2] Easy");
+	                     	System.out.println("\t[3] Regular");
+	                     	System.out.println("\t[4] Hard");
+	                     	System.out.println("\t[5] Hardest");
+	                     	
+	                     	System.out.print("\n?> ");
+	                         try {
+	                             str = input.readLine();
+	                             aux = Integer.parseInt(str);
+	                             
+	                            	if(aux>0  &&  aux<6){
+	                            		cache.setDifficulty(aux);
+	                            		status = true;
+	                            	}else
+	                            		System.out.println("Error: Try a number between 1 and 5. Ex: '4'!");
+	                            	
+	                         } catch (Exception ex) {
+	                         	System.out.println("Error: The number isn't in the correct format. Ex: '4'!");
+	                         }
+	                     }
+	                     status = false;
+	                     choice = -1;
+	                     break;
+	                 case 4:
+	                     clearConsole();
+	                     System.out.println("-- Insert a new Hint");
+	                     while (status == false) {
+	                         System.out.print("?> ");
+
+	                         try {
+	                             str = input.readLine();
+	                         } catch (IOException e) {
+	                             // TODO Auto-generated catch block
+	                             e.printStackTrace();
+	                         }
+	                         if (str.length() > 4) {
+	                        	 cache.setHint(str);
+	                             status = true;
+	                         } else {
+	                             System.out.println("Error: The name need at least 4 characters!");
+	                         }
+	                     }
+	                     status = false;
+	                     choice = -1;
+	                     break;
+	                 case 5:
+	                     clearConsole();
+	                     if(type == Cache.Type.MYSTERY){
+	                    	System.out.println("-- Insert a new Final Text");
+	                     	Mystery mystery = (Mystery)cache;
+		                    
+	                     	while (status == false) {
+		                         System.out.print("?> ");
+
+		                         try {
+		                             str = input.readLine();
+		                         } catch (IOException e) {
+		                             // TODO Auto-generated catch block
+		                             e.printStackTrace();
+		                         }
+		                         if (str.length() > 10) {
+		                        	 mystery.setFinalText(str);
+		                             status = true;
+		                         } else {
+		                             System.out.println("Error: The name need at least 10 characters!");
+		                         }
+		                     }
+		                     status = false;
+	                     }else{ 
+	                    	 ArrayList<Stage> stages = null;
+	                    	 
+	                    	 if(type == Cache.Type.MULTI){
+	                    		 Multi multi = (Multi) cache;
+	                    	 	 stages = multi.getStages();
+	                    	 	 
+	                    	 }else if(type == Cache.Type.LETTERBOX){
+		                    	 Letterbox letter = (Letterbox) cache;
+		                    	 stages = letter.getStages();
+	                    	 }
+	                    	 
+	                    	 nStages = stages.size();
+	                    	 System.out.format("You just have %d in this cache. Which one do you want to change?\n", nStages);
+	                    	 
+	                    	 while(choice != -1){
+	                    		 System.out.print("\n?> ");
+		                         try {
+		                             str = input.readLine();
+		                             aux = Integer.parseInt(str);
+		                             
+		                            	if(aux>0  &&  aux<nStages){
+		                            		Stage st = stages.get(aux-1);
+			           	                    System.out.println("-- Insert a new Description - Stage " + aux);
+			           	                    
+			        	                    while (choice != -1) {
+			        	                        System.out.print("?> ");
+			        	                        try {
+			        	                             str = input.readLine();
+			        	                         } catch (IOException e) {
+			        	                             // TODO Auto-generated catch block
+			        	                             e.printStackTrace();
+			        	                         }
+			        	                         if (str.length() > 4) {
+			        	                        	 st.setDescription(str);
+			        	                        	 choice = -1;
+			        	                         } else {
+			        	                             System.out.println("Error: The name need at least 4 characters!");
+			        	                         }
+			        	                     }
+		                            	}else
+		                            		System.out.println("Error: Try a number between 1 and 5. Ex: '4'!");
+		                            	
+		                         } catch (Exception ex) {
+		                         	System.out.println("Error: The number isn't in the correct format. Ex: '4'!");
+		                         }
+	                    	 }
+	                     }
+	                 default:
+	                     choice = -1;
+	                     break;
+	             }
+             }
+         }
     }
 
     private static void mCreateCache() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String name = "", description = "", str = "", hint = "";
+        Cache cache = null;
+        Position pos = null;
+        int maxP = 0, cacheSize=0, choice = -1, difficulty = 0;
+        boolean status = false, onlyPremium = false;
+        Cache.Type type = Cache.Type.TRADITIONAL;
+        
+        //Check if is an user
+        if(!(userOnline instanceof User)){
+        	System.out.println("Error: Just an User can create a new cache!");
+        	return;
+        }
+        	
+        // Name Cache
+        System.out.println("-- Name of Cache");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                name = input.readLine();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            if (name.length() > 4) {
+                status = true;
+            } else {
+                System.out.println("Error: The name need at least 4 characters!");
+            }
+        }
+        status = false;
+
+        // Description
+        System.out.println("-- Description of Cache");
+        while (status == false) {
+            System.out.print("?> ");
+
+            try {
+                description = input.readLine();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            if (description.length() > 10) {
+                status = true;
+            } else {
+                System.out.println("Error: The name need at least 10 characters!");
+            }
+        }
+        status = false;
+        
+        // Hint of Cache
+        System.out.println("-- Hint of Cache");
+        while (status == false) {
+            System.out.print("?> ");
+
+            try {
+                hint = input.readLine();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            if (description.length() > 4) {
+                status = true;
+            } else {
+                System.out.println("Error: The name need at least 4 characters!");
+            }
+        }
+        status = false;
+        
+        //Size
+        System.out.println("-- Size of Cache:");
+        while (status == false) {
+        	System.out.println("\t[1] Micro");
+        	System.out.println("\t[2] Small");
+        	System.out.println("\t[3] Normal");
+        	System.out.println("\t[4] Large");
+        	
+        	System.out.print("\n?> ");
+            try {
+                str = input.readLine();
+                cacheSize = Integer.parseInt(str);
+                
+               	if(cacheSize>0  &&  cacheSize<5)
+               		status = true;
+               	else
+               		System.out.println("Error: Try a number between 1 and 4. Ex: '4'!");
+               	
+            } catch (Exception ex) {
+            	System.out.println("Error: The number isn't in the correct format. Ex: '4'!");
+            }
+        }
+        status = false;
+        
+       
+        
+        //Only Premium Cache
+        if(userOnline.isPremium()){
+        	System.out.println("-- Cache Premium:");
+            while (status == false) {
+            	System.out.println("\t[1] Premium");
+            	System.out.println("\t[2] NOT Premium");
+            	
+            	System.out.print("\n?> ");
+                try {
+                    str = input.readLine();
+                    choice = Integer.parseInt(str);
+                    
+                   	switch(choice){
+	                   	case 1:
+	                   		onlyPremium = true;
+	                   		status = true;
+	                   		break;
+	                   	case 2:
+	                   		onlyPremium = false;
+	                   		status = true;
+	                   		break;
+	                   	default:
+	                   		System.out.println("Error: Try a number between 1 and 2. Ex: '2'!");
+                   	}
+                   	
+                } catch (Exception ex) {
+                	System.out.println("Error: The number isn't in the correct format. Ex: '2'!");
+                }
+            }
+            status = false;
+        }
+        
+        //Difficulty
+        System.out.println("-- Dificulty of Cache:");
+        while (status == false) {
+        	System.out.println("\t[1] Easier");
+        	System.out.println("\t[2] Easy");
+        	System.out.println("\t[3] Regular");
+        	System.out.println("\t[4] Hard");
+        	System.out.println("\t[5] Hardest");
+        	
+        	System.out.print("\n?> ");
+            try {
+                str = input.readLine();
+                difficulty = Integer.parseInt(str);
+                
+               	if(difficulty>0  &&  difficulty<6)
+               		status = true;
+               	else
+               		System.out.println("Error: Try a number between 1 and 5. Ex: '4'!");
+               	
+            } catch (Exception ex) {
+            	System.out.println("Error: The number isn't in the correct format. Ex: '4'!");
+            }
+        }
+        status = false;
+        
+        //Positon of Cache
+        pos = mInputPosition(true);
+        
+        //Type of cache
+        System.out.println("-- Type Of Cache:");
+        while (status == false) {
+        	System.out.println("\t[1] Traditional");
+        	System.out.println("\t[2] Multi");
+        	System.out.println("\t[3] Earth");
+        	System.out.println("\t[4] Letterbox");
+        	System.out.println("\t[5] Mystery");
+        	
+        	System.out.print("\n?> ");
+            try {
+                str = input.readLine();
+                choice = Integer.parseInt(str);
+                
+               	switch(choice){
+               		case 1:
+               			type = Cache.Type.TRADITIONAL;
+               			status = true;
+               			break;
+               		case 2:
+               			type = Cache.Type.MULTI;
+               			status = true;
+               			break;
+               		case 3:
+               			type = Cache.Type.EARTH;
+               			status = true;
+               			break;
+               		case 4:
+               			type = Cache.Type.LETTERBOX;
+               			status = true;
+               			break;
+               		case 5:
+               			type = Cache.Type.MYSTERY;
+               			status = true;
+               			break;
+               		default:
+               			System.out.println("Error: Try a number between 1 and 5. Ex: '4'!");
+               	}
+            } catch (Exception ex) {
+            	System.out.println("Error: The number isn't in the correct format. Ex: '4'!");
+            }
+        }
+        status = false;
+        
+         
+        if(type == Cache.Type.TRADITIONAL) {
+        	cache = new Traditional(new GregorianCalendar(), description, name, cacheSize, difficulty, pos, hint, onlyPremium, userOnline, data);
+        
+        } else  if(type == Cache.Type.EARTH) {
+        	cache = new Earth(new GregorianCalendar(), description, name, cacheSize, difficulty, pos, hint, onlyPremium, userOnline, data);
+        
+        } else if(type == Cache.Type.MULTI){
+        	ArrayList<Stage> stages = mStages();
+        	cache = new Multi(new GregorianCalendar(), description, name, cacheSize, difficulty, pos, hint, onlyPremium, stages, userOnline, data);
+        
+        }  else if(type == Cache.Type.LETTERBOX){
+        	ArrayList<Stage> stages = mStages();
+        	cache = new Letterbox(new GregorianCalendar(), description, name, cacheSize, difficulty, pos, hint, onlyPremium, stages, userOnline, data);
+        
+        } else if(type == Cache.Type.MYSTERY){
+        	Position finPosition = null;
+        	String finText = "";
+        	
+        	//Positon of Cache
+        	System.out.println("Insert the Final Position");
+        	finPosition = mInputPosition(true);
+        	
+        	System.out.println("-- Final Text of Cache");
+            while (status == false) {
+                System.out.print("?> ");
+
+                try {
+                	finText = input.readLine();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                if (finText.length() > 10) {
+                    status = true;
+                } else {
+                    System.out.println("Error: The name need at least 10 characters!");
+                }
+            }
+        	
+        	cache = new Mystery(new GregorianCalendar(), description, name, cacheSize, difficulty, pos, hint, onlyPremium, finPosition, finText, userOnline, data);
+        }
+        
+        HashMap<String, Cache> unp = data.getUnpublishedCaches();
+        unp.put(cache.getCacheID(), cache);
+
     }
 
-    private static Position mInputPosition(boolean onlyCoords) {
+    private static ArrayList<Stage> mStages() {
+    	float lati = 0.0f, longi = 0.0f, diff = 0.0f;
+    	ArrayList<Stage> stages = new ArrayList<Stage>();
+    	String str = "", description = "";
+    	boolean status = false, sfinal = false;
+		Stage st = null;
+		int nstage = 1, choice = -1;
+		
+		while(sfinal == false){
+		 	System.out.format("####### Position Input of Stage %d #######\n", nstage);
+	        System.out.println("----- Please insert the following fields");
+
+	        // Lati
+	        System.out.println("-- Latitude");
+	        while (status == false) {
+	            System.out.print("?> ");
+	            try {
+	                str = input.readLine();
+	                lati = Float.parseFloat(str);
+	                status = true;
+	            } catch (Exception ex) {
+	                System.out.println("Error: Number isn't in the correct format (12.345)");
+	            }
+	        }
+	        status = false;
+
+	        // Longi
+	        System.out.println("-- Longitude");
+	        while (status == false) {
+	            System.out.print("?> ");
+	            try {
+	            	str = input.readLine();
+	                longi = Float.parseFloat(str);
+	                status = true;
+	            } catch (Exception ex) {
+	                System.out.println("Error: Number isn't in the correct format (12.345)");
+	            }
+	        }
+	        status = false;
+	        
+	        // Description
+	        System.out.println("-- Description of Cache");
+	        while (status == false) {
+	            System.out.print("?> ");
+
+	            try {
+	                description = input.readLine();
+	            } catch (IOException e) {
+	                // TODO Auto-generated catch block
+	                e.printStackTrace();
+	            }
+	            if (description.length() > 10) {
+	                status = true;
+	            } else {
+	                System.out.println("Error: The name need at least 10 characters!");
+	            }
+	        }
+	        status = false;
+	        
+	        System.out.println("-- Final Stage:");
+            while (status == false) {
+            	System.out.println("\t[1] Final Stage");
+            	System.out.println("\t[2] NOT Final Stage");
+            	
+            	System.out.print("\n?> ");
+                try {
+                    str = input.readLine();
+                    choice = Integer.parseInt(str);
+                    
+                   	switch(choice){
+	                   	case 1:
+	                   		sfinal = true;
+	                   		status = true;
+	                   		break;
+	                   	case 2:
+	                   		sfinal = false;
+	                   		status = true;
+	                   		break;
+	                   	default:
+	                   		System.out.println("Error: Try a number between 1 and 2. Ex: '2'!");
+                   	}
+                   	
+                } catch (Exception ex) {
+                	System.out.println("Error: The number isn't in the correct format. Ex: '2'!");
+                }
+            }
+            st = new Stage(lati, longi, description, nstage++);
+            stages.add(st);
+		}
+            
+		return stages;
+	}
+
+	private static Position mInputPosition(boolean onlyCoords) {
         int OK = 0;
         String slati = "", slongi = "", sdiff = "";
         float lati = 0.0f, longi = 0.0f, diff = 0.0f;
@@ -2257,8 +3076,26 @@ public class Geocaching {
         }
         status = false;
 
+        // Difficulty
+        System.out.println("-- Difficulty of Position");
+        while (status == false) {
+            System.out.print("?> ");
+            try {
+                sdiff = input.readLine();
+                diff = Float.parseFloat(sdiff);
+            } catch (Exception ex) {
+                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            if (diff >= 1.0f && diff <= 5.0f) {
+                status = true;
+            } else {
+                System.out.println("Error: Number is between 1.0f and 5.0f");
+            }
+        }
+
         if (onlyCoords) { // Only the Latitude and Longitude are necessary
-            return new Position(lati, longi);
+            return new Position(lati, longi, diff);
         }
 
         // Continent
@@ -2338,24 +3175,6 @@ public class Geocaching {
                 status = true;
             } catch (Exception ex) {
                 Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        // Difficulty
-        System.out.println("-- Difficulty");
-        while (status == false) {
-            System.out.print("?> ");
-            try {
-                sdiff = input.readLine();
-                diff = Float.parseFloat(sdiff);
-            } catch (Exception ex) {
-                Logger.getLogger(Geocaching.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            if (diff >= 1.0f && diff <= 5.0f) {
-                status = true;
-            } else {
-                System.out.println("Error: Number is between 1.0f and 5.0f");
             }
         }
 
@@ -2483,7 +3302,7 @@ public class Geocaching {
                             break;
                         case 9:
                             if (delete) {
-                                data.allActivities.remove(act.getDate());
+                                data.getAllActivities().remove(act.getDate());
                                 System.out.println("Activity successfully deleted!");
                                 pressAnyKeyToContinue();
                                 clearConsole();
@@ -2534,7 +3353,7 @@ public class Geocaching {
                             break;
                         case 9:
                             if (delete) {
-                                data.allActivities.remove(act.getDate());
+                                data.getAllActivities().remove(act.getDate());
                                 System.out.println("Activity successfully deleted!");
                                 pressAnyKeyToContinue();
                                 clearConsole();
@@ -2572,7 +3391,7 @@ public class Geocaching {
                             break;
                         case 9:
                             if (delete) {
-                                data.allActivities.remove(act.getDate());
+                                data.getAllActivities().remove(act.getDate());
                                 System.out.println("Activity successfully deleted!");
                                 pressAnyKeyToContinue();
                                 clearConsole();
@@ -2921,8 +3740,8 @@ public class Geocaching {
         Event ev = null;
 
         ArrayList<Event> list = new ArrayList<Event>();
-        Iterator<Event> evEnable = data.enabledEvents.values().iterator();
-        Iterator<Event> evPast = data.pastEvents.values().iterator();
+        Iterator<Event> evEnable = data.getEnabledEvents().values().iterator();
+        Iterator<Event> evPast = data.getPastEvents().values().iterator();
 
         while (evEnable.hasNext()) {
             ev = evEnable.next();
@@ -2985,8 +3804,8 @@ public class Geocaching {
         Event ev = null;
 
         ArrayList<Event> list = new ArrayList<Event>();
-        Iterator<Event> evEnable = data.enabledEvents.values().iterator();
-        Iterator<Event> evPast = data.pastEvents.values().iterator();
+        Iterator<Event> evEnable = data.getEnabledEvents().values().iterator();
+        Iterator<Event> evPast = data.getPastEvents().values().iterator();
 
         while (evEnable.hasNext()) {
             ev = evEnable.next();
@@ -3146,9 +3965,17 @@ public class Geocaching {
         //Positon of Event
         pos = mInputPosition(true);
 
-        HashMap<String, Cache> caches = data.getByPosition(pos, 5);
-        Event event = new Event(new GregorianCalendar(), dateEndApplications, dateEvent, name, description, pos, maxP, userOnline, caches, data);
-
+        int nCaches = 5;
+        Cache[] caches = data.getNByPosition(pos, nCaches);
+        
+        HashMap<String, Cache> inHash = new HashMap<String, Cache>();
+        for (int i = 0; i < nCaches; i++) {
+        	if(caches[i] == null) break;
+        	inHash.put(caches[i].getCacheID(), caches[i]);
+        }
+        
+        Event event = new Event(new GregorianCalendar(), dateEndApplications, dateEvent, name, description, pos, maxP, userOnline, inHash, data);
+        data.getUnpublishedCaches().put(event.getCacheID(), event);
     }
 
     // ------------------- STATISTICS MENU ------------------
@@ -3315,9 +4142,9 @@ public class Geocaching {
                     }
 
                     TreeSet<ToTop> topFinders = statistics
-                            .topTenCacheFinders(data.allUsers);
+                            .topTenCacheFinders(data.getAllUsers());
                     TreeSet<ToTop> topCreators = statistics
-                            .topTenCacheCreators(data.enabledCaches);
+                            .topTenCacheCreators(data.getEnabledCaches());
 
                     System.out.println("\nTop finders:");
                     Iterator<ToTop> tt = topFinders.descendingIterator();
@@ -3429,10 +4256,10 @@ public class Geocaching {
         Position p1 = CountriesData.portugal;
         Position p2 = new Position(41.57238, -8.47875, 1.5f);
 
-        Traditional tc1 = new Traditional(new GregorianCalendar(2015, 05, 24, 11, 11, 11), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), new ArrayList<String>(), newData);
-        Traditional tc2 = new Traditional(new GregorianCalendar(2015, 05, 19, 9, 12, 47), "more info", "Em Braga", 4, 3.0f, p2, "under the bench", new TreeSet<Log>(), new ArrayList<String>(), newData);
-        Traditional tc3 = new Traditional(new GregorianCalendar(2015, 05, 17, 2, 12, 47), "more info", "Gualtar - A Primeira", 4, 4.0f, p2, "magnetic", new TreeSet<Log>(), new ArrayList<String>(), newData);
-        Traditional tc4 = new Traditional(new GregorianCalendar(2015, 06, 5, 13, 25, 24), "more info", "Dinossauros", 4, 2.0f, p2, "livro", new TreeSet<Log>(), new ArrayList<String>(), newData);
+        Traditional tc1 = new Traditional(new GregorianCalendar(2015, 05, 24, 11, 11, 11), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), newData);
+        Traditional tc2 = new Traditional(new GregorianCalendar(2015, 05, 19, 9, 12, 47), "more info", "Em Braga", 4, 3.0f, p2, "under the bench", new TreeSet<Log>(), newData);
+        Traditional tc3 = new Traditional(new GregorianCalendar(2015, 05, 17, 2, 12, 47), "more info", "Gualtar - A Primeira", 4, 4.0f, p2, "magnetic", new TreeSet<Log>(), newData);
+        Traditional tc4 = new Traditional(new GregorianCalendar(2015, 06, 5, 13, 25, 24), "more info", "Dinossauros", 4, 2.0f, p2, "livro", new TreeSet<Log>(), newData);
         Mystery mc1 = new Mystery(new GregorianCalendar(2015, 06, 25, 2, 3, 4), "more info", "Em Braga", 4, 1.0f, p2, "solve the engima for the hint", new TreeSet<Log>(), new Position(1.1f, 2.2f), "YOU SOLVED IT! Near the white rock", newData);
 
         Event e1 = new Event(new GregorianCalendar(), new GregorianCalendar(2015, 6, 2), new GregorianCalendar(2015, 6, 4), "Evento All Star", "Está tudo a brilhar", new Position(42, 51), 5, u1, new HashMap<String, Cache>(), newData);

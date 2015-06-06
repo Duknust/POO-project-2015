@@ -2,9 +2,11 @@ package caches;
 
 import base.Data;
 import base.Position;
+
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.TreeSet;
+
 import user.Reviewer;
 import user.UserAbstract;
 
@@ -18,7 +20,7 @@ public class Multi extends Cache {
      * will have a clue for the third, and so on.
      */
     // At least One Stage
-    ArrayList<Stage> stages;
+	private ArrayList<Stage> stages;
 
     // Constructors
     public Multi(ArrayList<Stage> stages, GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer, Data data) {
@@ -31,7 +33,16 @@ public class Multi extends Cache {
         super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs, data);
         this.stages = stages;
     }
+    
+    public Multi(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, boolean premium, ArrayList<Stage> stages, UserAbstract owner, Data data) {
+    	super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, premium, owner, data);
+    	this.stages = stages;
+    }
 
+    public ArrayList<Stage> getStages(){
+    	return this.stages;
+    }
+    
     @Override
     public String toString() {
         return super.toListing() + this.stages.toString()
