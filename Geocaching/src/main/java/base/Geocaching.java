@@ -1473,12 +1473,11 @@ public class Geocaching {
 	}
 
 	private static void mShowAllCaches(Object[] toShow) {
-    	int i, choice = -1, totalPages, page=0, byPage = 10, start;
+    	int i, choice = -1, page=0, byPage = 10, start;
     	boolean status = false;
     	String str = "";
     	Cache cache = null;
     	
-        totalPages = toShow.length/byPage;
         System.out.println(" --- Search Caches ");
         
         while(status == false){
@@ -2528,7 +2527,6 @@ public class Geocaching {
 	                         try {
 	                             str = input.readLine();
 	                         } catch (IOException e) {
-	                             // TODO Auto-generated catch block
 	                             e.printStackTrace();
 	                         }
 	                         if (str.length() > 10) {
@@ -2605,7 +2603,6 @@ public class Geocaching {
 	                         try {
 	                             str = input.readLine();
 	                         } catch (IOException e) {
-	                             // TODO Auto-generated catch block
 	                             e.printStackTrace();
 	                         }
 	                         if (str.length() > 4) {
@@ -2630,8 +2627,7 @@ public class Geocaching {
 		                         try {
 		                             str = input.readLine();
 		                         } catch (IOException e) {
-		                             // TODO Auto-generated catch block
-		                             e.printStackTrace();
+		                        	 e.printStackTrace();
 		                         }
 		                         if (str.length() > 10) {
 		                        	 mystery.setFinalText(str);
@@ -3420,14 +3416,17 @@ public class Geocaching {
 
     // ------------------- EVENTS MENU ------------------
     private static void mEvents() {
-        int choice = -1;
+        UserAbstract.Role role = userOnline.getRole();
+    	int choice = -1;
+        
         while (choice == -1) { // REVIEWER IFS MISSING
             System.out.println("####### Events Menu #######\n");
             System.out.println("-- [1] Active Events");
-            System.out.println("-- [2] Happening Events");
-            System.out.println("-- [3] Create a Event");
-            System.out.println("-- [4] View Owned Events");
-            System.out.println("-- [5] View Participated Events");
+            System.out.println("-- [2] Current Events");
+            System.out.println("-- [3] View Owned Events");
+            System.out.println("-- [4] View Participated Events");
+            if(role == UserAbstract.Role.ADMIN)
+            	System.out.println("-- [5] Create a Event");
             System.out.println("-----");
             System.out.println("-- [0] Back");
             System.out.print("?> ");
@@ -3447,26 +3446,29 @@ public class Geocaching {
                     break;
                 case 2:
                     clearConsole();
-                    mHappeningEvents();
+                    mCurrentEvents();
                     choice = -1;
                     break;
                 case 3:
-                    clearConsole();
-                    mCreateEvent();
-                    choice = -1;
-                    clearConsole();
-                    break;
-                case 4:
                     clearConsole();
                     mViewOwedEvents(userOnline);
                     choice = -1;
                     clearConsole();
                     break;
-                case 5:
+                case 4:
                     clearConsole();
                     mParticipatedEvents(userOnline);
                     choice = -1;
                     clearConsole();
+                    break;
+                case 5:
+                    clearConsole();
+                    if(role == UserAbstract.Role.ADMIN)
+                    	mCreateEvent();
+                    else 
+                    	System.out.println("Error: Option not available");
+                    choice = -1;
+                    
                     break;
                 case 0:
                     break;
@@ -3478,7 +3480,7 @@ public class Geocaching {
         }
     }
 
-    private static void mHappeningEvents() {
+    private static void mCurrentEvents() {
         int choice = -1;
         HashMap<String, Event> events = data.getEnabledEvents();
         ArrayList<Event> list = new ArrayList<Event>();
@@ -3594,7 +3596,12 @@ public class Geocaching {
     private static void mViewEvent(Event ev) {
         int choice = -1;
         boolean canSubs = new GregorianCalendar().getTime().before(ev.getDateEndApplications().getTime());
-        boolean participate = ev.checkParticipation(userOnline);
+        boolean participate = false;
+        
+        if(canSubs){
+        	if(canSubs = userOnline.getRole() == UserAbstract.Role.USER)
+        		participate = ev.checkParticipation(userOnline);
+        }
 
         while (choice == -1) {
             System.out.println("\n-- Event Details --\n");

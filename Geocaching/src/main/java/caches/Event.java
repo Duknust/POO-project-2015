@@ -3,8 +3,11 @@ package caches;
 import base.Data;
 import base.GeoTools;
 import base.Position;
+
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+
+import meteo.Meteo;
 import user.UserAbstract;
 
 public class Event extends Cache {
@@ -157,7 +160,11 @@ public class Event extends Cache {
         {
             time += 20;
         }
-
+        
+        //Meteo
+        Meteo meteo = new Meteo();
+        Meteo auxMeteo = meteo.staticMeteo(this.dateEvent.getTime().getDay(),cache.getPosition());
+        
         return time;
     }
 
