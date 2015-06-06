@@ -13,7 +13,7 @@ public class Activity implements Comparable<Activity>, Serializable {
 
     public enum Type {
 
-        NEW_CACHE, FOUND_CACHE, DIDNT_FIND_CACHE, ARCHIVED_CACHE, DISABLED_CACHE, ENABLED_CACHE, UPDATED_LOG_TYPE, FRIENDS_WITH, NOT_FRIENDS_WITH, REV_NOTE, NOTE
+        NEW_CACHE, FOUND_CACHE, DIDNT_FIND_CACHE, ARCHIVED_CACHE, DISABLED_CACHE, ENABLED_CACHE, UPDATED_LOG_TYPE, FRIENDS_WITH, NOT_FRIENDS_WITH, REV_NOTE, NOTE, NEW_EVENT
     }
 
     private GregorianCalendar date;
@@ -150,6 +150,11 @@ public class Activity implements Comparable<Activity>, Serializable {
                 res = this.user1.getName() + " published \""
                         + this.cache.getCacheTitle() + "\" "
                         + this.cache.getClass().getSimpleName() + " cache from " + this.cache.getOwner().getName();
+                break;
+            case NEW_EVENT:
+                res = this.user1.getName() + " published a new Event called \""
+                        + this.cache.getCacheTitle() + "\" "
+                        + " from " + this.cache.getOwner().getName();
                 break;
             case FOUND_CACHE:
                 res = this.user1.getName() + " Found \""
