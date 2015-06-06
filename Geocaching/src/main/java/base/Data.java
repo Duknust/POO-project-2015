@@ -3,34 +3,31 @@ package base;
 import activity.Activity;
 import caches.Cache;
 import caches.Event;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
 import user.User;
 import user.UserAbstract;
 
 public class Data implements Serializable {
 
-    HashMap<String, Cache> enabledCaches = null; // The published ones
-    HashMap<String, Cache> disabledCaches = null;
-    HashMap<String, Cache> unpublishedCaches = null;
-    HashMap<String, Cache> archivedCaches = null;
-    
-    HashMap<String, Event> enabledEvents = null;
-    HashMap<String, Event> pastEvents = null;
+    private HashMap<String, Cache> enabledCaches = null; // The published ones
+    private HashMap<String, Cache> disabledCaches = null;
+    private HashMap<String, Cache> unpublishedCaches = null;
+    private HashMap<String, Cache> archivedCaches = null;
 
-    HashMap<String, UserAbstract> allUsers = null;
-    TreeMap<GregorianCalendar, Activity> allActivities = null;
+    private HashMap<String, Event> enabledEvents = null;
+    private HashMap<String, Event> pastEvents = null;
 
-    TreeMap<String, Position> allPositions = null;
+    private HashMap<String, UserAbstract> allUsers = null;
+    private TreeMap<GregorianCalendar, Activity> allActivities = null;
+
+    private TreeMap<String, Position> allPositions = null;
 
     public Data() {
         enabledCaches = new HashMap<>();
@@ -38,9 +35,9 @@ public class Data implements Serializable {
         unpublishedCaches = new HashMap<>();
         archivedCaches = new HashMap<>();
         allUsers = new HashMap<>();
-        allActivities = new TreeMap<>();
+        allActivities = new TreeMap<>(new ComparatorActivity());
         allPositions = new TreeMap<>();
-        
+
         enabledEvents = new HashMap<String, Event>();
         pastEvents = new HashMap<String, Event>();
     }
@@ -49,11 +46,11 @@ public class Data implements Serializable {
     public HashMap<String, Event> getEnabledEvents() {
         return enabledEvents;
     }
-    
+
     public HashMap<String, Event> getPastEvents() {
         return pastEvents;
     }
-    
+
     public HashMap<String, Cache> getEnabledCaches() {
         return enabledCaches;
     }
@@ -133,6 +130,13 @@ public class Data implements Serializable {
     }
 
     public void addActivity(Activity act) {
+        if (act == null) {
+            return;
+        }
+        while (this.allActivities.containsKey(act.getDate()) == true) {
+            act.incMs();
+        }
+
         this.allActivities.put(act.getDate(), act);
     }
 
@@ -143,7 +147,7 @@ public class Data implements Serializable {
         HashMap<String, Cache> allCaches = getAllCaches();
 
         for (Cache c : allCaches.values()) {
-            if (c.getOwner().equals(u)) {
+            if (c.getOwner().equals(u) && c.getType() != Cache.Type.EVENT) {
                 list.add(c);
             }
         }
@@ -158,7 +162,7 @@ public class Data implements Serializable {
         HashMap<String, Cache> allCaches = getAllCaches();
 
         for (Cache c : allCaches.values()) {
-            if (c.hasFound(u)) {
+            if (c.hasFound(u) && c.getType() != Cache.Type.EVENT) {
                 list.add(c);
             }
         }
@@ -169,68 +173,150 @@ public class Data implements Serializable {
     public Comparator<Cache> compareCachePubDate() {
         return new Comparator<Cache>() {
             public int compare(Cache o1, Cache o2) {
-                return -1 * o1.getPublishDate().compareTo(o2.getPublishDate());
+                if (o1 != null && o2 != null) {
+                    if (o1.getPublishDate() != null && o2.getPublishDate() != null) {
+                        return -1 * o1.getPublishDate().compareTo(o2.getPublishDate());
+                    } else {
+                        return 1;
+                    }
+                } else {
+                    return 1;
+                }
             }
         };
     }
-    
-    
+
     public Comparator<Event> compareEventAppDate() {
         return new Comparator<Event>() {
             public int compare(Event o1, Event o2) {
-                return -1 * o1.getDateEndApplications().compareTo(o2.getDateEndApplications());
+                if (o1 != null && o2 != null) {
+                    if (o1.getDateEndApplications() != null && o2.getDateEndApplications() != null) {
+                        return -1 * o1.getDateEndApplications().compareTo(o2.getDateEndApplications());
+                    } else {
+                        return 1;
+                    }
+                } else {
+                    return 1;
+                }
             }
         };
     }
-    
+
     public Comparator<Event> compareEventDate() {
         return new Comparator<Event>() {
             public int compare(Event o1, Event o2) {
-                return -1 * o1.getDateEvent().compareTo(o2.getDateEvent());
+                if (o1 != null && o2 != null) {
+                    if (o1.getDateEvent() != null && o2.getDateEvent() != null) {
+                        return -1 * o1.getDateEvent().compareTo(o2.getDateEvent());
+                    } else {
+                        return 1;
+                    }
+                } else {
+                    return 1;
+                }
             }
         };
     }
-    
-    
-    
 
-    public HashMap<String, Cache> getByPosition(Position p, int nCaches){
-    	
-    	double dist[] = new double[nCaches];
-    	Cache auxCache, caches[] = new Cache[nCaches];
-    	GeoTools geo = new GeoTools();
-    	double auxDist, aux;
-    	int i, added=0;
+    public Cache[] getNByPosition(Position p, int nCaches) {
 
-    	for(Cache c: this.enabledCaches.values()){
-    		auxDist = geo.calcDistance(p, c.getPosition());
-    		i=0;
-    		
-    		while(i<added){
-    			if(auxDist > dist[i]) break;
-    			i++;
-    		}
-    		
-    		if(i<nCaches){
-    			while(i<nCaches){
-    				aux = dist[i];
-    				dist[i] = auxDist;
-    				auxDist = aux;
-    				
-    				auxCache = caches[i];
-    				caches[i] = c;
-    				c = auxCache;
-    				
-    				i++;
-    			}
-    			if(added < nCaches) added++;
-    		}
-    	}
-    	
-    	HashMap<String, Cache> inHash = new HashMap<String, Cache>();
-    	for(i=0; i<added; i++)
-    		inHash.put(caches[i].getCacheID(), caches[i]);
-    	
-    	return inHash;
+        double dist[] = new double[nCaches];
+        Cache auxCache, caches[] = new Cache[nCaches];
+        GeoTools geo = new GeoTools();
+        double auxDist, aux;
+        int i, added = 0;
+
+        for (Cache c : this.enabledCaches.values()) {
+            auxDist = geo.calcDistance(p, c.getPosition());
+            i = 0;
+
+            while (i < added) {
+                if (auxDist > dist[i]) {
+                    break;
+                }
+                i++;
+            }
+
+            if (i < nCaches) {
+                while (i < nCaches) {
+                    aux = dist[i];
+                    dist[i] = auxDist;
+                    auxDist = aux;
+
+                    auxCache = caches[i];
+                    caches[i] = c;
+                    c = auxCache;
+
+                    i++;
+                }
+                if (added < nCaches) {
+                    added++;
+                }
+            }
+        }
+
+        return caches;
+    }
+
+    ArrayList<Activity> getActivitiesArray(UserAbstract user, int total) {
+        int i = 0;
+        ArrayList<Activity> array = new ArrayList<Activity>();
+
+        for (Activity c : this.getAllActivities().values()) {
+            if (c.aboutWithCache(user)) {
+                array.add(c);
+                i++;
+                if (i >= total) {
+                    break;
+                }
+            }
+        }
+        return array;
+    }
+
+    // Timeline with myself
+    ArrayList<Activity> getActivitiesFriendsArray(User user, int total) {
+        int i = 0;
+        ArrayList<Activity> array = new ArrayList<>();
+        ArrayList<User> userlist = user.getFriendsArray();
+        //userlist.add(user); // add the user to the list
+        for (Activity c : this.getAllActivities().values()) {
+            for (User f : userlist) {
+                if (c.about(f)) { // Only user related
+                    if (array.contains(c) == false) { // Check Duplicates like 'friends with'
+                        array.add(c);
+                        i++;
+                        if (i >= total) {
+                            return array;
+                        }
+                    }
+                }
+            }
+
+            if (c.aboutWithCache(user)) { // now including user's cache related
+                if (array.contains(c) == false) { // Check Duplicates like 'friends with'
+                    array.add(c);
+                    i++;
+                    if (i >= total) {
+                        return array;
+                    }
+                }
+            }
+        }
+        return array;
+    }
+
+    // Has to be a class in order to be serializable with TreeMap
+    private class ComparatorActivity implements Serializable, Comparator<GregorianCalendar> {
+
+        @Override
+        public int compare(GregorianCalendar a1, GregorianCalendar a2) {
+            if (a1.before(a2)) {
+                return 1;
+            } else if (a1.after(a2)) {
+                return -1;
+            }
+            return 0;
+        }
     }
 }

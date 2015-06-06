@@ -1,9 +1,12 @@
 package caches;
 
+import base.Data;
 import base.Position;
+
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.TreeSet;
+
 import user.Reviewer;
 import user.UserAbstract;
 
@@ -18,20 +21,29 @@ public class Letterbox extends Cache {
      * visit.
      */
     // Can have 0 stages
-    ArrayList<Stage> stages;
+    private ArrayList<Stage> stages;
 
     // Constructors
-    public Letterbox(ArrayList<Stage> stages, GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer) {
+    public Letterbox(ArrayList<Stage> stages, GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer, Data data) {
         super(publishDate, creationDate, cacheID, premiumOnly, description, cacheState,
-                cacheTitle, owner, cacheSize, difficulty, position, hint, cache_Logs, reviewer);
+                cacheTitle, owner, cacheSize, difficulty, position, hint, cache_Logs, reviewer, data);
         this.stages = stages;
     }
 
-    public Letterbox(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, ArrayList<Stage> stages) {
-        super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs);
+    public Letterbox(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, ArrayList<Stage> stages, Data data) {
+        super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs, data);
         this.stages = stages;
     }
 
+    public Letterbox(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, boolean premium, ArrayList<Stage> stages, UserAbstract owner, Data data){
+    	super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, premium, owner, data);
+    	this.stages = stages;
+    }
+    
+    public ArrayList<Stage> getStages(){
+    	return this.stages;
+    }
+      
     @Override
     public String toString() {
         return "Letterbox Cache\n" + super.toListing()

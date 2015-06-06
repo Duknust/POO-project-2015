@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 public class testing {
 	public static void main(String[] args) {
-		Statistics s = new Statistics();
+
+		Data data = new Data();
+		Statistics s = new Statistics(data);
 		ArrayList<Integer> arr = new ArrayList<Integer>();
 		arr.add(1);
 		arr.add(2);
@@ -33,6 +35,7 @@ public class testing {
 		arr2.add("N");
 		arr2.add("D");
 
-		s.graphic2D(arr, arr2, 12, 10, "n trabalhadores", "n bolotas", true);
+		System.out.println(s.graphic2D(arr, arr2, 12, 10, "n trabalhadores",
+				"n bolotas", true));
 	}
 }

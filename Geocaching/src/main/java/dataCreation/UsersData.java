@@ -9,7 +9,7 @@ import user.User;
 import base.Utilities;
 
 public final class UsersData {
-	String emailDomain = "@bananacorp-geo.com";
+	private String emailDomain = "@bananacorp-geo.com";
 
 	// europe
 	private static ArrayList<String> portugalNamesM = new ArrayList<String>();

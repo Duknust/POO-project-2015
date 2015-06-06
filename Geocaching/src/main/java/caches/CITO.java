@@ -1,5 +1,6 @@
 package caches;
 
+import base.Data;
 import base.Position;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -17,18 +18,18 @@ public class CITO extends Cache {
      * building.
      */
 
-    GregorianCalendar date;
-    HashMap<String, UserAbstract> participants;
+	private GregorianCalendar date;
+	private HashMap<String, UserAbstract> participants;
 
     // Constructors
-    public CITO(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer) {
-        super(publishDate, creationDate, cacheID, premiumOnly, description, cacheState, cacheTitle, owner, cacheSize, difficulty, position, hint, cache_Logs, reviewer);
+    public CITO(GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer, Data data) {
+        super(publishDate, creationDate, cacheID, premiumOnly, description, cacheState, cacheTitle, owner, cacheSize, difficulty, position, hint, cache_Logs, reviewer, data);
         this.date = date;
         this.participants = participants;
     }
 
-    public CITO(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, GregorianCalendar date, HashMap<String, UserAbstract> participants) {
-        super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs);
+    public CITO(GregorianCalendar creationDate, String description, String cacheTitle, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, GregorianCalendar date, HashMap<String, UserAbstract> participants, Data data) {
+        super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, cache_Logs, data);
         this.date = date;
         this.participants = participants;
     }

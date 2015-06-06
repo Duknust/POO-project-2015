@@ -27,4 +27,8 @@ public class Stage extends Position {
 		return "Stage " + this.index + "\n Coordinates: " + super.getCoords()
 				+ "\nDescription:" + this.description + "\n\n";
 	}
+	
+	public void setDescription(String newDescription){
+		this.description = newDescription;
+	}
 }

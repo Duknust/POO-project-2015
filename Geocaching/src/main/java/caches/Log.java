@@ -23,7 +23,7 @@ public class Log implements Comparable, Serializable {
      */
     public enum Log_Type {
 
-        FOUND_IT, DNF, NEEDS_MAINTENANCE, REVIEWER_NOTE, NEEDS_ARCHIVING, NOTE, ARCHIVED, ENABLED, DISABLED;
+        FOUND_IT, DNF, NEEDS_MAINTENANCE, REVIEWER_NOTE, NEEDS_ARCHIVING, NOTE;
 
         @Override
         public String toString() {
@@ -40,14 +40,8 @@ public class Log implements Comparable, Serializable {
                     return "Needs Archiving";
                 case NOTE:
                     return "Note";
-                case ARCHIVED: // Automatic Log
-                    return "Archived";
-                case DISABLED: // Automatic Log
-                    return "Disabled";
-                case ENABLED: // Automatic Log
-                    return "Enabled Listing";
                 default:
-                    throw new IllegalArgumentException();
+                    return "";
             }
         }
     }
@@ -99,6 +93,10 @@ public class Log implements Comparable, Serializable {
 
     public Log_Type getLogType() {
         return logType;
+    }
+
+    public void setLogType(Log_Type logType) {
+        this.logType = logType;
     }
 
     // toString
