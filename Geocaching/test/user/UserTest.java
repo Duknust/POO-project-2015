@@ -11,7 +11,6 @@ import caches.Cache;
 import caches.Log;
 import caches.Traditional;
 import dataCreation.CountriesData;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.TreeSet;
 import org.junit.AfterClass;
@@ -53,8 +52,8 @@ public class UserTest {
 
         p1 = CountriesData.portugal;
         p2 = new Position(41.57238, -8.47875, 1.5f);
-        tc1 = new Traditional(new GregorianCalendar(), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), new ArrayList<>(), data);
-        tc2 = new Traditional(new GregorianCalendar(), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new ArrayList<>(), data);
+        tc1 = new Traditional(new GregorianCalendar(), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), data);
+        tc2 = new Traditional(new GregorianCalendar(), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), data);
 
     }
 
@@ -63,7 +62,7 @@ public class UserTest {
     }
 
     /**
-     * Test of createCache method, of class User.
+     * Test of createEvent method, of class User.
      */
     @Test
     public void testCreateCache() {
@@ -95,8 +94,8 @@ public class UserTest {
         datat.getAllUsers().put(rev.getEmail(), rev);
         datat.getAllUsers().put(adm.getEmail(), adm);
 
-        Traditional tca1 = new Traditional(new GregorianCalendar(), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), new ArrayList<>(), datat);
-        Traditional tca2 = new Traditional(new GregorianCalendar(), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new ArrayList<>(), datat);
+        Traditional tca1 = new Traditional(new GregorianCalendar(), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), datat);
+        Traditional tca2 = new Traditional(new GregorianCalendar(), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), datat);
 
         usr1.createCache(tca1);
         usr1.createCache(tca2);
@@ -149,7 +148,7 @@ public class UserTest {
         datat.getAllUsers().put(usr.getEmail(), usr);
         datat.getAllUsers().put(rev.getEmail(), rev);
 
-        Traditional tca1 = new Traditional(new GregorianCalendar(), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), new ArrayList<>(), datat);
+        Traditional tca1 = new Traditional(new GregorianCalendar(), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), datat);
 
         usr.createCache(tca1);
 
@@ -172,8 +171,8 @@ public class UserTest {
         datat.getAllUsers().put(usr.getEmail(), usr);
         datat.getAllUsers().put(rev.getEmail(), rev);
 
-        Traditional tca1 = new Traditional(new GregorianCalendar(), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), new ArrayList<>(), datat);
-        Traditional tca2 = new Traditional(new GregorianCalendar(), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new ArrayList<>(), datat);
+        Traditional tca1 = new Traditional(new GregorianCalendar(), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), datat);
+        Traditional tca2 = new Traditional(new GregorianCalendar(), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), datat);
 
         usr.createCache(tca1);
         usr.createCache(tca2);
@@ -198,8 +197,8 @@ public class UserTest {
         datat.getAllUsers().put(usr.getEmail(), usr);
         datat.getAllUsers().put(rev.getEmail(), rev);
 
-        Traditional tca1 = new Traditional(new GregorianCalendar(), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), new ArrayList<>(), datat);
-        Traditional tca2 = new Traditional(new GregorianCalendar(), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new ArrayList<>(), datat);
+        Traditional tca1 = new Traditional(new GregorianCalendar(), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), datat);
+        Traditional tca2 = new Traditional(new GregorianCalendar(), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), datat);
 
         usr.createCache(tca1);
         usr.createCache(tca2);
@@ -231,8 +230,8 @@ public class UserTest {
         datat.getAllUsers().put(rev.getEmail(), rev);
         datat.getAllUsers().put(adm.getEmail(), adm);
 
-        Traditional tca1 = new Traditional(new GregorianCalendar(), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), new ArrayList<>(), datat);
-        Traditional tca2 = new Traditional(new GregorianCalendar(), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), new ArrayList<>(), datat);
+        Traditional tca1 = new Traditional(new GregorianCalendar(), "some info", "New in Lisbon", 2, 2.5f, p1, "under the rock", new TreeSet<Log>(), datat);
+        Traditional tca2 = new Traditional(new GregorianCalendar(), "more info", "Em Braga", 4, 1.0f, p2, "under the bench", new TreeSet<Log>(), datat);
 
         usr1.createCache(tca1);
         usr1.createCache(tca2);

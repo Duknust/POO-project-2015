@@ -3,14 +3,24 @@ package user;
 import activity.Activity;
 import base.Data;
 import caches.Cache;
+import caches.Event;
 import caches.Log;
 import java.io.Serializable;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 
 public class Admin extends UserAbstract implements BasicCacheMethodsInterface, Serializable {
 
+    private HashMap<String, Event> events = null;
+
     public Admin(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, Data data) {
         super(email, password, name, gender, address, birthDate, data);
+        this.events = new HashMap<>();
+    }
+
+    public Admin(String email, String password, String name, String gender, String address, GregorianCalendar birthDate, Data data, HashMap<String, Event> events) {
+        super(email, password, name, gender, address, birthDate, data);
+        this.events = events;
     }
 
     void deleteLog(Log l, Cache c) {
@@ -119,6 +129,29 @@ public class Admin extends UserAbstract implements BasicCacheMethodsInterface, S
         if (c.logCache(this, l) == false) {
             return false;
         }
+
+        return true;
+    }
+
+    public boolean createEvent(Event event) {
+        if (event.getType() != Cache.Type.EVENT) {
+            return false;
+        }
+        HashMap<String, Cache> map = super.getData().getAllCachesAndUnpublished();
+        if (map == null) {
+            return false;
+        }
+
+        if (map.containsKey(event.getCacheID()) == true) {
+            return false;
+        }
+        event.setCacheID(event.genID(6));
+        event.setOwner(this);
+        event.setCacheState(Cache.Status.UNPUBLISHED);
+        super.getData().getUnpublishedCaches().put(event.getCacheID(), event);
+        this.events.put(event.getCacheID(), event);
+        //Activity ac = new Activity(new GregorianCalendar(), Activity.Type.NEW_CACHE, cache, this);
+        //super.getData().addActivity(ac);
 
         return true;
     }

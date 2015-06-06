@@ -3,6 +3,7 @@ package user;
 import activity.Activity;
 import base.Data;
 import caches.Cache;
+import caches.Event;
 import caches.Log;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.TreeSet;
 
 public class Reviewer extends UserAbstract implements BasicCacheMethodsInterface, Serializable {
 
-	private TreeSet<Cache> assignedCaches;
+    private TreeSet<Cache> assignedCaches;
 
     // Constructors
     public Reviewer(String email, String password, String name, String gender,
@@ -191,13 +192,19 @@ public class Reviewer extends UserAbstract implements BasicCacheMethodsInterface
         //c.logCache(this, new Log("Enabled Listing", new GregorianCalendar(), Log.Log_Type.ENABLED));
         c.setPublishDate(new GregorianCalendar()); // Set the Published Date
         c.enable();
-        super.getData().getEnabledCaches().put(c.getCacheID(), c); // Move it from Unpublished to Published
-        super.getData().getUnpublishedCaches().remove(c.getCacheID(), c);
-
         this.assignedCaches.add(c);
-        Activity act = new Activity(new GregorianCalendar(),
-                Activity.Type.NEW_CACHE, c, this); // Create Activity
+        Activity act = null;
+        if (c.getType() == Cache.Type.EVENT) {
+            super.getData().getEnabledCaches().put(c.getCacheID(), c); // Move it from Unpublished to Published
+            super.getData().getUnpublishedCaches().remove(c.getCacheID(), c);
+            act = new Activity(new GregorianCalendar(), Activity.Type.NEW_CACHE, c, this); // Create Activity
+        } else {
+            super.getData().getEnabledEvents().put(c.getCacheID(), (Event) c); // Move it from Unpublished to Published
+            super.getData().getUnpublishedCaches().remove(c.getCacheID(), c);
+            act = new Activity(new GregorianCalendar(), Activity.Type.NEW_EVENT, c, this); // Create Activity
+        }
         super.getData().addActivity(act);
+
         return true;
     }
 
