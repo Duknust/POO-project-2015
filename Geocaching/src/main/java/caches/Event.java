@@ -3,8 +3,13 @@ package caches;
 import base.Data;
 import base.GeoTools;
 import base.Position;
+
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Random;
+
+import meteo.Meteo;
+import user.User;
 import user.UserAbstract;
 
 public class Event extends Cache {
@@ -15,8 +20,9 @@ public class Event extends Cache {
      * provides coordinates to its location. After the event has ended, it is
      * archived.
      */
-	private HashMap<String, UserAbstract> participants;
-	private HashMap<String, Integer> points;
+	private HashMap<String, User> participants;
+	private HashMap<String, Float> points;
+	private HashMap<String, Float> times;
 	private HashMap<String, Cache> caches;
 	private GregorianCalendar dateEvent, dateEndAplications;
 	private int maxParticipants;
@@ -24,8 +30,9 @@ public class Event extends Cache {
     // Constructors
     public Event(GregorianCalendar creationDate, GregorianCalendar dateEndApp, GregorianCalendar dateEvent, String cacheTitle, String description, Position position, int maxParticipants, UserAbstract owner, HashMap<String, Cache> caches, Data data) {
         super(creationDate, description, cacheTitle, position, owner, data);
-        this.participants = new HashMap<String, UserAbstract>();
-        this.points = new HashMap<String, Integer>();
+        this.participants = new HashMap<String, User>();
+        this.points = new HashMap<String, Float>();
+        this.times = new HashMap<String, Float>();
         this.maxParticipants = maxParticipants;
         this.caches = caches;
         this.dateEndAplications = dateEndApp;
@@ -33,11 +40,11 @@ public class Event extends Cache {
     }
 
     // Getters and Setters
-    public HashMap<String, UserAbstract> getParticipants() {
+    public HashMap<String, User> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(HashMap<String, UserAbstract> participants) {
+    public void setParticipants(HashMap<String, User> participants) {
         this.participants = participants;
     }
 
@@ -65,7 +72,7 @@ public class Event extends Cache {
         return this.maxParticipants;
     }
 
-    public int getPointsByUser(UserAbstract user) {
+    public float getPointsByUser(UserAbstract user) {
         return points.get(user.getEmail());
     }
 
@@ -74,13 +81,13 @@ public class Event extends Cache {
     }
 
     // Methods
-    public boolean addParticipant(UserAbstract user) {
+    public boolean addParticipant(User user) {
         if (this.participants.containsKey(user.getEmail())) {
             return false;
         }
 
         this.participants.put(user.getEmail(), user);
-        this.points.put(user.getEmail(), 0);
+        this.points.put(user.getEmail(), (float) 0);
         return true;
     }
 
@@ -125,11 +132,11 @@ public class Event extends Cache {
         return true;
     }
 
-    public float timeToFind(UserAbstract user, Cache cache) {
+    public int timeToFind(User user, Cache cache) {
 
         //Base time
-        float dist, time = 10;
-        int aux;
+        float dist;
+        int time = 10, aux;
 
         //Specialized in the type
         aux = user.nFindFromType(cache.getType());
@@ -157,9 +164,84 @@ public class Event extends Cache {
         {
             time += 20;
         }
-
+        
+        //Meteo
+        
+        Meteo meteo = new Meteo();
+        Meteo auxMeteo = meteo.staticMeteo(this.dateEvent.getTime().getDay(),cache.getPosition());
+        
+        float rainProb = auxMeteo.getRainProbability();
+        float temperature = auxMeteo.getTemperature();
+        
+        int nTemp = user.getNumberByTemperature(temperature);
+        int nRain = user.getNumberByRain(rainProb);
+        
+        //Temperature
+        if(nTemp < 5){ 
+    		time += 20;
+    		
+    	} else if (nTemp < 10){
+    		time += 15;
+    		
+    	} else { 
+    		time += 10;
+    	}
+    	
+        //Rain
+        if(nTemp < 5){ 
+    		time += 20;
+    		
+    	} else if (nTemp < 10){
+    		time += 15;
+    		
+    	} else { 
+    		time += 10;
+    	}
+        
         return time;
     }
+    
+    public void simulation(){
+    	Random r = new Random();
+    	int rounds = this.getNRegistrations() * (r.nextInt() %caches.size());
+    	Object[] aCaches = caches.values().toArray();
+    	Object[] aPart = participants.values().toArray();
+    	float[] sTimes = new float[participants.size()];
+    	float[] sPoints = new float[participants.size()];
+    	Cache cache = null;
+    	User user;
+    	int i, idUser, idCache;
+    	
+    	
+    	while(rounds>0){
+    		rounds--;
+    		idUser =r.nextInt();
+    		idCache =r.nextInt();
+    		
+    		cache = (Cache)aCaches[idCache%caches.size()];
+    		user = (User)aPart[idUser%participants.size()];
+    		
+    		sTimes[idUser] +=  timeToFind(user,cache);
+    		sPoints[idUser] +=  cache.getDifficulty() * cache.getPosition().getDifficulty();
+    	}
+    	
+    	for(i=0; i<aPart.length; i++){
+    		user = (User)aPart[i];
+    		points.put(user.getEmail(),sPoints[i]);
+    		times.put(user.getEmail(),sTimes[i]);
+    	}
+    	
+    	printResults();
+    }
+    
+    public void printResults(){
+    	
+    	System.out.println("User || Points || Total Time");
+    	for(User u: participants.values()){
+    		System.out.format("%s || %f || %f", u.getEmail(), points.get(u.getEmail()), times.get(u.getEmail()) );
+    	}
+    }
+    
 
     @Override
     public Type getType() {

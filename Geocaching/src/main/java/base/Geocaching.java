@@ -1511,15 +1511,14 @@ public class Geocaching {
                         .println("Error: The number isn't in the correct format. Ex: '4'!");
             }
         }
-    }
+	}
 
-    private static void mShowAllCaches(Object[] toShow) {
-        int i, choice = -1, totalPages, page = 0, byPage = 10, start;
-        boolean status = false;
-        String str = "";
-        Cache cache = null;
-
-        totalPages = toShow.length / byPage;
+	private static void mShowAllCaches(Object[] toShow) {
+    	int i, choice = -1, page=0, byPage = 10, start;
+    	boolean status = false;
+    	String str = "";
+    	Cache cache = null;
+    	
         System.out.println(" --- Search Caches ");
 
         while (status == false) {
@@ -2594,240 +2593,221 @@ public class Geocaching {
     }
 
     private static void mEditCache(Cache cache) {
-        Cache.Type type = cache.getType();
-        int choice = -1, nOption = 4, aux;
-        int stage = 0, nStages = 0;
-        boolean status = false;
-        String str = "";
+    	Cache.Type type = cache.getType();
+    	int choice = -1, nOption = 4, aux; 
+    	int stage = 0, nStages=0;
+    	boolean status = false;
+    	String str = "";
+    	
+    	
+    	 while (choice == -1) {
+             System.out.println("####### '" + cache.getCacheTitle() + "' #######\n");
 
-        while (choice == -1) {
-            System.out.println("####### '" + cache.getCacheTitle()
-                    + "' #######\n");
+             System.out.println("\t[1] Description");
+             System.out.println("\t[2] Cache Size");
+             System.out.println("\t[3] Difficulty");
+             System.out.println("\t[4] Hint");
+             
+              if(type == Cache.Type.MYSTERY){
+            	 System.out.println("\t[5] Final Text");
+            	 nOption = 5;
+            	 
+             } else if(type == Cache.Type.MULTI || type == Cache.Type.LETTERBOX){
+            	 System.out.println("\t[5] Stage Description");
+            	 nOption = 5;
+             }
+            	 
+            
+             System.out.println("\n-- [X] Select Option");
+             System.out.println("-----:");
+             System.out.println("-- [0] Back");
+             System.out.print("?> ");
+             
+             try {
+                 choice = Integer.parseInt(input.readLine());
+             } catch (Exception ex) {
+                 //System.out.println("Error: Invalid Option");
+                 choice = -1;
+             }
 
-            System.out.println("\t[1] Description");
-            System.out.println("\t[2] Cache Size");
-            System.out.println("\t[3] Difficulty");
-            System.out.println("\t[4] Hint");
+             if (choice >= 0 && choice <= nOption) {
+	             switch (choice) {
+	                 case 0:
+	                     clearConsole();
+	                     break;
+	                 case 1:
+	                     clearConsole();
+	                     System.out.println("-- Insert a new Description");
+	                     while (status == false) {
+	                         System.out.print("?> ");
 
-            if (type == Cache.Type.MYSTERY) {
-                System.out.println("\t[5] Final Text");
-                nOption = 5;
+	                         try {
+	                             str = input.readLine();
+	                         } catch (IOException e) {
+	                             e.printStackTrace();
+	                         }
+	                         if (str.length() > 10) {
+	                        	 cache.setDescription(str);
+	                             status = true;
+	                         } else {
+	                             System.out.println("Error: The name need at least 10 characters!");
+	                         }
+	                     }
+	                     status = false;
+	                     choice = -1;
+	                     break;
+	                 case 2:
+	                     clearConsole();
+	                     System.out.println("-- Insert a new Hint");
+	                     while (status == false) {
+	                     	System.out.println("\t[1] Micro");
+	                     	System.out.println("\t[2] Small");
+	                     	System.out.println("\t[3] Normal");
+	                     	System.out.println("\t[4] Large");
+	                     	
+	                     	System.out.print("\n?> ");
+	                         try {
+	                             str = input.readLine();
+	                             aux = Integer.parseInt(str);
+	                             
+	                            	if(aux>0  &&  aux<5){
+	                            		cache.setCacheSize(aux);
+	                            		status = true;
+	                            	} else
+	                            		System.out.println("Error: Try a number between 1 and 4. Ex: '4'!");
+	                            	
+	                         } catch (Exception ex) {
+	                         	System.out.println("Error: The number isn't in the correct format. Ex: '4'!");
+	                         }
+	                     }
+	                     status = false;
+	                     choice = -1;
+	                     break;
+	                 case 3:
+	                     clearConsole();
+	                     System.out.println("-- Insert a new Hint");
+	                     while (status == false) {
+	                     	System.out.println("\t[1] Easier");
+	                     	System.out.println("\t[2] Easy");
+	                     	System.out.println("\t[3] Regular");
+	                     	System.out.println("\t[4] Hard");
+	                     	System.out.println("\t[5] Hardest");
+	                     	
+	                     	System.out.print("\n?> ");
+	                         try {
+	                             str = input.readLine();
+	                             aux = Integer.parseInt(str);
+	                             
+	                            	if(aux>0  &&  aux<6){
+	                            		cache.setDifficulty(aux);
+	                            		status = true;
+	                            	}else
+	                            		System.out.println("Error: Try a number between 1 and 5. Ex: '4'!");
+	                            	
+	                         } catch (Exception ex) {
+	                         	System.out.println("Error: The number isn't in the correct format. Ex: '4'!");
+	                         }
+	                     }
+	                     status = false;
+	                     choice = -1;
+	                     break;
+	                 case 4:
+	                     clearConsole();
+	                     System.out.println("-- Insert a new Hint");
+	                     while (status == false) {
+	                         System.out.print("?> ");
 
-            } else if (type == Cache.Type.MULTI || type == Cache.Type.LETTERBOX) {
-                System.out.println("\t[5] Stage Description");
-                nOption = 5;
-            }
+	                         try {
+	                             str = input.readLine();
+	                         } catch (IOException e) {
+	                             e.printStackTrace();
+	                         }
+	                         if (str.length() > 4) {
+	                        	 cache.setHint(str);
+	                             status = true;
+	                         } else {
+	                             System.out.println("Error: The name need at least 4 characters!");
+	                         }
+	                     }
+	                     status = false;
+	                     choice = -1;
+	                     break;
+	                 case 5:
+	                     clearConsole();
+	                     if(type == Cache.Type.MYSTERY){
+	                    	System.out.println("-- Insert a new Final Text");
+	                     	Mystery mystery = (Mystery)cache;
+		                    
+	                     	while (status == false) {
+		                         System.out.print("?> ");
 
-            System.out.println("\n-- [X] Select Option");
-            System.out.println("-----:");
-            System.out.println("-- [0] Back");
-            System.out.print("?> ");
-
-            try {
-                choice = Integer.parseInt(input.readLine());
-            } catch (Exception ex) {
-                // System.out.println("Error: Invalid Option");
-                choice = -1;
-            }
-
-            if (choice >= 0 && choice <= nOption) {
-                switch (choice) {
-                    case 0:
-                        clearConsole();
-                        break;
-                    case 1:
-                        clearConsole();
-                        System.out.println("-- Insert a new Description");
-                        while (status == false) {
-                            System.out.print("?> ");
-
-                            try {
-                                str = input.readLine();
-                            } catch (IOException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                            if (str.length() > 10) {
-                                cache.setDescription(str);
-                                status = true;
-                            } else {
-                                System.out
-                                        .println("Error: The name needs at least 10 characters!");
-                            }
-                        }
-                        status = false;
-                        choice = -1;
-                        break;
-                    case 2:
-                        clearConsole();
-                        System.out.println("-- Insert a new Hint");
-                        while (status == false) {
-                            System.out.println("\t[1] Micro");
-                            System.out.println("\t[2] Small");
-                            System.out.println("\t[3] Normal");
-                            System.out.println("\t[4] Large");
-
-                            System.out.print("\n?> ");
-                            try {
-                                str = input.readLine();
-                                aux = Integer.parseInt(str);
-
-                                if (aux > 0 && aux < 5) {
-                                    cache.setCacheSize(aux);
-                                    status = true;
-                                } else {
-                                    System.out
-                                            .println("Error: Try a number between 1 and 4. Ex: '4'!");
-                                }
-
-                            } catch (Exception ex) {
-                                System.out
-                                        .println("Error: The number isn't in the correct format. Ex: '4'!");
-                            }
-                        }
-                        status = false;
-                        choice = -1;
-                        break;
-                    case 3:
-                        clearConsole();
-                        System.out.println("-- Insert a new Hint");
-                        while (status == false) {
-                            System.out.println("\t[1] Easier");
-                            System.out.println("\t[2] Easy");
-                            System.out.println("\t[3] Regular");
-                            System.out.println("\t[4] Hard");
-                            System.out.println("\t[5] Hardest");
-
-                            System.out.print("\n?> ");
-                            try {
-                                str = input.readLine();
-                                aux = Integer.parseInt(str);
-
-                                if (aux > 0 && aux < 6) {
-                                    cache.setDifficulty(aux);
-                                    status = true;
-                                } else {
-                                    System.out
-                                            .println("Error: Try a number between 1 and 5. Ex: '4'!");
-                                }
-
-                            } catch (Exception ex) {
-                                System.out
-                                        .println("Error: The number isn't in the correct format. Ex: '4'!");
-                            }
-                        }
-                        status = false;
-                        choice = -1;
-                        break;
-                    case 4:
-                        clearConsole();
-                        System.out.println("-- Insert a new Hint");
-                        while (status == false) {
-                            System.out.print("?> ");
-
-                            try {
-                                str = input.readLine();
-                            } catch (IOException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                            if (str.length() > 4) {
-                                cache.setHint(str);
-                                status = true;
-                            } else {
-                                System.out
-                                        .println("Error: The name needs at least 4 characters!");
-                            }
-                        }
-                        status = false;
-                        choice = -1;
-                        break;
-                    case 5:
-                        clearConsole();
-                        if (type == Cache.Type.MYSTERY) {
-                            System.out.println("-- Insert a new Final Text");
-                            Mystery mystery = (Mystery) cache;
-
-                            while (status == false) {
-                                System.out.print("?> ");
-
-                                try {
-                                    str = input.readLine();
-                                } catch (IOException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
-                                if (str.length() > 10) {
-                                    mystery.setFinalText(str);
-                                    status = true;
-                                } else {
-                                    System.out
-                                            .println("Error: The name needs at least 10 characters!");
-                                }
-                            }
-                            status = false;
-                        } else {
-                            ArrayList<Stage> stages = null;
-
-                            if (type == Cache.Type.MULTI) {
-                                Multi multi = (Multi) cache;
-                                stages = multi.getStages();
-
-                            } else if (type == Cache.Type.LETTERBOX) {
-                                Letterbox letter = (Letterbox) cache;
-                                stages = letter.getStages();
-                            }
-
-                            nStages = stages.size();
-                            System.out
-                                    .format("You just have %d in this cache. Which one do you want to change?\n",
-                                            nStages);
-
-                            while (choice != -1) {
-                                System.out.print("\n?> ");
-                                try {
-                                    str = input.readLine();
-                                    aux = Integer.parseInt(str);
-
-                                    if (aux > 0 && aux < nStages) {
-                                        Stage st = stages.get(aux - 1);
-                                        System.out
-                                                .println("-- Insert a new Description - Stage "
-                                                        + aux);
-
-                                        while (choice != -1) {
-                                            System.out.print("?> ");
-                                            try {
-                                                str = input.readLine();
-                                            } catch (IOException e) {
-                                                // TODO Auto-generated catch block
-                                                e.printStackTrace();
-                                            }
-                                            if (str.length() > 4) {
-                                                st.setDescription(str);
-                                                choice = -1;
-                                            } else {
-                                                System.out
-                                                        .println("Error: The name needs at least 4 characters!");
-                                            }
-                                        }
-                                    } else {
-                                        System.out
-                                                .println("Error: Try a number between 1 and 5. Ex: '4'!");
-                                    }
-
-                                } catch (Exception ex) {
-                                    System.out
-                                            .println("Error: The number isn't in the correct format. Ex: '4'!");
-                                }
-                            }
-                        }
-                    default:
-                        choice = -1;
-                        break;
-                }
-            }
-        }
+		                         try {
+		                             str = input.readLine();
+		                         } catch (IOException e) {
+		                        	 e.printStackTrace();
+		                         }
+		                         if (str.length() > 10) {
+		                        	 mystery.setFinalText(str);
+		                             status = true;
+		                         } else {
+		                             System.out.println("Error: The name need at least 10 characters!");
+		                         }
+		                     }
+		                     status = false;
+	                     }else{ 
+	                    	 ArrayList<Stage> stages = null;
+	                    	 
+	                    	 if(type == Cache.Type.MULTI){
+	                    		 Multi multi = (Multi) cache;
+	                    	 	 stages = multi.getStages();
+	                    	 	 
+	                    	 }else if(type == Cache.Type.LETTERBOX){
+		                    	 Letterbox letter = (Letterbox) cache;
+		                    	 stages = letter.getStages();
+	                    	 }
+	                    	 
+	                    	 nStages = stages.size();
+	                    	 System.out.format("You just have %d in this cache. Which one do you want to change?\n", nStages);
+	                    	 
+	                    	 while(choice != -1){
+	                    		 System.out.print("\n?> ");
+		                         try {
+		                             str = input.readLine();
+		                             aux = Integer.parseInt(str);
+		                             
+		                            	if(aux>0  &&  aux<nStages){
+		                            		Stage st = stages.get(aux-1);
+			           	                    System.out.println("-- Insert a new Description - Stage " + aux);
+			           	                    
+			        	                    while (choice != -1) {
+			        	                        System.out.print("?> ");
+			        	                        try {
+			        	                             str = input.readLine();
+			        	                         } catch (IOException e) {
+			        	                             // TODO Auto-generated catch block
+			        	                             e.printStackTrace();
+			        	                         }
+			        	                         if (str.length() > 4) {
+			        	                        	 st.setDescription(str);
+			        	                        	 choice = -1;
+			        	                         } else {
+			        	                             System.out.println("Error: The name need at least 4 characters!");
+			        	                         }
+			        	                     }
+		                            	}else
+		                            		System.out.println("Error: Try a number between 1 and 5. Ex: '4'!");
+		                            	
+		                         } catch (Exception ex) {
+		                         	System.out.println("Error: The number isn't in the correct format. Ex: '4'!");
+		                         }
+	                    	 }
+	                     }
+	                 default:
+	                     choice = -1;
+	                     break;
+	             }
+             }
+         }
     }
 
     private static void mCreateCache() {
@@ -3614,9 +3594,12 @@ public class Geocaching {
 
     // ------------------- EVENTS MENU ------------------
     private static void mEvents() {
-        int choice = -1;
+        UserAbstract.Role role = userOnline.getRole();
+    	int choice = -1;
+        
         while (choice == -1) { // REVIEWER IFS MISSING
             System.out.println("####### Events Menu #######\n");
+
             System.out.println("-- [1] Scheduled Events");
             System.out.println("-- [2] Today's Events");
             System.out.println("-- [3] View Participated Events");
@@ -3624,6 +3607,7 @@ public class Geocaching {
                 System.out.println("-- [4] Create an Event");
                 System.out.println("-- [5] View Owned Events");
             }
+
             System.out.println("-----");
             System.out.println("-- [0] Back");
             System.out.print("?> ");
@@ -3653,6 +3637,7 @@ public class Geocaching {
                     clearConsole();
                     break;
                 case 4:
+
                     if (userOnline.getRole() == Role.ADMIN) {
                         clearConsole();
                         mCreateEvent();
@@ -3803,9 +3788,13 @@ public class Geocaching {
 
     private static void mViewEvent(Event ev) {
         int choice = -1;
-        boolean canSubs = new GregorianCalendar().getTime().before(
-                ev.getDateEndApplications().getTime());
-        boolean participate = ev.checkParticipation(userOnline);
+        boolean canSubs = new GregorianCalendar().getTime().before(ev.getDateEndApplications().getTime());
+        boolean participate = false;
+        
+        if(canSubs){
+        	if(canSubs = userOnline.getRole() == UserAbstract.Role.USER)
+        		participate = ev.checkParticipation(userOnline);
+        }
 
         while (choice == -1) {
             System.out.println("\n-- Event Details --\n");
@@ -3831,6 +3820,10 @@ public class Geocaching {
                     System.out.println("-- [3] Unsubscribe");
                 }
             }
+            
+            if (userOnline.equals(ev.getOwner())  || userOnline.equals(ev.getReviewer())) 
+            	System.out.println("-- [4] Simulation");
+            
             System.out.println("-----:");
             System.out.println("-- [0] Back");
 
@@ -3888,7 +3881,7 @@ public class Geocaching {
                             }
 
                             if (ev.getNRegistrations() < ev.getMaxP()) {
-                                if (ev.addParticipant(userOnline)) {
+                                if (ev.addParticipant((User)userOnline)) {
                                     System.out
                                             .println("Congratulations!! Now you are a participant!!");
                                     participate = true;
@@ -3909,6 +3902,16 @@ public class Geocaching {
                         }
                         break;
                     }
+                    
+                case 4:
+                	
+                	clearConsole();
+                	if (userOnline.equals(ev.getOwner())  || userOnline.equals(ev.getReviewer()))
+                		ev.simulation();
+                	else
+                		System.out.println("Error: Invalid Option");
+                	choice=-1;
+                	break;
                 default:
                     System.out.println("Error: Invalid Option");
                     choice = -1;
