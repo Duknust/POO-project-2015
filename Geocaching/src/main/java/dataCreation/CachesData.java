@@ -22,7 +22,7 @@ import caches.Traditional;
 
 public class CachesData {
 
-	Data data = null;
+	private Data data = null;
 
 	public CachesData(Data data) {
 		this.data = data;
@@ -53,20 +53,22 @@ public class CachesData {
 					participants, this.data);
 		} else if (probArea < 2) {
 			res = new Earth(creationDate, description, cacheTitle, cacheSize,
-					difficulty, position, hint, cache_Logs,
-					this.data);
+					difficulty, position, hint, cache_Logs, this.data);
 		} else if (probArea < 3) {
 			res = new Letterbox(creationDate, description, cacheTitle,
-					cacheSize, difficulty, position, hint, cache_Logs, stages, this.data);
+					cacheSize, difficulty, position, hint, cache_Logs, stages,
+					this.data);
 		} else if (probArea < 4) {
 			res = new Multi(creationDate, description, cacheTitle, cacheSize,
 					difficulty, position, hint, cache_Logs, stages, this.data);
 		} else if (probArea < 5) {
 			res = new Mystery(creationDate, description, cacheTitle, cacheSize,
-					difficulty, position, hint, cache_Logs, position, "non", this.data);
+					difficulty, position, hint, cache_Logs, position, "non",
+					this.data);
 		} else {
 			res = new Traditional(creationDate, description, cacheTitle,
-					cacheSize, difficulty, position, hint, cache_Logs, this.data);
+					cacheSize, difficulty, position, hint, cache_Logs,
+					this.data);
 		}
 		return res;
 	}
