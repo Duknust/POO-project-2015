@@ -881,37 +881,97 @@ public class Geocaching {
                     break;
                 case 1:
                 	clearConsole();
-                	mShowAllCaches();
+                	Object[] toShow = data.getEnabledCaches().values().toArray();
+                	mShowAllCaches(toShow);
+                	choice = -1;
+                	break;
+                case 2:
+                	clearConsole();
+                	mSearchByType();
+                	choice = -1;
                 	break;
                 default:
                 	choice = -1;
-               /*     if (choice > 0 && choice <= arrayCaches.size()) {
-                        clearConsole();
-                        mViewCache(arrayCaches.get(choice - 1));
-                        clearConsole();
-                    } else {
-                        System.out.println("Error: Invalid Option");
-                    }
-                    choice = -1;
-                    break;*/
             }
         }
     }
 
-    private static void mShowAllCaches() {
+    private static void mSearchByType() {
+    	Cache.Type type = Cache.Type.TRADITIONAL;;
+    	boolean status = false;
+    	Cache cache = null;
+    	String str = "";
+    	int choice = -1;
+    	
+    	
+    	 //Type of cache
+        System.out.println("-- Type Of Cache:");
+        while (status == false) {
+        	System.out.println("\t[1] Traditional");
+        	System.out.println("\t[2] Multi");
+        	System.out.println("\t[3] Earth");
+        	System.out.println("\t[4] Letterbox");
+        	System.out.println("\t[5] Mystery");
+        	
+        	System.out.println("\n-----:");
+            System.out.println("-- [0] Back");
+        	System.out.print("\n?> ");
+            try {
+                str = input.readLine();
+                choice = Integer.parseInt(str);
+                
+                if(choice>0 && choice < 6){
+	               	switch(choice){
+	               		case 1:
+	               			type = Cache.Type.TRADITIONAL;
+	               			break;
+	               		case 2:
+	               			type = Cache.Type.MULTI;
+	               			break;
+	               		case 3:
+	               			type = Cache.Type.EARTH;
+	               			break;
+	               		case 4:
+	               			type = Cache.Type.LETTERBOX;
+	               			break;
+	               		case 5:
+	               			type = Cache.Type.MYSTERY;
+	               			break;
+	               	}
+	               	Iterator<Cache> iter= data.getEnabledCaches().values().iterator();
+                	ArrayList<Cache> list = new ArrayList<Cache>();
+                	
+                	while(iter.hasNext()){
+                		cache = iter.next();
+                		if(type == cache.getType())
+                			list.add(cache);
+                	}
+                	mShowAllCaches(list.toArray());
+                	
+               	} else if (choice == 0)
+               		status = true;
+               	else
+               		System.out.println("Error: Try a number between 1 and 5. Ex: '4'!");
+                
+            } catch (Exception ex) {
+            	System.out.println("Error: The number isn't in the correct format. Ex: '4'!");
+            }
+        }
+	}
+
+	private static void mShowAllCaches(Object[] toShow) {
     	int i, choice = -1, totalPages, page=0, byPage = 10, start;
     	boolean status = false;
     	String str = "";
     	Cache cache = null;
     	
-        Object[] enables = data.getEnabledCaches().values().toArray();
-        totalPages = enables.length/byPage;
+        totalPages = toShow.length/byPage;
         System.out.println(" --- Search Caches ");
         
         while(status == false){
         	start = byPage * page;
-        	for(i=0; i<byPage  &&  start+i < enables.length; i++){
-        		cache = (Cache)enables[start+i];
+        	for(i=0; i<byPage  &&  start+i < toShow.length; i++){
+        		cache = (Cache)toShow[start+i];
         		System.out.format("\t[%d] %s - %s - %s\n", i+1, cache.getCacheID(), cache.getCacheTitle(), cache.getType());
         	}
         	
@@ -929,7 +989,7 @@ public class Geocaching {
                 	status = true;
                 }else{
                 	if(choice > 0  && choice <= i){
-                		cache = (Cache)enables[start+choice-1];
+                		cache = (Cache)toShow[start+choice-1];
                 		mViewCache(cache);
                 	}else
                 		System.out.println("Error: You didn't put a valid option!!");
@@ -943,7 +1003,7 @@ public class Geocaching {
                 		System.out.println("Error: You are already in first page!!");
                 
                 } else if(str.equals("n")){
-                	if((page+1)*byPage < enables.length)
+                	if((page+1)*byPage < toShow.length)
                 		page++;
                 	else
                 		System.out.println("Error: You are already in last page!!");
