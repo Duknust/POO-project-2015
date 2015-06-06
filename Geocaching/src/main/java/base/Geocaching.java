@@ -854,6 +854,8 @@ public class Geocaching {
     }
 
     private static void mSearchCaches() {
+    	float lati = 0, longi = 0;
+    	boolean status = false;
     	Iterator<Cache> iter;
     	ArrayList<Cache> list;
     	Cache cache = null;
@@ -867,6 +869,8 @@ public class Geocaching {
         	System.out.println("\t[2] Search By Type");
         	System.out.println("\t[3] Search By Title");
         	System.out.println("\t[4] Search By ID");
+        	System.out.println("\t[4] Search By Position");
+        	
         	
             System.out.println("\n-- [X] View Cache");
             System.out.println("-----:");
@@ -941,6 +945,51 @@ public class Geocaching {
 					}
                 	choice = -1;
                 	break;
+                case 5:
+                	clearConsole();
+                	System.out.println("####### Position Input#######");
+        	        System.out.println("----- Please insert the following fields");
+
+        	        // Lati
+        	        System.out.println("-- Latitude");
+        	        while (status == false) {
+        	            System.out.print("?> ");
+        	            try {
+        	                str = input.readLine();
+        	                lati = Float.parseFloat(str);
+        	                status = true;
+        	            } catch (Exception ex) {
+        	                System.out.println("Error: Number isn't in the correct format (12.345)");
+        	            }
+        	        }
+        	        status = false;
+
+        	        // Longi
+        	        System.out.println("-- Longitude");
+        	        while (status == false) {
+        	            System.out.print("?> ");
+        	            try {
+        	            	str = input.readLine();
+        	                longi = Float.parseFloat(str);
+        	                status = true;
+        	            } catch (Exception ex) {
+        	                System.out.println("Error: Number isn't in the correct format (12.345)");
+        	            }
+        	        }
+        	        status = false;
+
+                	int nCaches = 10;
+                    Cache[] caches = data.getNByPosition(new Position(lati,longi), nCaches);
+                    
+                    mShowAllCaches(caches);
+                    /*
+                    HashMap<String, Cache> inHash = new HashMap<String, Cache>();
+                    for (int i = 0; i < nCaches; i++) {
+                    	if(caches[i] == null) break;
+                    	inHash.put(caches[i].getCacheID(), caches[i]);
+                    }*/
+                    choice = -1;
+                    break;
                 default:
                 	choice = -1;
             }
@@ -1023,6 +1072,8 @@ public class Geocaching {
         	start = byPage * page;
         	for(i=0; i<byPage  &&  start+i < toShow.length; i++){
         		cache = (Cache)toShow[start+i];
+        		
+        		if(cache == null) break;
         		System.out.format("\t[%d] %s - %s - %s\n", i+1, cache.getCacheID(), cache.getCacheTitle(), cache.getType());
         	}
         	
