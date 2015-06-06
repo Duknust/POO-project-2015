@@ -854,14 +854,19 @@ public class Geocaching {
     }
 
     private static void mSearchCaches() {
+    	Iterator<Cache> iter;
+    	ArrayList<Cache> list;
+    	Cache cache = null;
+    	String str = "";
     	int choice = -1;
-        HashMap<String, Cache> enables = data.getEnabledCaches();
+    	
 
         while (choice == -1) {
         	System.out.println("####### Caches Search Menu #######\n");
         	System.out.println("\t[1] Show All");
         	System.out.println("\t[2] Search By Type");
-        	System.out.println("\t[3] Search By Title");           
+        	System.out.println("\t[3] Search By Title");
+        	System.out.println("\t[4] Search By ID");
         	
             System.out.println("\n-- [X] View Cache");
             System.out.println("-----:");
@@ -888,6 +893,52 @@ public class Geocaching {
                 case 2:
                 	clearConsole();
                 	mSearchByType();
+                	choice = -1;
+                	break;
+                case 3:
+                	clearConsole();
+                	iter = data.getEnabledCaches().values().iterator();
+                	list = new ArrayList<Cache>();
+                	
+                	try {
+                		System.out.println("-- Insert what you want to search");
+                		System.out.print("?> ");
+						str = input.readLine();
+						
+						while(iter.hasNext()){
+	                		cache = iter.next();
+	                		if(cache.getCacheTitle().contains(str))
+	                			list.add(cache);
+	                	}
+	                	mShowAllCaches(list.toArray());
+						
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+                	choice = -1;
+                	break;
+                case 4:
+                	clearConsole();
+                	iter = data.getEnabledCaches().values().iterator();
+                	list = new ArrayList<Cache>();
+                	
+                	try {
+                		System.out.println("-- Insert what you want to search");
+                		System.out.print("?> ");
+						str = input.readLine();
+						
+						while(iter.hasNext()){
+	                		cache = iter.next();
+	                		if(cache.getCacheID().contains(str))
+	                			list.add(cache);
+	                	}
+	                	mShowAllCaches(list.toArray());
+						
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
                 	choice = -1;
                 	break;
                 default:
