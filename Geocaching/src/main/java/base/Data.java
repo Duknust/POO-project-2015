@@ -147,7 +147,7 @@ public class Data implements Serializable {
         HashMap<String, Cache> allCaches = getAllCaches();
 
         for (Cache c : allCaches.values()) {
-            if (c.getOwner().equals(u)) {
+            if (c.getOwner().equals(u) && c.getType() != Cache.Type.EVENT) {
                 list.add(c);
             }
         }
@@ -162,7 +162,7 @@ public class Data implements Serializable {
         HashMap<String, Cache> allCaches = getAllCaches();
 
         for (Cache c : allCaches.values()) {
-            if (c.hasFound(u)) {
+            if (c.hasFound(u) && c.getType() != Cache.Type.EVENT) {
                 list.add(c);
             }
         }
@@ -239,7 +239,7 @@ public class Data implements Serializable {
         ArrayList<Activity> array = new ArrayList<Activity>();
 
         for (Activity c : this.getAllActivities().values()) {
-            if (c.about(user)) {
+            if (c.aboutWithCache(user)) {
                 array.add(c);
                 i++;
                 if (i >= total) {
@@ -255,16 +255,26 @@ public class Data implements Serializable {
         int i = 0;
         ArrayList<Activity> array = new ArrayList<>();
         ArrayList<User> userlist = user.getFriendsArray();
-        userlist.add(user); // add the user to the list
+        //userlist.add(user); // add the user to the list
         for (Activity c : this.getAllActivities().values()) {
             for (User f : userlist) {
-                if (c.about(f)) {
+                if (c.about(f)) { // Only user related
                     if (array.contains(c) == false) { // Check Duplicates like 'friends with'
                         array.add(c);
                         i++;
                         if (i >= total) {
                             return array;
                         }
+                    }
+                }
+            }
+
+            if (c.aboutWithCache(user)) { // now including user's cache related
+                if (array.contains(c) == false) { // Check Duplicates like 'friends with'
+                    array.add(c);
+                    i++;
+                    if (i >= total) {
+                        return array;
                     }
                 }
             }

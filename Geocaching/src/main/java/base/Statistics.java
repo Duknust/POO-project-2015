@@ -17,13 +17,44 @@ public class Statistics implements Serializable {
     private static final long serialVersionUID = 1L;
     private int numberCachesLastMonth = 0;
     private int numberCachesLastYear = 0;
+    private Data data = null;
 
     public Statistics(Statistics e) {
         this.numberCachesLastMonth = e.getNumberCachesLastMonth();
         this.numberCachesLastYear = e.getNumberCachesLastYear();
     }
 
-    public Statistics() {
+    public Statistics(Data data) {
+        this.data = data;
+        calculateWithData(data);
+    }
+
+    public void calculateWithData(Data data) {
+        GregorianCalendar gcNow = new GregorianCalendar();
+        GregorianCalendar gcLastMonth = null;
+        if (gcNow.get(GregorianCalendar.MONTH) == 0) {
+            gcLastMonth = new GregorianCalendar(
+                    gcNow.get(GregorianCalendar.YEAR) - 1, 11,
+                    gcNow.get(GregorianCalendar.DAY_OF_MONTH));
+        } else {
+            gcLastMonth = new GregorianCalendar(
+                    gcNow.get(GregorianCalendar.YEAR) - 1,
+                    gcNow.get(GregorianCalendar.MONTH),
+                    gcNow.get(GregorianCalendar.DAY_OF_MONTH));
+        }
+        GregorianCalendar gcLastYear = new GregorianCalendar(
+                gcNow.get(GregorianCalendar.YEAR - 1),
+                gcNow.get(GregorianCalendar.MONTH),
+                gcNow.get(GregorianCalendar.DAY_OF_MONTH));
+
+        for (Cache c : data.getAllCaches().values()) {
+            if (c.getPublishDate().after(gcLastMonth)) {
+                this.numberCachesLastMonth++;
+            }
+            if (c.getPublishDate().after(gcLastYear)) {
+                this.numberCachesLastYear++;
+            }
+        }
     }
 
     @Override
@@ -62,100 +93,104 @@ public class Statistics implements Serializable {
                 100, "", "", false);
     }
 
-    public void graphic2D(ArrayList<Integer> points, ArrayList<String> listX,
+    public String graphic2D(ArrayList<Integer> points, ArrayList<String> listX,
             int columns, int limit, String xcaption, String ycaption,
             boolean graph) {
-        int i, j;
-        String matrix[][] = new String[10][columns];
-        int maximum = 0;
-        StringBuilder sb = null;
+        StringBuilder sbFinal = new StringBuilder();
+        if (limit > 0) {
+            int i, j;
+            String matrix[][] = new String[10][columns];
+            int maximum = 0;
+            StringBuilder sb = null;
 
-        // init matrix
-        for (i = 0; i < 10; i++) {
-            for (j = 0; j < columns; j++) {
-                matrix[i][j] = "     ";
-            }
-        }
-
-        // find maximum
-        for (Integer numb : points) {
-            if (numb > maximum) {
-                maximum = numb;
-            }
-        }
-
-        for (i = 0; i < columns; i++) {
-            if (!graph) {
-                if (points.get(i) == maximum) {
-                    matrix[8 - (points.get(i) / (limit / 10)) + 1][i] = "  x  ";
-                } else {
-                    matrix[8 - (points.get(i) / (limit / 10)) + 1][i] = "  .  ";
-                }
-            } else {
-                matrix[8 - (points.get(i) / (limit / 10)) + 1][i] = "  #  ";
-            }
-
-        }
-
-        if (graph) {
-            for (j = 0; j < columns; j++) {
-                boolean swit = false;
-                for (i = 0; i < 10; i++) {
-                    if (matrix[i][j].equals("  #  ")) {
-                        swit = true;
-                    }
-                    if (swit) {
-                        matrix[i][j] = "  #  ";
-                    }
+            // init matrix
+            for (i = 0; i < 10; i++) {
+                for (j = 0; j < columns; j++) {
+                    matrix[i][j] = "     ";
                 }
             }
-        }
 
-        System.out.println("used scale 1:10");
-        if (!graph) {
-            System.out.println("[x] maximum value (" + maximum + ")");
-            System.out.println("[.] other values\n");
-        }
-        // System.out.println(" - - - - - - - - - - - - - - - - - - - - ");
-        for (i = 0; i < 10; i++) {
-            sb = new StringBuilder();
-            // sb.append((9 - i) * 10 + "\t" + "|");
-            sb.append("| ");
-            for (j = 0; j < columns; j++) {
-                sb.append(matrix[i][j]);
+            // find maximum
+            for (Integer numb : points) {
+                if (numb > maximum) {
+                    maximum = numb;
+                }
             }
-            sb.append("  | " + limit / 10 * (10 - i));
-            if (i == 0 && ycaption != null && !ycaption.isEmpty()) {
-                sb.append("  y: " + ycaption);
-            }
-            System.out.println(sb.toString());
-        }
-        // System.out.println(" - - - - - - - - - - - - - - - - - - - - ");
 
-        if (listX != null && !listX.isEmpty()) {
-            sb = new StringBuilder();
-            sb.append("  ");
             for (i = 0; i < columns; i++) {
-                String tmp = listX.get(i) + "";
-                if (tmp.length() == 1) {
-                    tmp = "  " + tmp + "  ";
-                } else if (tmp.length() == 2) {
-                    tmp = "  " + tmp + " ";
-                } else if (tmp.length() == 3) {
-                    tmp = " " + tmp + " ";
-                } else if (tmp.length() == 4) {
-                    tmp = " " + tmp;
+                if (!graph) {
+                    if (points.get(i) == maximum) {
+                        matrix[8 - (points.get(i) / ((limit / 10) == 0 ? 1 : (limit / 10))) + 1][i] = "  x  ";
+                    } else {
+                        matrix[8 - (points.get(i) / ((limit / 10) == 0 ? 1 : (limit / 10))) + 1][i] = "  .  ";
+                    }
                 } else {
-                    tmp = tmp.substring(0, 5);
+                    matrix[8 - (points.get(i) / ((limit / 10) == 0 ? 1 : (limit / 10))) + 1][i] = "  #  ";
                 }
-                sb.append(tmp);
-            }
-            System.out.println(sb.toString());
-        }
 
-        if (xcaption != null && !xcaption.isEmpty()) {
-            System.out.println("x: " + xcaption);
+            }
+
+            if (graph) {
+                for (j = 0; j < columns; j++) {
+                    boolean swit = false;
+                    for (i = 0; i < 10; i++) {
+                        if (matrix[i][j].equals("  #  ")) {
+                            swit = true;
+                        }
+                        if (swit) {
+                            matrix[i][j] = "  #  ";
+                        }
+                    }
+                }
+            }
+
+            sbFinal.append("used scale 1:10\n");
+            if (!graph) {
+                sbFinal.append("[x] maximum value (" + maximum + ")\n");
+                sbFinal.append("[.] other values\n\n");
+            }
+            // System.out.println(" - - - - - - - - - - - - - - - - - - - - ");
+            for (i = 0; i < 10; i++) {
+                sb = new StringBuilder();
+                // sb.append((9 - i) * 10 + "\t" + "|");
+                sb.append("| ");
+                for (j = 0; j < columns; j++) {
+                    sb.append(matrix[i][j]);
+                }
+                sb.append("  | " + limit / 10 * (10 - i));
+                if (i == 0 && ycaption != null && !ycaption.isEmpty()) {
+                    sb.append("  y: " + ycaption);
+                }
+                sbFinal.append(sb.toString() + "\n");
+            }
+            // System.out.println(" - - - - - - - - - - - - - - - - - - - - ");
+
+            if (listX != null && !listX.isEmpty()) {
+                sb = new StringBuilder();
+                sb.append("  ");
+                for (i = 0; i < columns; i++) {
+                    String tmp = listX.get(i) + "";
+                    if (tmp.length() == 1) {
+                        tmp = "  " + tmp + "  ";
+                    } else if (tmp.length() == 2) {
+                        tmp = "  " + tmp + " ";
+                    } else if (tmp.length() == 3) {
+                        tmp = " " + tmp + " ";
+                    } else if (tmp.length() == 4) {
+                        tmp = " " + tmp;
+                    } else {
+                        tmp = tmp.substring(0, 5);
+                    }
+                    sb.append(tmp);
+                }
+                sbFinal.append(sb.toString() + "\n");
+            }
+
+            if (xcaption != null && !xcaption.isEmpty()) {
+                sbFinal.append("x: " + xcaption + "\n");
+            }
         }
+        return sbFinal.toString();
     }
 
     public ArrayList<Integer> getValuesForStatisticsInMonths(
@@ -214,7 +249,8 @@ public class Statistics implements Serializable {
         TreeSet<ToTop> top = new TreeSet<ToTop>();
         for (UserAbstract user : users.values()) {
             if (user.getRole() == Role.USER) {
-                ToTop toTop = new ToTop(((User) user).getTotalFound(), user.getName());
+                ToTop toTop = new ToTop(((User) user).getTotalFound(),
+                        user.getName());
                 top.add(toTop);
             }
         }
@@ -239,9 +275,10 @@ public class Statistics implements Serializable {
         return top;
     }
 
-    public void monthStatistics(Data data, User user,
+    public String monthStatistics(Data data, User user,
             GregorianCalendar dateFinnish, boolean withGraph) {
         GregorianCalendar dateInit;
+        StringBuilder sb = new StringBuilder();
         if (dateFinnish.get(GregorianCalendar.MONTH) == 0) {
             dateInit = new GregorianCalendar(
                     dateFinnish.get(GregorianCalendar.YEAR) - 1, 11,
@@ -257,7 +294,7 @@ public class Statistics implements Serializable {
 
         ArrayList<Cache> cachesCreatedInDate = new ArrayList<Cache>();
 
-        for (Cache c : user.getCaches().values()) {
+        for (Cache c : user.getCachesOnly().values()) {
             if (c.getCreationDate().before(dateFinnish)
                     && c.getCreationDate().after(dateInit)) {
                 cachesCreatedInDate.add(c);
@@ -276,139 +313,146 @@ public class Statistics implements Serializable {
             }
         }
 
-        System.out.println(user.getName() + " created "
-                + cachesCreatedInDate.size() + " in last year");
+        sb.append(user.getName() + " created " + cachesCreatedInDate.size()
+                + " caches in last month\n");
 
-        for (Cache c : cachesCreatedInDate) {
-            System.out.println(c.toSimpleListing());
-        }
-
-        if (withGraph) {
-            ArrayList<Integer> points = new ArrayList<Integer>();
-            ArrayList<String> days = new ArrayList<String>();
-            days.add("1");
-            days.add("2");
-            days.add("3");
-            days.add("4");
-            days.add("5");
-            days.add("6");
-            days.add("7");
-            days.add("8");
-            days.add("9");
-            days.add("10");
-            days.add("11");
-            days.add("12");
-            days.add("13");
-            days.add("14");
-            days.add("15");
-            days.add("16");
-            days.add("17");
-            days.add("18");
-            days.add("19");
-            days.add("20");
-            days.add("21");
-            days.add("22");
-            days.add("23");
-            days.add("24");
-            days.add("25");
-            days.add("26");
-            days.add("27");
-            days.add("28");
-            days.add("29");
-            days.add("30");
-            days.add("31");
-            for (int i = 0; i < 31; i++) {
-                points.add(0);
-            }
-
+        if (cachesCreatedInDate.size() > 0) {
             for (Cache c : cachesCreatedInDate) {
-                int toSum = points.get(c.getCreationDate().get(
-                        GregorianCalendar.MONTH));
-                points.add(c.getCreationDate().get(GregorianCalendar.MONTH),
-                        toSum + 1);
+                sb.append("\t" + c.toSimpleListing() + "\n");
             }
-            for (int x : points) {
-                if (x > max) {
-                    max = x;
+
+            if (withGraph) {
+                ArrayList<Integer> points = new ArrayList<Integer>();
+                ArrayList<String> days = new ArrayList<String>();
+                days.add("1");
+                days.add("2");
+                days.add("3");
+                days.add("4");
+                days.add("5");
+                days.add("6");
+                days.add("7");
+                days.add("8");
+                days.add("9");
+                days.add("10");
+                days.add("11");
+                days.add("12");
+                days.add("13");
+                days.add("14");
+                days.add("15");
+                days.add("16");
+                days.add("17");
+                days.add("18");
+                days.add("19");
+                days.add("20");
+                days.add("21");
+                days.add("22");
+                days.add("23");
+                days.add("24");
+                days.add("25");
+                days.add("26");
+                days.add("27");
+                days.add("28");
+                days.add("29");
+                days.add("30");
+                days.add("31");
+                for (int i = 0; i < 31; i++) {
+                    points.add(0);
                 }
+
+                for (Cache c : cachesCreatedInDate) {
+                    int toSum = points.get(c.getCreationDate().get(
+                            GregorianCalendar.MONTH));
+                    points.add(
+                            c.getCreationDate().get(GregorianCalendar.MONTH),
+                            toSum + 1);
+                }
+                for (int x : points) {
+                    if (x > max) {
+                        max = x;
+                    }
+                }
+                sb.append(graphic2D(points, days, 31, max, "months",
+                        "created couchs", true) + "\n");
+
             }
-            graphic2D(points, days, 31, max, "months", "created couchs", true);
-
         }
-        System.out.println(user.getName() + " found "
-                + cachesFoundInDate.size() + " in last month");
-
-        for (Cache c : cachesFoundInDate) {
-            System.out.println(c.toSimpleListing());
-        }
-
-        if (withGraph) {
-            ArrayList<Integer> points = new ArrayList<Integer>();
-            ArrayList<String> days = new ArrayList<String>();
-            days.add("1");
-            days.add("2");
-            days.add("3");
-            days.add("4");
-            days.add("5");
-            days.add("6");
-            days.add("7");
-            days.add("8");
-            days.add("9");
-            days.add("10");
-            days.add("11");
-            days.add("12");
-            days.add("13");
-            days.add("14");
-            days.add("15");
-            days.add("16");
-            days.add("17");
-            days.add("18");
-            days.add("19");
-            days.add("20");
-            days.add("21");
-            days.add("22");
-            days.add("23");
-            days.add("24");
-            days.add("25");
-            days.add("26");
-            days.add("27");
-            days.add("28");
-            days.add("29");
-            days.add("30");
-            days.add("31");
-            for (int i = 0; i < 31; i++) {
-                points.add(0);
-            }
-
+        sb.append(user.getName() + " found " + cachesFoundInDate.size()
+                + " caches in last month\n");
+        if (cachesFoundInDate.size() > 0) {
             for (Cache c : cachesFoundInDate) {
-                int toSum = points.get(c.getCreationDate().get(
-                        GregorianCalendar.MONTH));
-                points.add(c.getCreationDate().get(GregorianCalendar.MONTH),
-                        toSum + 1);
+                sb.append("\t" + c.toSimpleListing() + "\n");
             }
-            for (int x : points) {
-                if (x > max) {
-                    max = x;
-                }
-            }
-            graphic2D(points, days, 31, max, "days", "found caches", true);
 
+            if (withGraph) {
+                ArrayList<Integer> points = new ArrayList<Integer>();
+                ArrayList<String> days = new ArrayList<String>();
+                days.add("1");
+                days.add("2");
+                days.add("3");
+                days.add("4");
+                days.add("5");
+                days.add("6");
+                days.add("7");
+                days.add("8");
+                days.add("9");
+                days.add("10");
+                days.add("11");
+                days.add("12");
+                days.add("13");
+                days.add("14");
+                days.add("15");
+                days.add("16");
+                days.add("17");
+                days.add("18");
+                days.add("19");
+                days.add("20");
+                days.add("21");
+                days.add("22");
+                days.add("23");
+                days.add("24");
+                days.add("25");
+                days.add("26");
+                days.add("27");
+                days.add("28");
+                days.add("29");
+                days.add("30");
+                days.add("31");
+                for (int i = 0; i < 31; i++) {
+                    points.add(0);
+                }
+
+                for (Cache c : cachesFoundInDate) {
+                    int toSum = points.get(c.getCreationDate().get(
+                            GregorianCalendar.MONTH));
+                    points.add(
+                            c.getCreationDate().get(GregorianCalendar.MONTH),
+                            toSum + 1);
+                }
+                for (int x : points) {
+                    if (x > max) {
+                        max = x;
+                    }
+                }
+                sb.append(graphic2D(points, days, 31, max, "days",
+                        "found caches", true) + "\n");
+            }
         }
+        return sb.toString();
 
     }
 
-    public void yearStatistics(Data data, User user,
+    public String yearStatistics(Data data, User user,
             GregorianCalendar dateFinnish, boolean withGraph) {
         GregorianCalendar dateInit = new GregorianCalendar(
                 dateFinnish.get(GregorianCalendar.YEAR) - 1,
                 dateFinnish.get(GregorianCalendar.MONTH),
                 dateFinnish.get(GregorianCalendar.DAY_OF_MONTH));
-
+        StringBuilder sb = new StringBuilder();
         int max = -1;
 
         ArrayList<Cache> cachesCreatedInDate = new ArrayList<Cache>();
 
-        for (Cache c : user.getCaches().values()) {
+        for (Cache c : user.getCachesOnly().values()) {
             if (c.getCreationDate().before(dateFinnish)
                     && c.getCreationDate().after(dateInit)) {
                 cachesCreatedInDate.add(c);
@@ -427,78 +471,90 @@ public class Statistics implements Serializable {
             }
         }
 
-        System.out.println(user.getName() + " created "
-                + cachesCreatedInDate.size() + " in last month");
-
-        for (Cache c : cachesCreatedInDate) {
-            System.out.println(c.toSimpleListing());
-        }
-
-        if (withGraph) {
-            ArrayList<Integer> points = new ArrayList<Integer>();
-            ArrayList<String> months = new ArrayList<String>();
-            months.add("Jan");
-            months.add("Feb");
-            months.add("Mar");
-            months.add("Apr");
-            months.add("May");
-            months.add("Jun");
-            months.add("Jul");
-            months.add("Aug");
-            months.add("Sep");
-            months.add("Oct");
-            months.add("Nov");
-            months.add("Dec");
+        sb.append(user.getName() + " created " + cachesCreatedInDate.size()
+                + " caches in last year\n");
+        if (cachesCreatedInDate.size() > 0) {
             for (Cache c : cachesCreatedInDate) {
-                int toSum = points.get(c.getCreationDate().get(
-                        GregorianCalendar.MONTH));
-                points.add(c.getCreationDate().get(GregorianCalendar.MONTH),
-                        toSum + 1);
+                sb.append(c.toSimpleListing() + "\n");
             }
-            for (int x : points) {
-                if (x > max) {
-                    max = x;
+
+            if (withGraph) {
+                ArrayList<Integer> points = new ArrayList<Integer>();
+                for (int ind = 0; ind < 12; ind++) {
+                    points.add(0);
                 }
+                ArrayList<String> months = new ArrayList<String>();
+                months.add("Jan");
+                months.add("Feb");
+                months.add("Mar");
+                months.add("Apr");
+                months.add("May");
+                months.add("Jun");
+                months.add("Jul");
+                months.add("Aug");
+                months.add("Sep");
+                months.add("Oct");
+                months.add("Nov");
+                months.add("Dec");
+                for (Cache c : cachesCreatedInDate) {
+                    int toSum = points.get(c.getCreationDate().get(
+                            GregorianCalendar.MONTH));
+                    points.add(
+                            c.getCreationDate().get(GregorianCalendar.MONTH),
+                            toSum + 1);
+                }
+                for (int x : points) {
+                    if (x > max) {
+                        max = x;
+                    }
+                }
+                sb.append(graphic2D(points, months, 12, max, "months",
+                        "created couchs", true) + "\n");
+
             }
-            graphic2D(points, months, 12, max, "months", "created couchs", true);
-
         }
-        System.out.println(user.getName() + " found "
-                + cachesFoundInDate.size() + " in last month");
-
-        for (Cache c : cachesFoundInDate) {
-            System.out.println(c.toSimpleListing());
-        }
-
-        if (withGraph) {
-            ArrayList<Integer> points = new ArrayList<Integer>();
-            ArrayList<String> months = new ArrayList<String>();
-            months.add("Jan");
-            months.add("Feb");
-            months.add("Mar");
-            months.add("Apr");
-            months.add("May");
-            months.add("Jun");
-            months.add("Jul");
-            months.add("Aug");
-            months.add("Sep");
-            months.add("Oct");
-            months.add("Nov");
-            months.add("Dec");
+        sb.append(user.getName() + " found " + cachesFoundInDate.size()
+                + " caches in last year\n");
+        if (cachesFoundInDate.size() > 0) {
             for (Cache c : cachesFoundInDate) {
-                int toSum = points.get(c.getCreationDate().get(
-                        GregorianCalendar.MONTH));
-                points.add(c.getCreationDate().get(GregorianCalendar.MONTH),
-                        toSum + 1);
+                sb.append(c.toSimpleListing() + "\n");
             }
-            for (int x : points) {
-                if (x > max) {
-                    max = x;
+
+            if (withGraph) {
+                ArrayList<Integer> points = new ArrayList<Integer>();
+                for (int ind = 0; ind < 12; ind++) {
+                    points.add(0);
                 }
+                ArrayList<String> months = new ArrayList<String>();
+                months.add("Jan");
+                months.add("Feb");
+                months.add("Mar");
+                months.add("Apr");
+                months.add("May");
+                months.add("Jun");
+                months.add("Jul");
+                months.add("Aug");
+                months.add("Sep");
+                months.add("Oct");
+                months.add("Nov");
+                months.add("Dec");
+                for (Cache c : cachesFoundInDate) {
+                    int toSum = points.get(c.getCreationDate().get(
+                            GregorianCalendar.MONTH));
+                    points.add(
+                            c.getCreationDate().get(GregorianCalendar.MONTH),
+                            toSum + 1);
+                }
+                for (int x : points) {
+                    if (x > max) {
+                        max = x;
+                    }
+                }
+                sb.append(graphic2D(points, months, 12, max, "months",
+                        "found couchs", true) + "\n");
+
             }
-            graphic2D(points, months, 12, max, "months", "found couchs", true);
-
         }
-
+        return sb.toString();
     }
 }
