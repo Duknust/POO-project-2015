@@ -21,7 +21,7 @@ public class Letterbox extends Cache {
      * visit.
      */
     // Can have 0 stages
-    ArrayList<Stage> stages;
+    private ArrayList<Stage> stages;
 
     // Constructors
     public Letterbox(ArrayList<Stage> stages, GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer, Data data) {
@@ -39,8 +39,11 @@ public class Letterbox extends Cache {
     	super(creationDate, description, cacheTitle, cacheSize, difficulty, position, hint, premium, owner, data);
     	this.stages = stages;
     }
-  
     
+    public ArrayList<Stage> getStages(){
+    	return this.stages;
+    }
+      
     @Override
     public String toString() {
         return "Letterbox Cache\n" + super.toListing()

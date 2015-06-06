@@ -2,9 +2,11 @@ package caches;
 
 import base.Data;
 import base.Position;
+
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.TreeSet;
+
 import user.Reviewer;
 import user.UserAbstract;
 
@@ -37,6 +39,10 @@ public class Multi extends Cache {
     	this.stages = stages;
     }
 
+    public ArrayList<Stage> getStages(){
+    	return this.stages;
+    }
+    
     @Override
     public String toString() {
         return super.toListing() + this.stages.toString()
