@@ -20,7 +20,7 @@ public class Multi extends Cache {
      * will have a clue for the third, and so on.
      */
     // At least One Stage
-    ArrayList<Stage> stages;
+	private ArrayList<Stage> stages;
 
     // Constructors
     public Multi(ArrayList<Stage> stages, GregorianCalendar publishDate, GregorianCalendar creationDate, String cacheID, boolean premiumOnly, String description, Status cacheState, String cacheTitle, UserAbstract owner, int cacheSize, float difficulty, Position position, String hint, TreeSet<Log> cache_Logs, Reviewer reviewer, Data data) {

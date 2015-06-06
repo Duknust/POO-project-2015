@@ -11,7 +11,7 @@ import java.util.TreeSet;
 
 public class Reviewer extends UserAbstract implements BasicCacheMethodsInterface, Serializable {
 
-    TreeSet<Cache> assignedCaches;
+	private TreeSet<Cache> assignedCaches;
 
     // Constructors
     public Reviewer(String email, String password, String name, String gender,

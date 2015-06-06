@@ -16,18 +16,18 @@ import user.UserAbstract;
 
 public class Data implements Serializable {
 
-    HashMap<String, Cache> enabledCaches = null; // The published ones
-    HashMap<String, Cache> disabledCaches = null;
-    HashMap<String, Cache> unpublishedCaches = null;
-    HashMap<String, Cache> archivedCaches = null;
+	private HashMap<String, Cache> enabledCaches = null; // The published ones
+	private HashMap<String, Cache> disabledCaches = null;
+	private HashMap<String, Cache> unpublishedCaches = null;
+	private HashMap<String, Cache> archivedCaches = null;
 
-    HashMap<String, Event> enabledEvents = null;
-    HashMap<String, Event> pastEvents = null;
+	private HashMap<String, Event> enabledEvents = null;
+	private HashMap<String, Event> pastEvents = null;
 
-    HashMap<String, UserAbstract> allUsers = null;
-    TreeMap<GregorianCalendar, Activity> allActivities = null;
+	private HashMap<String, UserAbstract> allUsers = null;
+	private TreeMap<GregorianCalendar, Activity> allActivities = null;
 
-    TreeMap<String, Position> allPositions = null;
+	private TreeMap<String, Position> allPositions = null;
 
     public Data() {
         enabledCaches = new HashMap<>();

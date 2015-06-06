@@ -44,9 +44,9 @@ import user.UserAbstract;
 
 public class Geocaching {
 
-    static Data data = null;
-    static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-    static UserAbstract userOnline; // User online and using the System
+    private static Data data = null;
+    private static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+    private static UserAbstract userOnline; // User online and using the System
 
     public static void main(String[] args) {
 
@@ -2020,48 +2020,18 @@ public class Geocaching {
 		                         }
 		                     }
 		                     status = false;
-	                     
-	                     }else if(type == Cache.Type.MULTI){
-	                    	 Multi multi = (Multi) cache;
-	                    	 ArrayList<Stage> stages = multi.getStages(); 
-	                    	 nStages = stages.size();
-	                    	 System.out.format("You just have %d in this cache. Which one do you want to change?\n", nStages);
+	                     }else{ 
+	                    	 ArrayList<Stage> stages = null;
 	                    	 
-	                    	 while(choice != -1){
-	                    		 System.out.print("\n?> ");
-		                         try {
-		                             str = input.readLine();
-		                             aux = Integer.parseInt(str);
-		                             
-		                            	if(aux>0  &&  aux<nStages){
-		                            		Stage st = stages.get(aux-1);
-			           	                    System.out.println("-- Insert a new Description - Stage " + aux);
-			           	                    
-			        	                    while (choice != -1) {
-			        	                        System.out.print("?> ");
-			        	                        try {
-			        	                             str = input.readLine();
-			        	                         } catch (IOException e) {
-			        	                             // TODO Auto-generated catch block
-			        	                             e.printStackTrace();
-			        	                         }
-			        	                         if (str.length() > 4) {
-			        	                        	 st.setDescription(str);
-			        	                        	 choice = -1;
-			        	                         } else {
-			        	                             System.out.println("Error: The name need at least 4 characters!");
-			        	                         }
-			        	                     }
-		                            	}else
-		                            		System.out.println("Error: Try a number between 1 and 5. Ex: '4'!");
-		                            	
-		                         } catch (Exception ex) {
-		                         	System.out.println("Error: The number isn't in the correct format. Ex: '4'!");
-		                         }
+	                    	 if(type == Cache.Type.MULTI){
+	                    		 Multi multi = (Multi) cache;
+	                    	 	 stages = multi.getStages();
+	                    	 	 
+	                    	 }else if(type == Cache.Type.LETTERBOX){
+		                    	 Letterbox letter = (Letterbox) cache;
+		                    	 stages = letter.getStages();
 	                    	 }
-	                     } else if(type == Cache.Type.LETTERBOX){
-	                    	 Letterbox letter = (Letterbox) cache;
-	                    	 ArrayList<Stage> stages = letter.getStages(); 
+	                    	 
 	                    	 nStages = stages.size();
 	                    	 System.out.format("You just have %d in this cache. Which one do you want to change?\n", nStages);
 	                    	 
@@ -2098,8 +2068,6 @@ public class Geocaching {
 		                         }
 	                    	 }
 	                     }
-	                     choice = -1;
-	                     break;
 	                 default:
 	                     choice = -1;
 	                     break;
@@ -2704,7 +2672,7 @@ public class Geocaching {
                             break;
                         case 9:
                             if (delete) {
-                                data.allActivities.remove(act.getDate());
+                                data.getAllActivities().remove(act.getDate());
                                 System.out.println("Activity successfully deleted!");
                                 pressAnyKeyToContinue();
                                 clearConsole();
@@ -2746,7 +2714,7 @@ public class Geocaching {
                             break;
                         case 9:
                             if (delete) {
-                                data.allActivities.remove(act.getDate());
+                                data.getAllActivities().remove(act.getDate());
                                 System.out.println("Activity successfully deleted!");
                                 pressAnyKeyToContinue();
                                 clearConsole();
@@ -2784,7 +2752,7 @@ public class Geocaching {
                             break;
                         case 9:
                             if (delete) {
-                                data.allActivities.remove(act.getDate());
+                                data.getAllActivities().remove(act.getDate());
                                 System.out.println("Activity successfully deleted!");
                                 pressAnyKeyToContinue();
                                 clearConsole();
@@ -3133,8 +3101,8 @@ public class Geocaching {
         Event ev = null;
 
         ArrayList<Event> list = new ArrayList<Event>();
-        Iterator<Event> evEnable = data.enabledEvents.values().iterator();
-        Iterator<Event> evPast = data.pastEvents.values().iterator();
+        Iterator<Event> evEnable = data.getEnabledEvents().values().iterator();
+        Iterator<Event> evPast = data.getPastEvents().values().iterator();
 
         while (evEnable.hasNext()) {
             ev = evEnable.next();
@@ -3197,8 +3165,8 @@ public class Geocaching {
         Event ev = null;
 
         ArrayList<Event> list = new ArrayList<Event>();
-        Iterator<Event> evEnable = data.enabledEvents.values().iterator();
-        Iterator<Event> evPast = data.pastEvents.values().iterator();
+        Iterator<Event> evEnable = data.getEnabledEvents().values().iterator();
+        Iterator<Event> evPast = data.getPastEvents().values().iterator();
 
         while (evEnable.hasNext()) {
             ev = evEnable.next();
@@ -3505,9 +3473,9 @@ public class Geocaching {
                 case 2:
                     statistics = new Statistics();
                     TreeSet<ToTop> topFinders = statistics
-                            .topTenCacheFinders(data.allUsers);
+                            .topTenCacheFinders(data.getAllUsers());
                     TreeSet<ToTop> topCreators = statistics
-                            .topTenCacheCreators(data.enabledCaches);
+                            .topTenCacheCreators(data.getEnabledCaches());
 
                     System.out.println("Top finders:");
                     for (ToTop tt : topFinders) {

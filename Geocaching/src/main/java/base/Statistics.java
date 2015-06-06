@@ -15,8 +15,8 @@ import user.UserAbstract.Role;
 public class Statistics implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    int numberCachesLastMonth = 0;
-    int numberCachesLastYear = 0;
+    private int numberCachesLastMonth = 0;
+    private int numberCachesLastYear = 0;
 
     public Statistics(Statistics e) {
         this.numberCachesLastMonth = e.getNumberCachesLastMonth();

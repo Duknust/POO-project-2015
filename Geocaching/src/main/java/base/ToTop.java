@@ -1,8 +1,8 @@
 package base;
 
 public class ToTop implements Comparable<ToTop> {
-	int count;
-	String name;
+	private int count;
+	private String name;
 
 	public ToTop(int count, String name) {
 		this.count = count;

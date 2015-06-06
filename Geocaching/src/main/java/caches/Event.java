@@ -15,11 +15,11 @@ public class Event extends Cache {
      * provides coordinates to its location. After the event has ended, it is
      * archived.
      */
-    HashMap<String, UserAbstract> participants;
-    HashMap<String, Integer> points;
-    HashMap<String, Cache> caches;
-    GregorianCalendar dateEvent, dateEndAplications;
-    int maxParticipants;
+	private HashMap<String, UserAbstract> participants;
+	private HashMap<String, Integer> points;
+	private HashMap<String, Cache> caches;
+	private GregorianCalendar dateEvent, dateEndAplications;
+	private int maxParticipants;
 
     // Constructors
     public Event(GregorianCalendar creationDate, GregorianCalendar dateEndApp, GregorianCalendar dateEvent, String cacheTitle, String description, Position position, int maxParticipants, UserAbstract owner, HashMap<String, Cache> caches, Data data) {
