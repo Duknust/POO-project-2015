@@ -27,6 +27,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -853,10 +854,107 @@ public class Geocaching {
     }
 
     private static void mSearchCaches() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	int choice = -1;
+        HashMap<String, Cache> enables = data.getEnabledCaches();
+
+        while (choice == -1) {
+        	System.out.println("####### Caches Search Menu #######\n");
+        	System.out.println("\t[1] Show All");
+        	System.out.println("\t[2] Search By Type");
+        	System.out.println("\t[3] Search By Title");           
+        	
+            System.out.println("\n-- [X] View Cache");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            
+            try {
+                choice = Integer.parseInt(input.readLine());
+            } catch (Exception ex) {
+                //System.out.println("Error: Invalid Option");
+                choice = -1;
+            }
+
+            switch (choice) {
+                case 0:
+                    clearConsole();
+                    break;
+                case 1:
+                	clearConsole();
+                	mShowAllCaches();
+                	break;
+                default:
+                	choice = -1;
+               /*     if (choice > 0 && choice <= arrayCaches.size()) {
+                        clearConsole();
+                        mViewCache(arrayCaches.get(choice - 1));
+                        clearConsole();
+                    } else {
+                        System.out.println("Error: Invalid Option");
+                    }
+                    choice = -1;
+                    break;*/
+            }
+        }
     }
 
-    private static void mViewOwnedCaches(User user) {
+    private static void mShowAllCaches() {
+    	int i, choice = -1, totalPages, page=0, byPage = 10, start;
+    	boolean status = false;
+    	String str = "";
+    	Cache cache = null;
+    	
+        Object[] enables = data.getEnabledCaches().values().toArray();
+        totalPages = enables.length/byPage;
+        System.out.println(" --- Search Caches ");
+        
+        while(status == false){
+        	start = byPage * page;
+        	for(i=0; i<byPage  &&  start+i < enables.length; i++){
+        		cache = (Cache)enables[start+i];
+        		System.out.format("\t[%d] %s - %s - %s\n", i+1, cache.getCacheID(), cache.getCacheTitle(), cache.getType());
+        	}
+        	
+        	System.out.println("\n\t<< Previous [p]  |  [n] Next >>");
+        	System.out.println("\n-- [X] View Cache");
+            System.out.println("-----:");
+            System.out.println("-- [0] Back");
+            System.out.print("?> ");
+            
+            try {
+            	str = input.readLine();
+                choice = Integer.parseInt(str);
+                
+                if(choice == 0){
+                	status = true;
+                }else{
+                	if(choice > 0  && choice <= i){
+                		cache = (Cache)enables[start+choice-1];
+                		mViewCache(cache);
+                	}else
+                		System.out.println("Error: You didn't put a valid option!!");
+                }
+                	
+            } catch (Exception ex) {
+                if(str.equals("p")){
+                	if(page>0)
+                		page--;
+                	else
+                		System.out.println("Error: You are already in first page!!");
+                
+                } else if(str.equals("n")){
+                	if((page+1)*byPage < enables.length)
+                		page++;
+                	else
+                		System.out.println("Error: You are already in last page!!");
+                } else 
+                	System.out.println("Error: You didn't put a valid option!!");
+                choice = -1;
+            }
+        }
+	}
+
+	private static void mViewOwnedCaches(User user) {
 
         int choice = -1;
         ArrayList<Cache> arrayCaches = user.getCachesArrayPremiumCheck(user);
@@ -898,7 +996,6 @@ public class Geocaching {
                     break;
             }
         }
-
     }
 
     private static void mViewFoundCaches(User user) {
