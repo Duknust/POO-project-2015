@@ -31,6 +31,10 @@ public class Admin extends UserAbstract implements BasicCacheMethodsInterface, S
         c.getCache_Logs().remove(l);
     }
 
+    public HashMap<String, Event> getEvents() {
+        return events;
+    }
+
     @Override
     public boolean disableCache(Cache c) {
 
