@@ -16,18 +16,18 @@ import user.UserAbstract;
 
 public class Data implements Serializable {
 
-	private HashMap<String, Cache> enabledCaches = null; // The published ones
-	private HashMap<String, Cache> disabledCaches = null;
-	private HashMap<String, Cache> unpublishedCaches = null;
-	private HashMap<String, Cache> archivedCaches = null;
+    private HashMap<String, Cache> enabledCaches = null; // The published ones
+    private HashMap<String, Cache> disabledCaches = null;
+    private HashMap<String, Cache> unpublishedCaches = null;
+    private HashMap<String, Cache> archivedCaches = null;
 
-	private HashMap<String, Event> enabledEvents = null;
-	private HashMap<String, Event> pastEvents = null;
+    private HashMap<String, Event> enabledEvents = null;
+    private HashMap<String, Event> pastEvents = null;
 
-	private HashMap<String, UserAbstract> allUsers = null;
-	private TreeMap<GregorianCalendar, Activity> allActivities = null;
+    private HashMap<String, UserAbstract> allUsers = null;
+    private TreeMap<GregorianCalendar, Activity> allActivities = null;
 
-	private TreeMap<String, Position> allPositions = null;
+    private TreeMap<String, Position> allPositions = null;
 
     public Data() {
         enabledCaches = new HashMap<>();
@@ -173,7 +173,15 @@ public class Data implements Serializable {
     public Comparator<Cache> compareCachePubDate() {
         return new Comparator<Cache>() {
             public int compare(Cache o1, Cache o2) {
-                return -1 * o1.getPublishDate().compareTo(o2.getPublishDate());
+                if (o1 != null && o2 != null) {
+                    if (o1.getPublishDate() != null && o2.getPublishDate() != null) {
+                        return -1 * o1.getPublishDate().compareTo(o2.getPublishDate());
+                    } else {
+                        return 1;
+                    }
+                } else {
+                    return 1;
+                }
             }
         };
     }
@@ -181,7 +189,15 @@ public class Data implements Serializable {
     public Comparator<Event> compareEventAppDate() {
         return new Comparator<Event>() {
             public int compare(Event o1, Event o2) {
-                return -1 * o1.getDateEndApplications().compareTo(o2.getDateEndApplications());
+                if (o1 != null && o2 != null) {
+                    if (o1.getDateEndApplications() != null && o2.getDateEndApplications() != null) {
+                        return -1 * o1.getDateEndApplications().compareTo(o2.getDateEndApplications());
+                    } else {
+                        return 1;
+                    }
+                } else {
+                    return 1;
+                }
             }
         };
     }
@@ -189,7 +205,15 @@ public class Data implements Serializable {
     public Comparator<Event> compareEventDate() {
         return new Comparator<Event>() {
             public int compare(Event o1, Event o2) {
-                return -1 * o1.getDateEvent().compareTo(o2.getDateEvent());
+                if (o1 != null && o2 != null) {
+                    if (o1.getDateEvent() != null && o2.getDateEvent() != null) {
+                        return -1 * o1.getDateEvent().compareTo(o2.getDateEvent());
+                    } else {
+                        return 1;
+                    }
+                } else {
+                    return 1;
+                }
             }
         };
     }

@@ -129,6 +129,9 @@ public class User extends UserAbstract implements BasicCacheMethodsInterface, Se
 
     // Methods
     public boolean createCache(Cache cache) {
+        if (cache.getType() == Cache.Type.EVENT) {
+            return false;
+        }
         HashMap<String, Cache> map = super.getData().getAllCachesAndUnpublished();
         if (map == null) {
             return false;
