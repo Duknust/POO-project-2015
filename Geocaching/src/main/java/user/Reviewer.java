@@ -195,13 +195,13 @@ public class Reviewer extends UserAbstract implements BasicCacheMethodsInterface
         this.assignedCaches.add(c);
         Activity act = null;
         if (c.getType() == Cache.Type.EVENT) {
-            super.getData().getEnabledCaches().put(c.getCacheID(), c); // Move it from Unpublished to Published
-            super.getData().getUnpublishedCaches().remove(c.getCacheID(), c);
-            act = new Activity(new GregorianCalendar(), Activity.Type.NEW_CACHE, c, this); // Create Activity
-        } else {
             super.getData().getEnabledEvents().put(c.getCacheID(), (Event) c); // Move it from Unpublished to Published
             super.getData().getUnpublishedCaches().remove(c.getCacheID(), c);
             act = new Activity(new GregorianCalendar(), Activity.Type.NEW_EVENT, c, this); // Create Activity
+        } else {
+            super.getData().getEnabledCaches().put(c.getCacheID(), c); // Move it from Unpublished to Published
+            super.getData().getUnpublishedCaches().remove(c.getCacheID(), c);
+            act = new Activity(new GregorianCalendar(), Activity.Type.NEW_CACHE, c, this); // Create Activity
         }
         super.getData().addActivity(act);
 
