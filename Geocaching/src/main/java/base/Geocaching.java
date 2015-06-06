@@ -1925,9 +1925,9 @@ public class Geocaching {
 	                     System.out.println("-- Insert a new Hint");
 	                     while (status == false) {
 	                     	System.out.println("\t[1] Micro");
-	                     	System.out.println("\t[2] Pequena");
+	                     	System.out.println("\t[2] Small");
 	                     	System.out.println("\t[3] Normal");
-	                     	System.out.println("\t[4] Grande");
+	                     	System.out.println("\t[4] Large");
 	                     	
 	                     	System.out.print("\n?> ");
 	                         try {
@@ -2150,9 +2150,9 @@ public class Geocaching {
         System.out.println("-- Size of Cache:");
         while (status == false) {
         	System.out.println("\t[1] Micro");
-        	System.out.println("\t[2] Pequena");
+        	System.out.println("\t[2] Small");
         	System.out.println("\t[3] Normal");
-        	System.out.println("\t[4] Grande");
+        	System.out.println("\t[4] Large");
         	
         	System.out.print("\n?> ");
             try {
@@ -3326,8 +3326,16 @@ public class Geocaching {
         //Positon of Event
         pos = mInputPosition(true);
 
-        HashMap<String, Cache> caches = data.getByPosition(pos, 5);
-        Event event = new Event(new GregorianCalendar(), dateEndApplications, dateEvent, name, description, pos, maxP, userOnline, caches, data);
+        int nCaches = 5;
+        Cache[] caches = data.getNByPosition(pos, nCaches);
+        
+        HashMap<String, Cache> inHash = new HashMap<String, Cache>();
+        for (int i = 0; i < nCaches; i++) {
+        	if(caches[i] == null) break;
+        	inHash.put(caches[i].getCacheID(), caches[i]);
+        }
+        
+        Event event = new Event(new GregorianCalendar(), dateEndApplications, dateEvent, name, description, pos, maxP, userOnline, inHash, data);
         data.getUnpublishedCaches().put(event.getCacheID(), event);
     }
 

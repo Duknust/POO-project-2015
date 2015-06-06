@@ -194,7 +194,7 @@ public class Data implements Serializable {
         };
     }
 
-    public HashMap<String, Cache> getByPosition(Position p, int nCaches) {
+    public Cache[] getNByPosition(Position p, int nCaches) {
 
         double dist[] = new double[nCaches];
         Cache auxCache, caches[] = new Cache[nCaches];
@@ -231,12 +231,7 @@ public class Data implements Serializable {
             }
         }
 
-        HashMap<String, Cache> inHash = new HashMap<String, Cache>();
-        for (i = 0; i < added; i++) {
-            inHash.put(caches[i].getCacheID(), caches[i]);
-        }
-
-        return inHash;
+        return caches;
     }
 
     ArrayList<Activity> getActivitiesArray(UserAbstract user, int total) {
