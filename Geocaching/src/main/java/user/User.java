@@ -367,28 +367,34 @@ public class User extends UserAbstract implements BasicCacheMethodsInterface, Se
     	if(temp<10){
     		for(Cache c: this.caches.values()){
     			Log log = c.hasFoundLog(this);
-    			Meteo auxMeteo = m.staticMeteo(log.getDate().get(GregorianCalendar.DAY_OF_YEAR), c.getPosition());
+    			if(log != null){
+    				Meteo auxMeteo = m.staticMeteo(log.getDate().get(GregorianCalendar.DAY_OF_YEAR), c.getPosition());
     			
-    			if(auxMeteo.getTemperature() < 10)
-    				found++;	
+    				if(auxMeteo.getTemperature() < 10)
+    					found++;
+    			}
         	}
     		
     	} else if (temp < 30){
     		for(Cache c: this.caches.values()){
     			Log log = c.hasFoundLog(this);
-    			Meteo auxMeteo = m.staticMeteo(log.getDate().get(GregorianCalendar.DAY_OF_YEAR), c.getPosition());
-    			
-    			if(auxMeteo.getTemperature() >= 10 && auxMeteo.getTemperature() <30)
-    				found++;	
+    			if(log != null){
+	    			Meteo auxMeteo = m.staticMeteo(log.getDate().get(GregorianCalendar.DAY_OF_YEAR), c.getPosition());
+	    			
+	    			if(auxMeteo.getTemperature() >= 10 && auxMeteo.getTemperature() <30)
+	    				found++;	
+    			}
         	}
     		
     	} else { //Count if is good in heat
     		for(Cache c: this.caches.values()){
     			Log log = c.hasFoundLog(this);
-    			Meteo auxMeteo = m.staticMeteo(log.getDate().get(GregorianCalendar.DAY_OF_YEAR), c.getPosition());
-    			
-    			if(auxMeteo.getTemperature() >= 30)
-    				found++;	
+    			if(log != null){
+	    			Meteo auxMeteo = m.staticMeteo(log.getDate().get(GregorianCalendar.DAY_OF_YEAR), c.getPosition());
+	    			
+	    			if(auxMeteo.getTemperature() >= 30)
+	    				found++;	
+    			}
         	}
     	}
     	return found;
@@ -403,19 +409,23 @@ public class User extends UserAbstract implements BasicCacheMethodsInterface, Se
     	if(rain< 0.3){
     		for(Cache c: this.caches.values()){
     			Log log = c.hasFoundLog(this);
-    			Meteo auxMeteo = m.staticMeteo(log.getDate().get(GregorianCalendar.DAY_OF_YEAR), c.getPosition());
-    			
-    			if(auxMeteo.getTemperature() < 10)
-    				found++;	
+    			if(log != null){
+	    			Meteo auxMeteo = m.staticMeteo(log.getDate().get(GregorianCalendar.DAY_OF_YEAR), c.getPosition());
+	    			
+	    			if(auxMeteo.getTemperature() < 10)
+	    				found++;
+    			}
         	}
     		
     	} else if (rain < 0.6){
     		for(Cache c: this.caches.values()){
     			Log log = c.hasFoundLog(this);
-    			Meteo auxMeteo = m.staticMeteo(log.getDate().get(GregorianCalendar.DAY_OF_YEAR), c.getPosition());
-    			
-    			if(auxMeteo.getTemperature() >= 0.3 && auxMeteo.getTemperature() < 0.6)
-    				found++;	
+    			if(log != null){
+	    			Meteo auxMeteo = m.staticMeteo(log.getDate().get(GregorianCalendar.DAY_OF_YEAR), c.getPosition());
+	    			
+	    			if(auxMeteo.getTemperature() >= 0.3 && auxMeteo.getTemperature() < 0.6)
+	    				found++;
+    			}
         	}
     		
     	} else { //Count if is good in heat

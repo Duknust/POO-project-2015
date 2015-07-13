@@ -12,6 +12,7 @@ import caches.Mystery;
 import caches.Stage;
 import caches.Traditional;
 import dataCreation.CountriesData;
+
 import java.io.BufferedReader;
 import java.io.Console;
 import java.io.FileInputStream;
@@ -29,18 +30,24 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import user.Admin;
 import user.Reviewer;
 import user.User;
 import user.UserAbstract;
 import user.UserAbstract.Role;
 
-public class Geocaching {
+public class Geocaching extends Data{
 
     private static Data data = null;
     private static BufferedReader input = new BufferedReader(
@@ -50,7 +57,11 @@ public class Geocaching {
 
     public static void main(String[] args) {
 
-        // data = startData();
+    	
+    	
+    	
+    
+        data = startData();
         data = populateData(); // Use Pre-Made Database _ Atention, use with
         // caution !
         // ---------------------------------------------
@@ -4553,21 +4564,21 @@ public class Geocaching {
         Event e1 = new Event(new GregorianCalendar(), new GregorianCalendar(
                 2015, 6, 6), new GregorianCalendar(2015, 6, 6),
                 "Evento All Star", "Está tudo a brilhar", new Position(42, 51),
-                5, u1, new HashMap<String, Cache>(), newData);
+                5, a1, new HashMap<String, Cache>(), newData);
         Event e2 = new Event(new GregorianCalendar(2015, 5, 2),
                 new GregorianCalendar(2015, 5, 5), new GregorianCalendar(2015,
                         5, 31), "Evento Joker", "Um grande sorriso!!",
-                new Position(82, 321), 5, u2, new HashMap<String, Cache>(),
+                new Position(82, 321), 5, a1, new HashMap<String, Cache>(),
                 newData);
         Event e3 = new Event(new GregorianCalendar(2015, 5, 4),
                 new GregorianCalendar(2015, 4, 30), new GregorianCalendar(2015,
                         5, 31), "Evento Mais Bonito", "Um grandhe sorriso!!",
-                new Position(282, 322), 5, u3, new HashMap<String, Cache>(),
+                new Position(282, 322), 5, a1, new HashMap<String, Cache>(),
                 newData);
         Event e4 = new Event(new GregorianCalendar(2015, 5, 4),
                 new GregorianCalendar(2015, 3, 30), new GregorianCalendar(2015,
                         4, 31), "Evento de Hoje", "Tudo a jogar!!",
-                new Position(82, 32), 5, u1, new HashMap<String, Cache>(),
+                new Position(82, 32), 5, a1, new HashMap<String, Cache>(),
                 newData);
 
         e1.addCache(tc1);
@@ -4582,15 +4593,22 @@ public class Geocaching {
         e3.addCache(mc1);
 
         /*
-         * newData.getEnabledEvents().put(e1.getCacheID(), e1);
-         * newData.getEnabledEvents().put(e2.getCacheID(), e2);
-         * newData.getEnabledEvents().put(e3.getCacheID(), e3);
-         * newData.getEnabledEvents().put(e4.getCacheID(), e4);
+        newData.getEnabledEvents().put(e1.getCacheID(), e1);
+        newData.getEnabledEvents().put(e2.getCacheID(), e2);
+        newData.getEnabledEvents().put(e3.getCacheID(), e3);
+        newData.getEnabledEvents().put(e4.getCacheID(), e4);
          */
         a1.createEvent(e1);
         a1.createEvent(e2);
         a1.createEvent(e3);
         a1.createEvent(e4);
+        
+        e1.addParticipant(u1);
+        e1.addParticipant(u2);
+        e1.addParticipant(u3);
+        
+        e2.addParticipant(u4);
+        e2.addParticipant(u2);
 
         u1.createCache(tc1);
         u2.createCache(tc2);

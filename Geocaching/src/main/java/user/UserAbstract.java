@@ -174,13 +174,15 @@ public abstract class UserAbstract implements Serializable, UserInterface {
 
     @Override
     public String toStringTotal() {
-        return "E-Mail - " + email
+    	return "E-Mail - " + email
                 + "\nName - " + name
                 + "\nGender - " + gender
                 + "\nAddress - " + address
                 + "\nBirth Date - " + formatDate(birthDate)
                 + "\nPremium - " + premium
                 + "\nRole - " + getRole();
+        
+
     }
 
     @Override

@@ -168,7 +168,7 @@ public class Event extends Cache {
         //Meteo
         
         Meteo meteo = new Meteo();
-        Meteo auxMeteo = meteo.staticMeteo(this.dateEvent.getTime().getDay(),cache.getPosition());
+        Meteo auxMeteo = meteo.staticMeteo(this.dateEvent.get(GregorianCalendar.DAY_OF_YEAR),cache.getPosition());
         
         float rainProb = auxMeteo.getRainProbability();
         float temperature = auxMeteo.getTemperature();
@@ -188,7 +188,7 @@ public class Event extends Cache {
     	}
     	
         //Rain
-        if(nTemp < 5){ 
+        if(nRain < 5){ 
     		time += 20;
     		
     	} else if (nTemp < 10){
@@ -203,7 +203,7 @@ public class Event extends Cache {
     
     public void simulation(){
     	Random r = new Random();
-    	int rounds = this.getNRegistrations() * (r.nextInt() %caches.size());
+    	int rounds = this.getNRegistrations() * (Math.abs(r.nextInt()) %caches.size());
     	Object[] aCaches = caches.values().toArray();
     	Object[] aPart = participants.values().toArray();
     	float[] sTimes = new float[participants.size()];
@@ -215,13 +215,14 @@ public class Event extends Cache {
     	
     	while(rounds>0){
     		rounds--;
-    		idUser =r.nextInt();
-    		idCache =r.nextInt();
+    		idUser = Math.abs(r.nextInt()%caches.size());
+    		idCache = Math.abs(r.nextInt()%participants.size());
     		
-    		cache = (Cache)aCaches[idCache%caches.size()];
-    		user = (User)aPart[idUser%participants.size()];
+    		cache = (Cache)aCaches[idCache];
+    		user = (User)aPart[idUser];
     		
-    		sTimes[idUser] +=  timeToFind(user,cache);
+    		int aux = timeToFind(user,cache);
+    		sTimes[idUser] +=  aux;
     		sPoints[idUser] +=  cache.getDifficulty() * cache.getPosition().getDifficulty();
     	}
     	
@@ -238,7 +239,7 @@ public class Event extends Cache {
     	
     	System.out.println("User || Points || Total Time");
     	for(User u: participants.values()){
-    		System.out.format("%s || %f || %f", u.getEmail(), points.get(u.getEmail()), times.get(u.getEmail()) );
+    		System.out.format("%s || %f || %f\n", u.getEmail(), points.get(u.getEmail()), times.get(u.getEmail()) );
     	}
     }
     
